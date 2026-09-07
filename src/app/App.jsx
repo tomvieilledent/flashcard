@@ -175,6 +175,8 @@ export default function App() {
         {t.skip}
       </a>
 
+      <div className="app__progress" aria-hidden="true" />
+
       <header className="app__topbar">
         <button
           type="button"
@@ -193,7 +195,7 @@ export default function App() {
 
       <div
         className="app__overlay"
-        hidden={!menuOpen}
+        data-show={menuOpen || undefined}
         onClick={() => setMenuOpen(false)}
       />
 
@@ -371,9 +373,11 @@ export default function App() {
               {t.translating}
             </p>
           ) : null}
-          <Suspense fallback={<SectionFallback label={t.loading} />}>
-            {ActiveComponent ? <ActiveComponent /> : null}
-          </Suspense>
+          <div className="section-view" key={active}>
+            <Suspense fallback={<SectionFallback label={t.loading} />}>
+              {ActiveComponent ? <ActiveComponent /> : null}
+            </Suspense>
+          </div>
         </div>
       </main>
     </div>

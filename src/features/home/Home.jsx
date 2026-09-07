@@ -43,6 +43,7 @@ export default function Home() {
     <div>
       <section
         aria-label={c.title}
+        className="home__hero"
         style={{
           position: "relative",
           overflow: "hidden",
@@ -107,6 +108,7 @@ export default function Home() {
       </section>
 
       <div
+        className="home__grid"
         style={{
           display: "grid",
           gap: 12,
@@ -123,6 +125,7 @@ export default function Home() {
             <a
               key={cat.category}
               href={id ? `#${id}` : undefined}
+              className="home__card"
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -153,6 +156,7 @@ export default function Home() {
               </span>
               <span style={{ fontSize: 15, fontWeight: 700 }}>{label}</span>
               <span
+                className="home__card-go"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -171,6 +175,7 @@ export default function Home() {
       </div>
 
       <div
+        className="home__links"
         style={{
           display: "flex",
           flexWrap: "wrap",

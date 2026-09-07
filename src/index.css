@@ -47,6 +47,10 @@
   --sidebar-w: 288px;
   --topbar-h: 56px;
   --content-max: 760px;
+  --app-max: 2040px;
+
+  /* Courbe d'accélération « ressort » — micro-interactions vivantes. */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
 
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "IBM Plex Sans",
     sans-serif;
@@ -273,6 +277,47 @@ a:hover {
   border-bottom: 1px solid var(--line);
 }
 
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .app__topbar {
+    background: color-mix(in srgb, var(--ink) 78%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Barre de progression de lecture — pilotée par le scroll, sans JS.
+   Invisible là où animation-timeline n'est pas supporté (décoratif). */
+.app__progress {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 25;
+  width: 100%;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(
+    90deg,
+    var(--react-accent),
+    var(--devops-accent),
+    var(--ai-accent)
+  );
+}
+@supports (animation-timeline: scroll()) {
+  .app__progress {
+    animation: progressGrow linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes progressGrow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 .app__burger,
 .app__close {
   display: inline-flex;
@@ -283,8 +328,18 @@ a:hover {
   padding: 0;
   background: transparent;
   border: none;
+  border-radius: 10px;
   color: var(--text);
   cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.12s var(--ease-spring);
+}
+.app__burger:hover,
+.app__close:hover {
+  background: var(--fill-strong);
+}
+.app__burger:active,
+.app__close:active {
+  transform: scale(0.9);
 }
 
 .app__brand-mobile {
@@ -299,6 +354,15 @@ a:hover {
   inset: 0;
   z-index: 30;
   background: var(--overlay);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+.app__overlay[data-show] {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .app__sidebar {
@@ -311,7 +375,8 @@ a:hover {
   border-right: 1px solid var(--line);
   overflow-y: auto;
   transform: translateX(-100%);
-  transition: transform 0.22s ease;
+  transition: transform 0.32s var(--ease-spring);
+  will-change: transform;
 }
 
 .app[data-menu-open="true"] .app__sidebar {
@@ -542,9 +607,12 @@ a:hover {
   font-family: var(--font-body);
   text-align: left;
   cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.16s var(--ease-spring);
+  animation: navReveal 0.2s var(--ease-spring) both;
 }
 .nav__result:hover {
   background: var(--fill-strong);
+  transform: translateX(3px);
 }
 .nav__result-label {
   font-size: 14px;
@@ -601,6 +669,14 @@ a:hover {
   text-transform: uppercase;
   text-align: left;
   cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.15s ease, transform 0.12s var(--ease-spring);
+}
+.nav__cat-toggle:hover {
+  background: var(--fill);
+}
+.nav__cat-toggle:active {
+  transform: scale(0.98);
 }
 .nav__cat-toggle > :first-child {
   color: var(--accent, var(--muted));
@@ -617,6 +693,13 @@ a:hover {
 }
 .nav__cat-body {
   padding-bottom: 8px;
+  animation: navReveal 0.24s var(--ease-spring) both;
+}
+@keyframes navReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 .nav__group {
   margin-top: 8px;
@@ -637,6 +720,7 @@ a:hover {
 }
 
 .nav__btn {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -652,14 +736,35 @@ a:hover {
   font-weight: 500;
   text-align: left;
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease,
+    transform 0.16s var(--ease-spring);
+}
+.nav__btn::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  border-radius: 2px;
+  background: var(--accent, var(--focus));
+  transform: translateY(-50%);
+  transition: height 0.2s var(--ease-spring);
 }
 .nav__btn[data-active] {
   background: var(--fill-strong);
   color: var(--text);
 }
+.nav__btn[data-active]::before {
+  height: 18px;
+}
 .nav__btn:hover {
   background: var(--fill);
   color: var(--text);
+  transform: translateX(2px);
+}
+.nav__btn:active {
+  transform: translateX(2px) scale(0.99);
 }
 .nav__btn-label {
   flex: 1;
@@ -710,6 +815,125 @@ a:hover {
   .app__content {
     padding-top: 44px;
   }
+}
+
+/* ---- Grand écran : on élargit la mesure de lecture et les gouttières,
+   puis on cadre l'app pour qu'elle ne se disloque pas au-delà. ------ */
+
+@media (min-width: 1280px) {
+  :root {
+    --sidebar-w: 300px;
+    --content-max: 820px;
+  }
+  .app__content {
+    padding-inline: clamp(32px, 5vw, 60px);
+  }
+}
+
+@media (min-width: 1600px) {
+  :root {
+    --sidebar-w: 320px;
+    --content-max: 880px;
+  }
+  .app__content {
+    padding-top: 56px;
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --sidebar-w: 344px;
+    --content-max: 960px;
+  }
+  .app {
+    max-width: var(--app-max);
+    margin-inline: auto;
+    border-inline: 1px solid var(--line);
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    --content-max: 1040px;
+  }
+}
+
+/* ---- Entrée de section & micro-interactions du contenu ---------- */
+
+.section-view {
+  animation: sectionIn 0.34s var(--ease-spring) both;
+}
+@keyframes sectionIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* Accueil : héros, grille de domaines, liens. */
+
+.home__hero {
+  animation: sectionIn 0.42s var(--ease-spring) both;
+}
+
+.home__card {
+  transition: transform 0.22s var(--ease-spring), border-color 0.2s ease,
+    box-shadow 0.22s ease, background-color 0.2s ease;
+  animation: cardIn 0.44s var(--ease-spring) both;
+}
+.home__card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--cat) 55%, var(--line));
+  box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--cat) 50%, transparent);
+  background: var(--fill-strong);
+}
+.home__card:active {
+  transform: translateY(-2px) scale(0.995);
+}
+.home__card-go svg {
+  transition: transform 0.22s var(--ease-spring);
+}
+.home__card:hover .home__card-go svg {
+  transform: translate(3px, -3px);
+}
+.home__grid > :nth-child(1) {
+  animation-delay: 0.02s;
+}
+.home__grid > :nth-child(2) {
+  animation-delay: 0.06s;
+}
+.home__grid > :nth-child(3) {
+  animation-delay: 0.1s;
+}
+.home__grid > :nth-child(4) {
+  animation-delay: 0.14s;
+}
+.home__grid > :nth-child(5) {
+  animation-delay: 0.18s;
+}
+.home__grid > :nth-child(6) {
+  animation-delay: 0.22s;
+}
+.home__grid > :nth-child(7) {
+  animation-delay: 0.26s;
+}
+.home__grid > :nth-child(8) {
+  animation-delay: 0.3s;
+}
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+.home__links a {
+  transition: transform 0.16s var(--ease-spring), border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.home__links a:hover {
+  transform: translateY(-2px);
+  border-color: var(--muted);
 }
 
 /* ---- Coloration syntaxique (highlight.js, thème maison) -------- */
@@ -793,8 +1017,12 @@ a:hover {
 /* ---- Préférences utilisateur --------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
 }
