@@ -36,6 +36,7 @@ import {
   Share2,
   ShieldCheck,
   Sparkles,
+  Swords,
   Table2,
   Terminal,
   UploadCloud,
@@ -194,6 +195,7 @@ export const NAV = [
         icon: Sparkles,
         items: [
           { id: "intent-driven-development", label: "Intent-Driven Development & dette sémantique", icon: Compass, file: "agentic-ai/IntentDrivenDevelopment.jsx" },
+          { id: "model-confrontation", label: "Confrontation de deux modèles (cas pratique)", icon: Swords, file: "agentic-ai/ModelConfrontation.jsx" },
           { id: "llm-architecture", label: "Architecture des LLMs (tokens & probabilités)", icon: Cpu, file: "agentic-ai/LlmArchitecture.jsx" },
           { id: "context-window", label: "Fenêtre de contexte & amnésie", icon: Brain, file: "agentic-ai/ContextWindow.jsx" },
           { id: "ai-finops", label: "Modèle économique (FinOps 101)", icon: Coins, file: "agentic-ai/AiFinops.jsx" },

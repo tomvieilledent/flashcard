@@ -1,7 +1,8 @@
 import { Code, InlineCode, P, H2, H3, Ul, Note, Table, SourceLink } from "../../shared/ui/primitives.jsx";
 import { AI_ACCENT } from "../../shared/ui/tokens.js";
+import { useLang } from "../../i18n/lang.jsx";
 
-export default function LlmArchitecture() {
+function Fr() {
   return (
     <div>
       <H2 accent={AI_ACCENT}>Architecture des LLMs — tokens & probabilités</H2>
@@ -87,4 +88,96 @@ for (let i = 0; i <
       </SourceLink>
     </div>
   );
+}
+
+function En() {
+  return (
+    <div>
+      <H2 accent={AI_ACCENT}>LLM architecture — tokens & probabilities</H2>
+      <P>
+        A <strong>Large Language Model</strong> (GPT, Claude…) has no internal
+        database of facts. It is a <strong>probabilistic, stochastic</strong>{" "}
+        engine: it predicts the most likely next fragment of text. Steering the
+        machine means understanding its gears.
+      </P>
+
+      <H3>1. Tokenization</H3>
+      <P>
+        The model reads neither words nor code, but <strong>tokens</strong>:
+        fragments of a word or of code, ~0.75 word on average. Common terms
+        (<InlineCode>function</InlineCode>, <InlineCode>const</InlineCode>) often
+        fit in a single token; an exotic or misspelled variable name is split
+        into several.
+      </P>
+      <Note accent={AI_ACCENT}>
+        The token is the unit of billing <em>and</em> the unit of context. The
+        cleaner and more standard the source code, the fewer tokens the model
+        spends reading it: Clean Code becomes a financial requirement, not just
+        an aesthetic one.
+      </Note>
+
+      <H3>2. How code is generated</H3>
+      <P>
+        Picture a jigsaw: the model picks a piece (a token) and places it where
+        it fits best statistically, given the pieces already down. It does not
+        "see" the finished picture in advance; it only computes the most logical
+        next piece.
+      </P>
+      <Code>{`// L'IA lit :
+for (let i = 0; i <
+// P(token suivant = "length") ≈ 0,99
+// Le modèle ne "comprend" pas la boucle : il prédit mathématiquement sa fin.`}</Code>
+
+      <H3>3. Hallucinations</H3>
+      <P>
+        Ask the model about an internal library it never saw during training: it
+        produces plausible code by inventing likely-looking methods
+        (<InlineCode>myLib.connect()</InlineCode>) that do not exist. That is a{" "}
+        <strong>hallucination</strong> — statistical probability filling a
+        factual gap.
+      </P>
+      <Table
+        head={["Cause", "Countermeasure"]}
+        rows={[
+          ["Library absent from the training corpus", "Paste the exact docs / signatures into the context"],
+          ["Stale API version memorized", "Provide the changelog or the current type definitions"],
+          ["Non-standard in-house convention", "Give a canonical example from the repository"],
+          ["Ambiguous question", "Constrain it: “use only the symbols defined above”"],
+        ]}
+      />
+      <Note accent={AI_ACCENT}>
+        Your job: <strong>override probability with factual truth</strong>.
+        Accurate docs in the prompt beat a fix after the fact.
+      </Note>
+
+      <H3>Check it yourself</H3>
+      <Ul>
+        <li>
+          Paste a snippet of your code into a tokenizer and compare the token
+          count before / after cleaning up the names.
+        </li>
+        <li>
+          An identifier like <InlineCode>usrMgrSvc</InlineCode> often costs more
+          tokens than <InlineCode>userManagerService</InlineCode>, which is more
+          readable and better segmented.
+        </li>
+      </Ul>
+
+      <SourceLink href="https://platform.openai.com/tokenizer">
+        platform.openai.com/tokenizer — count the tokens in a text
+      </SourceLink>
+      {" · "}
+      <SourceLink href="https://github.com/openai/tiktoken">
+        github.com/openai/tiktoken — OpenAI's BPE tokenizer
+      </SourceLink>
+      {" · "}
+      <SourceLink href="https://web.stanford.edu/~jurafsky/slp3/">
+        Speech and Language Processing (Jurafsky & Martin) — tokenization & LM chapters
+      </SourceLink>
+    </div>
+  );
+}
+
+export default function LlmArchitecture() {
+  return useLang().lang === "en" ? <En /> : <Fr />;
 }

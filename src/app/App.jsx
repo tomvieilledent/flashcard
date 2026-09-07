@@ -6,8 +6,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { ChevronDown, ChevronRight, Menu, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Info, Menu, Search, X } from "lucide-react";
 import { NAV, ALL_IDS, DEFAULT_ID, HOME, findEntry } from "./nav.js";
+import PrefsBar from "./PrefsBar.jsx";
+import { useLang } from "../i18n/lang.jsx";
+import { CAT_EN, GROUP_EN, NAV_EN, TRANSLATED_EN, UI } from "../i18n/ui.js";
 
 const VALID_IDS = new Set(ALL_IDS);
 const HomeIcon = HOME.icon;
@@ -17,7 +20,12 @@ function readHash() {
   return VALID_IDS.has(id) ? id : DEFAULT_ID;
 }
 
-function NavButton({ item, active, accent, onClick }) {
+/* Traduit une valeur si la langue est l'anglais, sinon garde le français. */
+function tr(lang, map, key, fallback) {
+  return lang === "en" ? map[key] ?? fallback : fallback;
+}
+
+function NavButton({ label, active, accent, onClick }) {
   return (
     <button
       type="button"
@@ -27,7 +35,7 @@ function NavButton({ item, active, accent, onClick }) {
       style={{ "--accent": accent }}
       onClick={onClick}
     >
-      <span className="nav__btn-label">{item.label}</span>
+      <span className="nav__btn-label">{label}</span>
       {active ? (
         <ChevronRight className="nav__btn-caret" size={14} aria-hidden="true" />
       ) : null}
@@ -70,15 +78,18 @@ function BrandMark() {
   );
 }
 
-function SectionFallback() {
+function SectionFallback({ label }) {
   return (
     <div className="section-fallback" role="status" aria-live="polite">
-      Chargement de la section…
+      {label}
     </div>
   );
 }
 
 export default function App() {
+  const { lang } = useLang();
+  const t = UI[lang];
+
   const [active, setActive] = useState(readHash);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openCats, setOpenCats] = useState(
@@ -90,6 +101,7 @@ export default function App() {
 
   const entry = useMemo(() => findEntry(active), [active]);
   const ActiveComponent = entry.Component;
+  const showTranslating = lang === "en" && !TRANSLATED_EN.has(active);
 
   const go = useCallback((id) => {
     setActive(id);
@@ -160,7 +172,7 @@ export default function App() {
   return (
     <div className="app" data-menu-open={menuOpen || undefined}>
       <a className="app__skip" href="#section">
-        Aller au contenu
+        {t.skip}
       </a>
 
       <header className="app__topbar">
@@ -169,12 +181,14 @@ export default function App() {
           className="app__burger"
           aria-expanded={menuOpen}
           aria-controls="sidebar"
-          aria-label="Ouvrir la navigation"
+          aria-label={t.openNav}
           onClick={() => setMenuOpen(true)}
         >
           <Menu size={22} aria-hidden="true" />
         </button>
-        <span className="app__brand-mobile">Holberton · Full Stack</span>
+        <span className="app__brand-mobile">
+          {t.brandName} · {t.brandSub}
+        </span>
       </header>
 
       <div
@@ -188,44 +202,46 @@ export default function App() {
           <button
             type="button"
             className="app__brand-link"
-            aria-label="Aller à l'accueil"
+            aria-label={t.goHome}
             onClick={() => go("home")}
           >
             <BrandMark />
             <span className="app__brand-text">
-              <span className="app__brand-name">Holberton</span>
-              <span className="app__brand-sub">Full Stack</span>
+              <span className="app__brand-name">{t.brandName}</span>
+              <span className="app__brand-sub">{t.brandSub}</span>
             </span>
           </button>
           <button
             type="button"
             className="app__close"
-            aria-label="Fermer la navigation"
+            aria-label={t.closeNav}
             onClick={() => setMenuOpen(false)}
           >
             <X size={20} aria-hidden="true" />
           </button>
         </div>
 
+        <PrefsBar />
+
         <div className="nav__search">
           <Search size={14} aria-hidden="true" />
           <input
             type="search"
             className="nav__search-input"
-            placeholder="Rechercher (ex. uml, docker, rest…)"
+            placeholder={t.searchPlaceholder}
             value={query}
             onFocus={ensureSearch}
             onChange={(e) => {
               ensureSearch();
               setQuery(e.target.value);
             }}
-            aria-label="Rechercher une section"
+            aria-label={t.searchAria}
           />
           {query ? (
             <button
               type="button"
               className="nav__search-clear"
-              aria-label="Effacer la recherche"
+              aria-label={t.searchClear}
               onClick={() => setQuery("")}
             >
               <X size={14} aria-hidden="true" />
@@ -234,11 +250,11 @@ export default function App() {
         </div>
 
         {searching ? (
-          <div className="nav__results" aria-label="Résultats de recherche">
+          <div className="nav__results" aria-label={t.resultsAria}>
             {!search ? (
-              <p className="nav__results-msg">Indexation…</p>
+              <p className="nav__results-msg">{t.indexing}</p>
             ) : results.length === 0 ? (
-              <p className="nav__results-msg">Aucun résultat pour « {query.trim()} »</p>
+              <p className="nav__results-msg">{t.noResult(query.trim())}</p>
             ) : (
               results.map((r) => (
                 <button
@@ -248,9 +264,12 @@ export default function App() {
                   style={{ "--accent": r.accent }}
                   onClick={() => go(r.id)}
                 >
-                  <span className="nav__result-label">{r.label}</span>
+                  <span className="nav__result-label">
+                    {tr(lang, NAV_EN, r.id, r.label)}
+                  </span>
                   <span className="nav__result-path">
-                    {r.category} · {r.group}
+                    {tr(lang, CAT_EN, r.category, r.category)} ·{" "}
+                    {tr(lang, GROUP_EN, r.group, r.group)}
                   </span>
                   {r.snippet ? (
                     <span className="nav__result-snippet">{r.snippet}</span>
@@ -260,7 +279,7 @@ export default function App() {
             )}
           </div>
         ) : (
-          <nav className="nav" aria-label="Sections du cours">
+          <nav className="nav" aria-label={t.sectionsAria}>
             <button
               type="button"
               className="nav__btn nav__home"
@@ -269,7 +288,7 @@ export default function App() {
               onClick={() => go("home")}
             >
               <HomeIcon className="nav__btn-icon" size={15} aria-hidden="true" />
-              <span className="nav__btn-label">Accueil</span>
+              <span className="nav__btn-label">{t.home}</span>
               {active === "home" ? (
                 <ChevronRight className="nav__btn-caret" size={14} aria-hidden="true" />
               ) : null}
@@ -287,7 +306,9 @@ export default function App() {
                     onClick={() => toggleCat(cat.category)}
                   >
                     <cat.icon size={16} aria-hidden="true" />
-                    <span className="nav__cat-name">{cat.category}</span>
+                    <span className="nav__cat-name">
+                      {tr(lang, CAT_EN, cat.category, cat.category)}
+                    </span>
                     <ChevronDown
                       className="nav__cat-caret"
                       data-open={open || undefined}
@@ -306,12 +327,12 @@ export default function App() {
                             {g.icon ? (
                               <g.icon size={13} aria-hidden="true" />
                             ) : null}
-                            {g.group}
+                            {tr(lang, GROUP_EN, g.group, g.group)}
                           </div>
                           {g.items.map((it) => (
                             <NavButton
                               key={it.id}
-                              item={it}
+                              label={tr(lang, NAV_EN, it.id, it.label)}
                               accent={g.accent}
                               active={active === it.id}
                               onClick={() => go(it.id)}
@@ -330,7 +351,27 @@ export default function App() {
 
       <main id="section" className="app__main" tabIndex={-1} ref={mainRef}>
         <div className="app__content">
-          <Suspense fallback={<SectionFallback />}>
+          {showTranslating ? (
+            <p
+              role="note"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                margin: "0 0 18px",
+                padding: "9px 12px",
+                border: "1px solid var(--line)",
+                borderRadius: 8,
+                background: "var(--fill)",
+                color: "var(--muted)",
+                fontSize: 13,
+              }}
+            >
+              <Info size={14} aria-hidden="true" />
+              {t.translating}
+            </p>
+          ) : null}
+          <Suspense fallback={<SectionFallback label={t.loading} />}>
             {ActiveComponent ? <ActiveComponent /> : null}
           </Suspense>
         </div>
