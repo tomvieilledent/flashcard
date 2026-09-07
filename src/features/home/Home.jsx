@@ -1,50 +1,16 @@
 /* Page d'accueil — « Le carnet ».
    Tous les composants sont dessinés ici (aucune bibliothèque d'UI) :
    en-tête courante, sommaire à pointillés, index de fin d'ouvrage,
-   cachet tournant.
-   Bilingue (fr/en). Le titre h2 français est figé : un test s'appuie dessus. */
+   cachet tournant. */
 import { Github } from "lucide-react";
 import { NAV } from "../../app/nav.js";
-import { useLang } from "../../i18n/lang.jsx";
-import { CAT_EN, GROUP_EN, NAV_EN } from "../../i18n/ui.js";
 
 const REPO = "https://github.com/tomvieilledent/holberton-spe-fullstack";
 
-const COPY = {
-  fr: {
-    runLeft: "Carnet de révision",
-    runRight: "Spécialisation Full Stack",
-    kicker: "vlldnt.fr",
-    title: "Holberton — Spécialisation Full Stack",
-    tagline: "Le carnet de révision de l'année, mis à jour à chaque notion.",
-    lead: "Toutes les notions vues depuis le début de la spécialisation, regroupées par domaine et reliées entre elles : front, back, bases de données, DevOps, CI/CD, modélisation et IA agentique. La barre latérale ouvre chaque section ; la recherche retrouve une notion par mot-clé.",
-    tocTitle: "Sommaire",
-    fichesWord: (n) => `${n} fiche${n > 1 ? "s" : ""}`,
-    indexTitle: "Index",
-    indexSub: "Toutes les fiches, dans l'ordre du programme.",
-    colophon: "Écrit et tenu à jour tout au long de l'année.",
-  },
-  en: {
-    runLeft: "Revision notebook",
-    runRight: "Full Stack Specialization",
-    kicker: "vlldnt.fr",
-    title: "Holberton — Full Stack Specialization",
-    tagline: "The year's revision notebook, updated with every new topic.",
-    lead: "Every topic covered since the start of the specialization, grouped by domain and cross-linked: frontend, backend, databases, DevOps, CI/CD, modeling and agentic AI. The sidebar opens each section; search finds a topic by keyword.",
-    tocTitle: "Contents",
-    fichesWord: (n) => `${n} topic${n > 1 ? "s" : ""}`,
-    indexTitle: "Index",
-    indexSub: "Every topic, in programme order.",
-    colophon: "Written and kept up to date across the year.",
-  },
-};
+const FICHES = (n) => `${n} fiche${n > 1 ? "s" : ""}`;
 
 function countSections(cat) {
   return cat.groups.reduce((n, g) => n + g.items.length, 0);
-}
-
-function firstId(cat) {
-  return cat.groups[0]?.items[0]?.id;
 }
 
 /* Cachet : anneau de texte qui tourne, monogramme fixe au centre. */
@@ -89,38 +55,37 @@ function Seal() {
 }
 
 export default function Home() {
-  const { lang } = useLang();
-  const c = COPY[lang];
-  const catLabel = (cat) =>
-    lang === "en" ? CAT_EN[cat.category] ?? cat.category : cat.category;
-  const groupLabel = (g) =>
-    lang === "en" ? GROUP_EN[g.group] ?? g.group : g.group;
-  const itemLabel = (it) =>
-    lang === "en" ? NAV_EN[it.id] ?? it.label : it.label;
-
   return (
     <div className="home">
-      <section className="home__hero" aria-label={c.title}>
+      <section className="home__hero" aria-label="Holberton — Spécialisation Full Stack">
         <p className="home__runhead">
-          <span>{c.runLeft}</span>
+          <span>Carnet de révision</span>
           <b>№ 01</b>
-          <span>{c.runRight}</span>
+          <span>Spécialisation Full Stack</span>
         </p>
 
-        <p className="home__kicker">{c.kicker}</p>
-        <h2 className="home__title">{c.title}</h2>
-        <p className="home__tagline">{c.tagline}</p>
-        <p className="home__lead">{c.lead}</p>
+        <p className="home__kicker">vlldnt.fr</p>
+        <h2 className="home__title">Holberton — Spécialisation Full Stack</h2>
+        <p className="home__tagline">
+          Le carnet de révision de l'année, mis à jour à chaque notion.
+        </p>
+        <p className="home__lead">
+          Toutes les notions vues depuis le début de la spécialisation,
+          regroupées par domaine et reliées entre elles : shell, C, front,
+          back, bases de données, DevOps, CI/CD, modélisation et IA agentique.
+          La barre latérale ouvre chaque section ; la recherche retrouve une
+          notion par mot-clé.
+        </p>
       </section>
 
-      <section className="home__reveal" aria-label={c.tocTitle}>
+      <section className="home__reveal" aria-label="Sommaire">
         <header className="home__section-head">
-          <h3 className="home__section-title">{c.tocTitle}</h3>
+          <h3 className="home__section-title">Sommaire</h3>
         </header>
 
         <ol className="toc">
           {NAV.map((cat, i) => {
-            const id = firstId(cat);
+            const id = cat.groups[0]?.items[0]?.id;
             return (
               <li
                 key={cat.category}
@@ -132,11 +97,11 @@ export default function Home() {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="toc__namewrap">
-                    <span className="toc__name">{catLabel(cat)}</span>
+                    <span className="toc__name">{cat.category}</span>
                     <span className="toc__leader" aria-hidden="true" />
                   </span>
                   <span className="toc__count">
-                    {c.fichesWord(countSections(cat))}
+                    {FICHES(countSections(cat))}
                   </span>
                 </a>
 
@@ -146,7 +111,7 @@ export default function Home() {
                     return (
                       <li key={g.group}>
                         <a className="toc__sub" href={gid ? `#${gid}` : "#"}>
-                          <span className="toc__sub-label">{groupLabel(g)}</span>
+                          <span className="toc__sub-label">{g.group}</span>
                           <span className="toc__sub-count">{g.items.length}</span>
                         </a>
                       </li>
@@ -159,10 +124,12 @@ export default function Home() {
         </ol>
       </section>
 
-      <section className="home__program home__reveal" aria-label={c.indexTitle}>
+      <section className="home__program home__reveal" aria-label="Index">
         <header className="home__section-head">
-          <h3 className="home__section-title">{c.indexTitle}</h3>
-          <p className="home__section-sub">{c.indexSub}</p>
+          <h3 className="home__section-title">Index</h3>
+          <p className="home__section-sub">
+            Toutes les fiches, dans l'ordre du programme.
+          </p>
         </header>
 
         <div className="home__index">
@@ -172,7 +139,7 @@ export default function Home() {
               className="home__index-cat"
               style={{ "--cat": cat.accent }}
             >
-              <p className="home__index-cat-name">{catLabel(cat)}</p>
+              <p className="home__index-cat-name">{cat.category}</p>
               {cat.groups.flatMap((g) =>
                 g.items.map((it) => (
                   <a
@@ -180,7 +147,7 @@ export default function Home() {
                     className="home__index-link"
                     href={`#${it.id}`}
                   >
-                    {itemLabel(it)}
+                    {it.label}
                   </a>
                 ))
               )}
@@ -192,7 +159,7 @@ export default function Home() {
       <section className="home__colophon home__reveal">
         <Seal />
         <div className="home__colophon-meta">
-          <span>{c.colophon}</span>
+          <span>Écrit et tenu à jour tout au long de l'année.</span>
           <a href={REPO} target="_blank" rel="noreferrer">
             <Github size={14} aria-hidden="true" />
             github.com/tomvieilledent/holberton-spe-fullstack

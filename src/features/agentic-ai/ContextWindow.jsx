@@ -1,6 +1,5 @@
 import { Code, InlineCode, P, H2, H3, Ul, Note, Table, SourceLink } from "../../shared/ui/primitives.jsx";
 import { AI_ACCENT } from "../../shared/ui/tokens.js";
-import { useLang } from "../../i18n/lang.jsx";
 
 function Fr() {
   return (
@@ -96,99 +95,6 @@ llm --system prompts/auth.md \\
   );
 }
 
-function En() {
-  return (
-    <div>
-      <H2 accent={AI_ACCENT}>Physical limits — context window & amnesia</H2>
-      <P>
-        If an AI agent were a computer, the <strong>context window</strong> would
-        be its RAM. It is bounded, and anything that overflows is forgotten.
-      </P>
-
-      <H3>The omniscience myth</H3>
-      <Ul>
-        <li>
-          A model holds a <strong>strict</strong> number of tokens per
-          conversation (e.g. 128,000, 200,000…). Beyond that, the start of the
-          exchange is truncated.
-        </li>
-        <li>
-          <strong>Native amnesia</strong>: between two sessions, or if the agent
-          restarts, it begins from a blank page. Nothing is remembered
-          implicitly.
-        </li>
-      </Ul>
-
-      <H3>"Lost in the middle"</H3>
-      <P>
-        The classic self-taught mistake: pasting the whole project into the
-        prompt so the model will "understand". Two effects:
-      </P>
-      <Table
-        head={["Effect", "Consequence"]}
-        rows={[
-          ["Cost", "Thousands of useless tokens billed every turn"],
-          ["Attention", "The model keeps the start and end of the prompt, drifts in the middle"],
-        ]}
-      />
-      <P>
-        Studies on <em>lost in the middle</em> show a U-shaped performance
-        curve: a crucial piece of information buried in the centre of a long
-        context is almost entirely ignored.
-      </P>
-
-      <H3>Inject the context, don't dump it</H3>
-      <P>
-        It is like a process under <InlineCode>pm2</InlineCode> on a VPS: without
-        a strict ecosystem file — precise environment variables, memory limits —
-        the process runs away and crashes. With an LLM, the{" "}
-        <strong>system prompt</strong> plays that config-file role: it provides
-        only the files and interfaces that are needed. Not one more.
-      </P>
-      <Code>{`# Mauvais : tout le repo
-cat $(git ls-files) | llm "corrige le bug de login"
-
-# Bon : la surface strictement utile
-llm --system prompts/auth.md \\
-    --file src/auth/session.ts \\
-    --file src/auth/session.test.ts \\
-    "le test 'refuse un token expiré' échoue — corrige session.ts uniquement"`}</Code>
-      <Note accent={AI_ACCENT}>
-        Put the non-negotiable constraints <strong>at the top</strong> of the
-        prompt and restate the goal <strong>at the end</strong>: the two zones
-        where the model's attention is most reliable.
-      </Note>
-
-      <H3>Practical guidelines</H3>
-      <Ul>
-        <li>One context file = one reason to be there; otherwise it leaves the prompt.</li>
-        <li>
-          A conversation that grows and derails: clearing the context
-          (<em>context truncation</em>) and restarting from a tightened
-          directive beats pushing on.
-        </li>
-        <li>
-          Anything that must survive between sessions is rewritten explicitly: a{" "}
-          <InlineCode>CLAUDE.md</InlineCode> / <InlineCode>AGENTS.md</InlineCode>{" "}
-          file, an ADR, a doc — not the agent's memory.
-        </li>
-      </Ul>
-
-      <SourceLink href="https://arxiv.org/abs/2307.03172">
-        arXiv:2307.03172 — Lost in the Middle: How Language Models Use Long Contexts
-      </SourceLink>
-      {" · "}
-      <SourceLink href="https://docs.anthropic.com/en/docs/build-with-claude/context-windows">
-        docs.anthropic.com — Context windows
-      </SourceLink>
-      {" · "}
-      <SourceLink href="https://www.anthropic.com/news/context-management">
-        anthropic.com — Context management & compaction
-      </SourceLink>
-    </div>
-  );
-}
-
 export default function ContextWindow() {
-  return useLang().lang === "en" ? <En /> : <Fr />;
+  return <Fr />;
 }

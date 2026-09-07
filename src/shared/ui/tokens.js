@@ -28,13 +28,3 @@ export const FONT_BODY =
   '-apple-system, BlinkMacSystemFont, "Segoe UI", "IBM Plex Sans", sans-serif';
 export const FONT_MONO =
   'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace';
-
-/* Thèmes proposés par le sélecteur (voir src/shared/ui/theme.js). */
-export const THEMES = [
-  { id: "slate", labels: { fr: "Ardoise", en: "Slate" }, mode: "dark" },
-  { id: "midnight", labels: { fr: "Nuit", en: "Midnight" }, mode: "dark" },
-  { id: "cvd-dark", labels: { fr: "Sombre · daltonien", en: "Dark · color-blind" }, mode: "dark" },
-  { id: "paper", labels: { fr: "Papier", en: "Paper" }, mode: "light" },
-  { id: "daylight", labels: { fr: "Grand jour", en: "Daylight" }, mode: "light" },
-  { id: "cvd-light", labels: { fr: "Clair · daltonien", en: "Light · color-blind" }, mode: "light" },
-];

@@ -2,14 +2,13 @@
    Design system — mobile first.
    Styles de base = mobile ; les media queries "min-width" enrichissent.
 
-   Thèmes : la palette vit dans des variables CSS. Le sélecteur pose
-   [data-theme="…"] sur <html>. 3 thèmes sombres + 3 clairs, dont 2
-   pensés pour les daltoniens (palette Okabe–Ito, teintes distinctes
-   en déutéranopie / protanopie).
+   Thème : la palette vit dans des variables CSS. Une version sombre
+   (par défaut) et une version claire, choisie automatiquement selon
+   la préférence système (prefers-color-scheme).
    ===================================================================== */
 
 :root {
-  /* Neutres — thème « Ardoise » (sombre, défaut) */
+  /* Neutres — version sombre (défaut) */
   --ink: #12141a;
   --panel: #1a1d25;
   --line: #2a2e38;
@@ -61,132 +60,37 @@
   color-scheme: dark;
 }
 
-/* ---- Sombre · Nuit (bleu profond) -------------------------------- */
-:root[data-theme="midnight"] {
-  --ink: #0c1120;
-  --panel: #141b2e;
-  --line: #27314c;
-  --text: #e7ecf6;
-  --muted: #8793ad;
-  --focus: #7fb0ff;
-}
+/* ---- Version claire — suit la préférence système ---------------- */
+@media (prefers-color-scheme: light) {
+  :root {
+    --ink: #f3efe6;
+    --panel: #fbf8f1;
+    --line: #e1d9c8;
+    --text: #2b2723;
+    --muted: #6f685c;
 
-/* ---- Sombre · daltonien (Okabe–Ito sur fond sombre) ------------- */
-:root[data-theme="cvd-dark"] {
-  --ink: #14161c;
-  --panel: #1c1f27;
-  --line: #313641;
-  --text: #f3f2ed;
-  --muted: #adb4c3;
-  --focus: #56b4e9;
+    --fill: rgba(43, 39, 35, 0.04);
+    --fill-strong: rgba(43, 39, 35, 0.08);
+    --overlay: rgba(30, 26, 20, 0.4);
+    --focus: #1f5fd0;
 
-  --react-accent: #56b4e9; /* ciel */
-  --vue-accent: #009e73; /* vert */
-  --svelte-accent: #e69f00; /* orange */
-  --tool-accent: #f0e442; /* jaune */
-  --docker-accent: #e69f00;
-  --devops-accent: #cc79a7; /* rose-violet */
-  --ci-accent: #009e73;
-  --merise-accent: #cc79a7;
-  --arch-accent: #56b4e9;
-  --uml-accent: #e69f00;
-  --api-accent: #56b4e9;
-  --spec-accent: #009e73;
-  --urba-accent: #cc79a7;
-  --ai-accent: #d55e00; /* vermillon */
-}
+    --react-accent: #0c7b8f;
+    --vue-accent: #0f8a5f;
+    --svelte-accent: #d24a28;
+    --tool-accent: #9a6b00;
+    --docker-accent: #2c5fc7;
+    --devops-accent: #6d4bc4;
+    --ci-accent: #0e8c74;
+    --merise-accent: #b23a79;
+    --arch-accent: #3b57b8;
+    --uml-accent: #b4671e;
+    --api-accent: #0b7c7c;
+    --spec-accent: #3f7d22;
+    --urba-accent: #9a46b0;
+    --ai-accent: #c4442b;
 
-/* ---- Clair · Papier (blanc chaud) ------------------------------- */
-:root[data-theme="paper"] {
-  --ink: #f3efe6;
-  --panel: #fbf8f1;
-  --line: #e1d9c8;
-  --text: #2b2723;
-  --muted: #6f685c;
-
-  --fill: rgba(43, 39, 35, 0.04);
-  --fill-strong: rgba(43, 39, 35, 0.08);
-  --overlay: rgba(30, 26, 20, 0.4);
-  --focus: #1f5fd0;
-
-  --react-accent: #0c7b8f;
-  --vue-accent: #0f8a5f;
-  --svelte-accent: #d24a28;
-  --tool-accent: #9a6b00;
-  --docker-accent: #2c5fc7;
-  --devops-accent: #6d4bc4;
-  --ci-accent: #0e8c74;
-  --merise-accent: #b23a79;
-  --arch-accent: #3b57b8;
-  --uml-accent: #b4671e;
-  --api-accent: #0b7c7c;
-  --spec-accent: #3f7d22;
-  --urba-accent: #9a46b0;
-  --ai-accent: #c4442b;
-
-  color-scheme: light;
-}
-
-/* ---- Clair · Grand jour (blanc froid, contraste élevé) --------- */
-:root[data-theme="daylight"] {
-  --ink: #ffffff;
-  --panel: #f2f5fa;
-  --line: #ccd4e0;
-  --text: #14161b;
-  --muted: #545b68;
-
-  --fill: rgba(20, 22, 27, 0.04);
-  --fill-strong: rgba(20, 22, 27, 0.08);
-  --overlay: rgba(15, 23, 42, 0.45);
-  --focus: #1f5fd0;
-
-  --react-accent: #0c7b8f;
-  --vue-accent: #0f8a5f;
-  --svelte-accent: #d24a28;
-  --tool-accent: #8a6000;
-  --docker-accent: #2c5fc7;
-  --devops-accent: #6d4bc4;
-  --ci-accent: #0e8c74;
-  --merise-accent: #b23a79;
-  --arch-accent: #3b57b8;
-  --uml-accent: #a85f18;
-  --api-accent: #0b7c7c;
-  --spec-accent: #3f7d22;
-  --urba-accent: #9a46b0;
-  --ai-accent: #c4442b;
-
-  color-scheme: light;
-}
-
-/* ---- Clair · daltonien (Okabe–Ito sur fond clair) ------------- */
-:root[data-theme="cvd-light"] {
-  --ink: #ffffff;
-  --panel: #f2f4f7;
-  --line: #ccd2da;
-  --text: #16181d;
-  --muted: #4c5563;
-
-  --fill: rgba(22, 24, 29, 0.04);
-  --fill-strong: rgba(22, 24, 29, 0.08);
-  --overlay: rgba(15, 23, 42, 0.45);
-  --focus: #0072b2;
-
-  --react-accent: #1b7fb5; /* ciel foncé */
-  --vue-accent: #007a5a; /* vert foncé */
-  --svelte-accent: #9c6100; /* orange foncé */
-  --tool-accent: #8a6d00; /* or foncé */
-  --docker-accent: #9c6100;
-  --devops-accent: #a34e82; /* violet foncé */
-  --ci-accent: #007a5a;
-  --merise-accent: #a34e82;
-  --arch-accent: #1b7fb5;
-  --uml-accent: #9c6100;
-  --api-accent: #1b7fb5;
-  --spec-accent: #007a5a;
-  --urba-accent: #a34e82;
-  --ai-accent: #c74a00; /* vermillon foncé */
-
-  color-scheme: light;
+    color-scheme: light;
+  }
 }
 
 *,

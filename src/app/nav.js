@@ -64,7 +64,7 @@ const loaders = import.meta.glob("../features/**/*.jsx");
 
 export const NAV = [
   {
-    category: "Fondations",
+    category: "Shell & éditeurs",
     icon: Terminal,
     accent: TOOL_ACCENT,
     groups: [
@@ -95,8 +95,15 @@ export const NAV = [
           { id: "editor-vscode", label: "VS Code", icon: FileCode, file: "foundations/EditorVscode.jsx" },
         ],
       },
+    ],
+  },
+  {
+    category: "Programmation C",
+    icon: Cpu,
+    accent: CI_ACCENT,
+    groups: [
       {
-        group: "Langage C",
+        group: "Bases du langage",
         accent: CI_ACCENT,
         icon: Cpu,
         items: [
@@ -106,18 +113,52 @@ export const NAV = [
           { id: "c-operators", label: "Opérateurs", icon: ListChecks, file: "foundations/COperators.jsx" },
           { id: "c-control-flow", label: "Conditions & boucles", icon: Workflow, file: "foundations/CControlFlow.jsx" },
           { id: "c-functions", label: "Fonctions & fichiers d'en-tête", icon: Component, file: "foundations/CFunctions.jsx" },
+          { id: "c-recursion", label: "Récursivité", icon: Share2, file: "foundations/CRecursion.jsx" },
+          { id: "c-argc-argv", label: "Arguments de main (argc, argv)", icon: ListChecks, file: "foundations/CArgcArgv.jsx" },
         ],
       },
       {
-        group: "Pointeurs & mémoire",
+        group: "Pointeurs, tableaux & mémoire",
         accent: CI_ACCENT,
         icon: Layers,
         items: [
           { id: "c-arrays", label: "Tableaux", icon: Table2, file: "foundations/CArrays.jsx" },
           { id: "c-pointers", label: "Pointeurs", icon: Share2, file: "foundations/CPointers.jsx" },
+          { id: "c-multidim-pointers", label: "Tableaux 2D & pointeurs de pointeurs", icon: Layers, file: "foundations/CMultidimPointers.jsx" },
           { id: "c-strings", label: "Chaînes de caractères", icon: ScrollText, file: "foundations/CStrings.jsx" },
           { id: "c-memory-layout", label: "Organisation mémoire", icon: Boxes, file: "foundations/CMemoryLayout.jsx" },
-          { id: "c-data-structures", label: "Structures de données", icon: Database, file: "foundations/CDataStructures.jsx" },
+          { id: "c-malloc", label: "Mémoire dynamique : malloc, free", icon: Boxes, file: "foundations/CMalloc.jsx" },
+        ],
+      },
+      {
+        group: "Types composés & E/S",
+        accent: CI_ACCENT,
+        icon: Boxes,
+        items: [
+          { id: "c-structs-typedef", label: "struct, typedef & alignement", icon: Database, file: "foundations/CStructsTypedef.jsx" },
+          { id: "c-function-pointers", label: "Pointeurs de fonction", icon: Share2, file: "foundations/CFunctionPointers.jsx" },
+          { id: "c-variadic", label: "Fonctions variadiques", icon: ListChecks, file: "foundations/CVariadic.jsx" },
+          { id: "c-file-io", label: "E/S bas niveau & descripteurs", icon: FileCode, file: "foundations/CFileIo.jsx" },
+        ],
+      },
+      {
+        group: "Structures de données",
+        accent: CI_ACCENT,
+        icon: Database,
+        items: [
+          { id: "c-data-structures", label: "Les bases", icon: Boxes, file: "foundations/CDataStructures.jsx" },
+          { id: "ds-binary-trees", label: "Arbres binaires & parcours", icon: GitBranch, file: "foundations/DsBinaryTrees.jsx" },
+          { id: "ds-bst", label: "Arbres binaires de recherche", icon: GitBranch, file: "foundations/DsBst.jsx" },
+          { id: "ds-hash-tables", label: "Tables de hachage", icon: KeyRound, file: "foundations/DsHashTables.jsx" },
+        ],
+      },
+      {
+        group: "Algorithmes",
+        accent: CI_ACCENT,
+        icon: Workflow,
+        items: [
+          { id: "algo-big-o", label: "Complexité & notation Big O", icon: Rocket, file: "foundations/AlgoBigO.jsx" },
+          { id: "algo-sorting", label: "Algorithmes de tri", icon: ListChecks, file: "foundations/AlgoSorting.jsx" },
         ],
       },
     ],

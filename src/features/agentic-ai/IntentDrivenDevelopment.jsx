@@ -1,6 +1,5 @@
 import { InlineCode, P, H2, H3, Ul, Note, Table, SourceLink } from "../../shared/ui/primitives.jsx";
 import { AI_ACCENT } from "../../shared/ui/tokens.js";
-import { useLang } from "../../i18n/lang.jsx";
 
 function Fr() {
   return (
@@ -91,90 +90,6 @@ function Fr() {
   );
 }
 
-function En() {
-  return (
-    <div>
-      <H2 accent={AI_ACCENT}>Intent-Driven Development & semantic debt</H2>
-      <P>
-        Until now, the job was translating a need (a Jira ticket) into syntax:
-        the bottleneck was writing the code. Agentic AI produces the syntax
-        instantly. The new bottleneck is no longer <em>how</em> to code, but{" "}
-        <em>what</em> to code — and under which constraints.
-      </P>
-
-      <H3>The problem: delegating syntax</H3>
-      <P>
-        "Build me a login system" leaves the agent to guess: it invents a
-        database, picks a hashing method at random, forgets token expiry. Ten
-        minutes of code saved, hours of technical debt created.
-      </P>
-
-      <H3>The approach: driven by intent</H3>
-      <P>
-        Your value is no longer in the <InlineCode>for</InlineCode> loop you
-        write, but in the <strong>deterministic frame</strong> you set. You act
-        like a product manager: you do not code, you constrain the AI.
-      </P>
-      <Table
-        head={["Delegating syntax", "Orchestrating by intent"]}
-        rows={[
-          ['"Build me a login system"', "Strict data model + sequence diagram provided"],
-          ["The AI picks the hashing library", "Absolute rule: bcrypt, cost 12"],
-          ["Edge cases forgotten", "Expired tokens / replay described up front"],
-          ["Reviewing the generated code line by line", "Reviewing the gap to the blueprint"],
-        ]}
-      />
-
-      <H3>Semantic debt</H3>
-      <P>
-        If the instruction lacks precision, the AI fills the gaps with
-        probabilities — <strong>technical hallucinations</strong>. That creates
-        instant <em>semantic</em> debt: an implicit architecture decision, never
-        validated, far more expensive to refactor than a syntax error.
-      </P>
-      <Note accent={AI_ACCENT}>
-        A syntax error breaks the build and is visible. Semantic debt compiles,
-        passes the shallow tests, and only surfaces in production or six months
-        later, when the "likely method" the AI chose clashes with the rest of
-        the system.
-      </Note>
-
-      <H3>Junior or senior: the same lever</H3>
-      <Ul>
-        <li>
-          <strong>Junior</strong> — design courses (Merise, user flows, state
-          diagrams) become a <em>programming language</em>: an agent does not
-          design sound architecture without a clear blueprint.
-        </li>
-        <li>
-          <strong>Senior</strong> — domain experience (security flaws,
-          performance, edge cases) is encapsulated in <strong>guardrails</strong>:
-          strict instructions that stop the AI from making bad architectural
-          decisions.
-        </li>
-      </Ul>
-      <Note accent={AI_ACCENT}>
-        The artefacts already produced on this site — data model, sequence and
-        state diagrams, OpenAPI contract, Gherkin scenarios, ADRs — <em>are</em>{" "}
-        the deterministic frame to hand the agent. The rest of the site's
-        agentic-AI material builds on them.
-      </Note>
-
-      <SourceLink href="https://www.anthropic.com/research/building-effective-agents">
-        anthropic.com — Building effective agents
-      </SourceLink>
-      {" · "}
-      <SourceLink href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/be-clear-and-direct">
-        docs.anthropic.com — Be clear, direct, and detailed
-      </SourceLink>
-      {" · "}
-      <SourceLink href="https://martinfowler.com/articles/2023-chatgpt-xu-hao.html">
-        martinfowler.com — Prompt engineering for a known architecture
-      </SourceLink>
-    </div>
-  );
-}
-
 export default function IntentDrivenDevelopment() {
-  return useLang().lang === "en" ? <En /> : <Fr />;
+  return <Fr />;
 }
