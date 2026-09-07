@@ -98,12 +98,12 @@ export const NAV = [
     ],
   },
   {
-    category: "Programmation C",
+    category: "Programmation bas niveau",
     icon: Cpu,
     accent: CI_ACCENT,
     groups: [
       {
-        group: "Bases du langage",
+        group: "Le langage C",
         accent: CI_ACCENT,
         icon: Cpu,
         items: [

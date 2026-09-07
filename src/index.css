@@ -60,9 +60,12 @@
   color-scheme: dark;
 }
 
-/* ---- Version claire — suit la préférence système ---------------- */
+/* ---- Version claire ---------------------------------------------
+   Palette appliquée soit automatiquement (préférence système, tant
+   qu'aucun choix explicite n'est posé), soit via [data-theme="light"]
+   quand l'utilisateur bascule avec le bouton. */
 @media (prefers-color-scheme: light) {
-  :root {
+  :root:not([data-theme]) {
     --ink: #f3efe6;
     --panel: #fbf8f1;
     --line: #e1d9c8;
@@ -91,6 +94,41 @@
 
     color-scheme: light;
   }
+}
+
+:root[data-theme="light"] {
+  --ink: #f3efe6;
+  --panel: #fbf8f1;
+  --line: #e1d9c8;
+  --text: #2b2723;
+  --muted: #6f685c;
+
+  --fill: rgba(43, 39, 35, 0.04);
+  --fill-strong: rgba(43, 39, 35, 0.08);
+  --overlay: rgba(30, 26, 20, 0.4);
+  --focus: #1f5fd0;
+
+  --react-accent: #0c7b8f;
+  --vue-accent: #0f8a5f;
+  --svelte-accent: #d24a28;
+  --tool-accent: #9a6b00;
+  --docker-accent: #2c5fc7;
+  --devops-accent: #6d4bc4;
+  --ci-accent: #0e8c74;
+  --merise-accent: #b23a79;
+  --arch-accent: #3b57b8;
+  --uml-accent: #b4671e;
+  --api-accent: #0b7c7c;
+  --spec-accent: #3f7d22;
+  --urba-accent: #9a46b0;
+  --ai-accent: #c4442b;
+
+  color-scheme: light;
+}
+
+/* Choix explicite « sombre » : réaffirme le mode même si le système est clair. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 *,
@@ -293,11 +331,13 @@ a:hover {
 .app__brand {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 6px;
   margin-bottom: 14px;
 }
 .app__brand-link {
   display: flex;
+  flex: 1;
+  min-width: 0;
   align-items: center;
   gap: 10px;
   padding: 0;
@@ -305,6 +345,29 @@ a:hover {
   background: transparent;
   text-align: left;
   cursor: pointer;
+}
+.app__theme-toggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--fill);
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.2s ease,
+    transform 0.12s var(--ease-spring);
+}
+.app__theme-toggle:hover {
+  background: var(--fill-strong);
+  border-color: var(--muted);
+}
+.app__theme-toggle:active {
+  transform: scale(0.9);
 }
 .app__brand-mark {
   flex: none;
@@ -475,6 +538,8 @@ a:hover {
   font: inherit;
   font-size: 14px;
   outline: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .nav__search-input::placeholder {
   color: var(--muted);

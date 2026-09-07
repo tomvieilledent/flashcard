@@ -6,8 +6,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { ChevronDown, ChevronRight, Menu, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Menu, Moon, Search, Sun, X } from "lucide-react";
 import { NAV, ALL_IDS, DEFAULT_ID, HOME, findEntry } from "./nav.js";
+import { getTheme, resolveMode, setTheme } from "../shared/ui/theme.js";
 
 const VALID_IDS = new Set(ALL_IDS);
 const HomeIcon = HOME.icon;
@@ -86,7 +87,15 @@ export default function App() {
   );
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState(null); // { entries, run } — chargé à la demande
+  const [theme, setThemeState] = useState(getTheme);
   const mainRef = useRef(null);
+
+  const mode = resolveMode(theme);
+  const toggleTheme = useCallback(() => {
+    const next = resolveMode(theme) === "dark" ? "light" : "dark";
+    setTheme(next);
+    setThemeState(next);
+  }, [theme]);
 
   const entry = useMemo(() => findEntry(active), [active]);
   const ActiveComponent = entry.Component;
@@ -198,6 +207,21 @@ export default function App() {
               <span className="app__brand-name">Holberton</span>
               <span className="app__brand-sub">Full Stack</span>
             </span>
+          </button>
+          <button
+            type="button"
+            className="app__theme-toggle"
+            aria-label={
+              mode === "dark" ? "Passer en mode clair" : "Passer en mode sombre"
+            }
+            title={mode === "dark" ? "Mode clair" : "Mode sombre"}
+            onClick={toggleTheme}
+          >
+            {mode === "dark" ? (
+              <Sun size={18} aria-hidden="true" />
+            ) : (
+              <Moon size={18} aria-hidden="true" />
+            )}
           </button>
           <button
             type="button"

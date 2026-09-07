@@ -20,6 +20,13 @@
     />
     <meta name="twitter:card" content="summary" />
     <title>Holberton — spécialisation Full Stack</title>
+    <script>
+      try {
+        var t = localStorage.getItem("vlldnt:theme");
+        if (t === "dark" || t === "light")
+          document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
