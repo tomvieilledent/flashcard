@@ -64,6 +64,65 @@ const loaders = import.meta.glob("../features/**/*.jsx");
 
 export const NAV = [
   {
+    category: "Fondations",
+    icon: Terminal,
+    accent: TOOL_ACCENT,
+    groups: [
+      {
+        group: "Ligne de commande",
+        accent: TOOL_ACCENT,
+        icon: Terminal,
+        items: [
+          { id: "shell-what-is", label: "Qu'est-ce que le shell ?", icon: Terminal, file: "foundations/ShellWhatIs.jsx" },
+          { id: "shell-navigation", label: "Naviguer dans le système", icon: Compass, file: "foundations/ShellNavigation.jsx" },
+          { id: "shell-looking-around", label: "Observer : ls, less, file", icon: BookOpen, file: "foundations/ShellLookingAround.jsx" },
+          { id: "shell-filesystem", label: "L'arborescence Linux", icon: Layers, file: "foundations/ShellFilesystem.jsx" },
+          { id: "shell-files", label: "Manipuler fichiers & dossiers", icon: Boxes, file: "foundations/ShellFiles.jsx" },
+          { id: "shell-commands", label: "Travailler avec les commandes", icon: Wrench, file: "foundations/ShellCommands.jsx" },
+          { id: "shell-redirection", label: "Redirections & tubes", icon: Workflow, file: "foundations/ShellRedirection.jsx" },
+          { id: "shell-expansion", label: "Expansions & guillemets", icon: Sparkles, file: "foundations/ShellExpansion.jsx" },
+          { id: "shell-permissions", label: "Utilisateurs & permissions", icon: Lock, file: "foundations/ShellPermissions.jsx" },
+          { id: "shell-shortcuts", label: "Raccourcis & historique bash", icon: Rocket, file: "foundations/ShellShortcuts.jsx" },
+        ],
+      },
+      {
+        group: "Éditeurs de texte",
+        accent: TOOL_ACCENT,
+        icon: FileCode,
+        items: [
+          { id: "editor-vim", label: "vi / Vim", icon: FileCode, file: "foundations/EditorVim.jsx" },
+          { id: "editor-emacs", label: "Emacs", icon: FileCode, file: "foundations/EditorEmacs.jsx" },
+          { id: "editor-vscode", label: "VS Code", icon: FileCode, file: "foundations/EditorVscode.jsx" },
+        ],
+      },
+      {
+        group: "Langage C",
+        accent: CI_ACCENT,
+        icon: Cpu,
+        items: [
+          { id: "c-intro", label: "Le langage C", icon: BookOpen, file: "foundations/CIntro.jsx" },
+          { id: "c-betty", label: "Le style Betty", icon: ShieldCheck, file: "foundations/CBetty.jsx" },
+          { id: "c-variables-types", label: "Variables, types & identificateurs", icon: Table2, file: "foundations/CVariablesTypes.jsx" },
+          { id: "c-operators", label: "Opérateurs", icon: ListChecks, file: "foundations/COperators.jsx" },
+          { id: "c-control-flow", label: "Conditions & boucles", icon: Workflow, file: "foundations/CControlFlow.jsx" },
+          { id: "c-functions", label: "Fonctions & fichiers d'en-tête", icon: Component, file: "foundations/CFunctions.jsx" },
+        ],
+      },
+      {
+        group: "Pointeurs & mémoire",
+        accent: CI_ACCENT,
+        icon: Layers,
+        items: [
+          { id: "c-arrays", label: "Tableaux", icon: Table2, file: "foundations/CArrays.jsx" },
+          { id: "c-pointers", label: "Pointeurs", icon: Share2, file: "foundations/CPointers.jsx" },
+          { id: "c-strings", label: "Chaînes de caractères", icon: ScrollText, file: "foundations/CStrings.jsx" },
+          { id: "c-memory-layout", label: "Organisation mémoire", icon: Boxes, file: "foundations/CMemoryLayout.jsx" },
+          { id: "c-data-structures", label: "Structures de données", icon: Database, file: "foundations/CDataStructures.jsx" },
+        ],
+      },
+    ],
+  },
+  {
     category: "Frontend",
     icon: LayoutGrid,
     accent: REACT_ACCENT,

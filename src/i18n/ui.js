@@ -57,6 +57,7 @@ export const UI = {
 
 /* Catégories — clé = nom FR (identifiant stable dans nav.js). */
 export const CAT_EN = {
+  Fondations: "Foundations",
   Frontend: "Frontend",
   Backend: "Backend",
   DevOps: "DevOps",
@@ -66,6 +67,10 @@ export const CAT_EN = {
 
 /* Groupes — clé = nom FR. */
 export const GROUP_EN = {
+  "Ligne de commande": "Command line",
+  "Éditeurs de texte": "Text editors",
+  "Langage C": "The C language",
+  "Pointeurs & mémoire": "Pointers & memory",
   React: "React",
   "Vue.js": "Vue.js",
   Svelte: "Svelte",
@@ -85,6 +90,30 @@ export const GROUP_EN = {
 
 /* Sections — clé = id de nav.js. */
 export const NAV_EN = {
+  "shell-what-is": "What is the shell?",
+  "shell-navigation": "Navigating the filesystem",
+  "shell-looking-around": "Looking around: ls, less, file",
+  "shell-filesystem": "The Linux filesystem",
+  "shell-files": "Working with files & folders",
+  "shell-commands": "Working with commands",
+  "shell-redirection": "Redirection & pipes",
+  "shell-expansion": "Expansion & quoting",
+  "shell-permissions": "Users & permissions",
+  "shell-shortcuts": "Bash shortcuts & history",
+  "c-intro": "The C language",
+  "c-betty": "The Betty style",
+  "c-variables-types": "Variables, types & identifiers",
+  "c-operators": "Operators",
+  "c-control-flow": "Conditionals & loops",
+  "c-functions": "Functions & header files",
+  "c-arrays": "Arrays",
+  "c-pointers": "Pointers",
+  "c-strings": "Strings",
+  "c-memory-layout": "Memory layout of a C program",
+  "c-data-structures": "Data structures — the basics",
+  "editor-vim": "vi / Vim",
+  "editor-emacs": "Emacs",
+  "editor-vscode": "VS Code",
   "react-basics": "The basics",
   "react-setup": "Project setup",
   "react-deploy": "Deployment",
