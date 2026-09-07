@@ -184,6 +184,24 @@ export const NAV = [
     ],
   },
   {
+    category: "IA & agents",
+    icon: Bot,
+    accent: AI_ACCENT,
+    groups: [
+      {
+        group: "Piloter l'IA agentique",
+        accent: AI_ACCENT,
+        icon: Sparkles,
+        items: [
+          { id: "intent-driven-development", label: "Intent-Driven Development & dette sémantique", icon: Compass, file: "agentic-ai/IntentDrivenDevelopment.jsx" },
+          { id: "llm-architecture", label: "Architecture des LLMs (tokens & probabilités)", icon: Cpu, file: "agentic-ai/LlmArchitecture.jsx" },
+          { id: "context-window", label: "Fenêtre de contexte & amnésie", icon: Brain, file: "agentic-ai/ContextWindow.jsx" },
+          { id: "ai-finops", label: "Modèle économique (FinOps 101)", icon: Coins, file: "agentic-ai/AiFinops.jsx" },
+        ],
+      },
+    ],
+  },
+  {
     category: "Documentation & méthode",
     icon: Library,
     accent: DEVOPS_ACCENT,
@@ -223,24 +241,6 @@ export const NAV = [
           { id: "urban-information", label: "Aligner les modèles", icon: Building2, file: "urbanization/UrbanInformation.jsx" },
           { id: "inter-model-consistency", label: "Cohérence entre modèles", icon: GitPullRequest, file: "urbanization/InterModelConsistency.jsx" },
           { id: "docs-as-code-ssot", label: "Documentation as Code (SSOT)", icon: FileCode, file: "urbanization/DocsAsCodeSsot.jsx" },
-        ],
-      },
-    ],
-  },
-  {
-    category: "IA & agents",
-    icon: Bot,
-    accent: AI_ACCENT,
-    groups: [
-      {
-        group: "Piloter l'IA agentique",
-        accent: AI_ACCENT,
-        icon: Sparkles,
-        items: [
-          { id: "intent-driven-development", label: "Intent-Driven Development & dette sémantique", icon: Compass, file: "agentic-ai/IntentDrivenDevelopment.jsx" },
-          { id: "llm-architecture", label: "Architecture des LLMs (tokens & probabilités)", icon: Cpu, file: "agentic-ai/LlmArchitecture.jsx" },
-          { id: "context-window", label: "Fenêtre de contexte & amnésie", icon: Brain, file: "agentic-ai/ContextWindow.jsx" },
-          { id: "ai-finops", label: "Modèle économique (FinOps 101)", icon: Coins, file: "agentic-ai/AiFinops.jsx" },
         ],
       },
     ],
