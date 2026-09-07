@@ -22,7 +22,8 @@ Une ligne par semaine. Chaque semaine ajoute des sections au site
 | — | Socle | React / Vue / Svelte, Outillage, Docker, DevOps & Git, CI/CD, Merise | — |
 | S+1 | Analyse & conception (approfondissement) | Architecture, Bases de données & modélisation, UML, API & contrats, Spécifier le besoin, Cohérence & documentation | `architecture.md`, `data-model.sql`, `openapi.yaml` |
 | S+1 | Refonte navigation | 4 catégories (Frontend / Backend / DevOps / Documentation & méthode), recherche plein texte, suppression de la « Vue d'ensemble » | `src/app/nav.js`, `src/app/search.js` |
-| S+2 | _à venir_ | | |
+| S+2 | IA agentique & Agentic Ops | Nouvelle catégorie **IA & agents** : Intent-Driven Development & dette sémantique, architecture des LLMs (tokens & probabilités), fenêtre de contexte & amnésie, modèle économique (FinOps 101) | `src/app/nav.js`, `src/shared/ui/tokens.js` |
+| S+3 | _à venir_ | | |
 
 ## Backlog d'idées d'évolution
 
