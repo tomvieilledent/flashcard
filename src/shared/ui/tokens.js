@@ -17,6 +17,7 @@ export const UML_ACCENT = "#F2A65A";
 export const API_ACCENT = "#5EC8C8";
 export const SPEC_ACCENT = "#9BD17C";
 export const URBA_ACCENT = "#D9A5E8";
+export const AI_ACCENT = "#EF6F53";
 export const FONT_DISPLAY = '"Iowan Old Style", Georgia, "Times New Roman", serif';
 export const FONT_BODY =
   '-apple-system, BlinkMacSystemFont, "Segoe UI", "IBM Plex Sans", sans-serif';

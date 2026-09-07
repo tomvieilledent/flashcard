@@ -47,9 +47,9 @@ describe("App — structure", () => {
     );
   });
 
-  it("liste les 4 catégories", () => {
+  it("liste les 5 catégories", () => {
     render(<App />);
-    for (const name of ["Frontend", "Backend", "DevOps", "Documentation & méthode"]) {
+    for (const name of ["Frontend", "Backend", "DevOps", "Documentation & méthode", "IA & agents"]) {
       expect(screen.getByRole("button", { name: new RegExp(name, "i") })).toBeInTheDocument();
     }
   });
