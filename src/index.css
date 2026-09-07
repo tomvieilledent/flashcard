@@ -55,6 +55,8 @@
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "IBM Plex Sans",
     sans-serif;
   --font-display: "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
 
   color-scheme: dark;
 }
@@ -871,33 +873,34 @@ a:hover {
 }
 
 /* =====================================================================
-   Accueil — parti pris « Apple » : grande typo, respiration, filets
-   fins, verre dépoli, ressorts discrets, révélation au scroll.
+   Accueil — « Le carnet ».
+   Composants dessinés ici, sans bibliothèque d'UI : en-tête courante,
+   sommaire à pointillés, index de fin d'ouvrage, cachet tournant.
    Mobile d'abord ; les paliers larges déroulent la mise en page.
    ===================================================================== */
 
 .home {
-  --home-gap: clamp(40px, 7vw, 96px);
+  --home-gap: clamp(40px, 6.5vw, 88px);
   display: flex;
   flex-direction: column;
   gap: var(--home-gap);
 }
 
 /* Révélation au défilement — CSS pur, sans JS.
-   État de base visible : navigateurs sans support = contenu affiché. */
+   État de base visible : sans support, le contenu reste affiché. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .home__reveal {
       animation: revealUp linear both;
       animation-timeline: view();
-      animation-range: entry 2% cover 26%;
+      animation-range: entry 2% cover 24%;
     }
   }
 }
 @keyframes revealUp {
   from {
     opacity: 0;
-    transform: translateY(34px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -905,71 +908,48 @@ a:hover {
   }
 }
 
+/* ---- En-tête courante (comme une page d'ouvrage) --------------- */
+
+.home__runhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: clamp(22px, 5vw, 44px);
+  padding-top: 10px;
+  border-top: 1px solid var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.home__runhead b {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* ---- Héros ---------------------------------------------------------- */
 
 .home__hero {
   position: relative;
   overflow: hidden;
-  border-radius: clamp(18px, 2.4vw, 30px);
-  border: 1px solid var(--line);
-  padding: clamp(30px, 6vw, 76px);
-  background:
-    radial-gradient(
-      130% 130% at 8% 0%,
-      color-mix(in srgb, var(--react-accent) 16%, transparent) 0%,
-      transparent 52%
-    ),
-    radial-gradient(
-      130% 150% at 100% 100%,
-      color-mix(in srgb, var(--ai-accent) 12%, transparent) 0%,
-      transparent 54%
-    ),
-    var(--panel);
-  animation: sectionIn 0.44s var(--ease-spring) both;
+  padding: 0 0 clamp(24px, 5vw, 48px);
 }
 
-/* Halos lents en arrière-plan — très diffus, jamais tape-à-l'œil. */
-.home__hero::before,
+/* Signe § géant en filigrane — ornement, jamais un dégradé de plus. */
 .home__hero::after {
-  content: "";
+  content: "\00a7";
   position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.55;
-  pointer-events: none;
+  right: -0.04em;
+  bottom: -0.36em;
   z-index: 0;
-}
-.home__hero::before {
-  width: min(46vw, 460px);
-  aspect-ratio: 1;
-  top: -22%;
-  right: -8%;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--react-accent) 45%, transparent),
-    transparent 70%
-  );
-  animation: heroDrift 24s ease-in-out infinite alternate;
-}
-.home__hero::after {
-  width: min(38vw, 380px);
-  aspect-ratio: 1;
-  bottom: -26%;
-  left: -10%;
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--devops-accent) 40%, transparent),
-    transparent 70%
-  );
-  animation: heroDrift 30s ease-in-out infinite alternate-reverse;
-}
-@keyframes heroDrift {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  to {
-    transform: translate3d(-30px, 26px, 0) scale(1.14);
-  }
+  font-family: var(--font-display);
+  font-size: clamp(180px, 34vw, 400px);
+  line-height: 1;
+  color: var(--text);
+  opacity: 0.05;
+  pointer-events: none;
 }
 .home__hero > * {
   position: relative;
@@ -978,7 +958,7 @@ a:hover {
 
 .home__kicker {
   margin: 0;
-  font-family: var(--font-mono, ui-monospace, monospace);
+  font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -986,123 +966,143 @@ a:hover {
 }
 
 .home__title {
-  margin: 16px 0 0;
+  margin: 14px 0 0;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(30px, 6.4vw, 62px);
-  line-height: 1.05;
+  font-size: clamp(32px, 7vw, 66px);
+  line-height: 1.04;
   letter-spacing: -0.02em;
   color: var(--text);
-  max-width: 16ch;
+  max-width: 15ch;
+}
+/* Coup de marqueur sous le titre — le geste du carnet. */
+.home__title::after {
+  content: "";
+  display: block;
+  width: 2.4em;
+  height: 0.32em;
+  margin-top: 0.24em;
+  background: var(--react-accent);
+  border-radius: 2px;
+  transform: skewX(-14deg);
 }
 
 .home__tagline {
-  margin: 18px 0 0;
-  font-size: clamp(16px, 2.4vw, 22px);
-  line-height: 1.45;
+  margin: 22px 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(17px, 2.6vw, 24px);
+  line-height: 1.4;
   color: var(--text);
-  max-width: 44ch;
+  max-width: 42ch;
 }
 
 .home__lead {
   margin: 16px 0 0;
   font-size: clamp(14px, 1.6vw, 16px);
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--muted);
-  max-width: 64ch;
+  max-width: 62ch;
 }
 
+/* Action — onglet à coin coupé, dessin maison (pas une pilule). */
 .home__cta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
   margin-top: clamp(22px, 3vw, 34px);
 }
-.home__btn {
+.home__tab {
+  --cut: 11px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 11px 20px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  font-family: var(--font-body);
-  font-size: 14px;
+  gap: 10px;
+  padding: 13px 24px;
+  font-family: var(--font-mono);
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   text-decoration: none;
-  cursor: pointer;
-  transition: transform 0.18s var(--ease-spring), box-shadow 0.22s ease,
-    background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  color: var(--ink);
+  background: var(--text);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%
+  );
+  transition: transform 0.18s var(--ease-spring), background-color 0.2s ease;
 }
-.home__btn svg {
+.home__tab svg {
   transition: transform 0.2s var(--ease-spring);
 }
-.home__btn--primary {
-  background: var(--text);
-  color: var(--ink);
-}
-.home__btn--primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -12px color-mix(in srgb, var(--text) 45%, transparent);
-}
-.home__btn--primary:hover svg {
+.home__tab:hover {
   transform: translateX(3px);
+  background: var(--react-accent);
 }
-.home__btn--ghost {
-  border-color: var(--line);
-  color: var(--text);
-  background: color-mix(in srgb, var(--ink) 40%, transparent);
+.home__tab:hover svg {
+  transform: translateX(4px);
 }
-.home__btn--ghost:hover {
-  transform: translateY(-2px);
-  border-color: var(--muted);
-}
-.home__btn:active {
-  transform: translateY(0) scale(0.97);
+.home__tab:active {
+  transform: translateX(0) scale(0.98);
 }
 
-/* ---- Bandeau chiffré ---------------------------------------------- */
+/* ---- Colophon chiffré ------------------------------------------- */
 
 .home__stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(14px, 3vw, 40px);
-  padding: clamp(20px, 3.5vw, 34px) 0;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--text);
   border-bottom: 1px solid var(--line);
 }
 .home__stat {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  padding: clamp(16px, 3vw, 28px) clamp(10px, 2vw, 22px);
+}
+.home__stat + .home__stat {
+  border-left: 1px solid var(--line);
 }
 .home__stat-num {
+  display: block;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(30px, 6vw, 54px);
+  font-size: clamp(32px, 6.5vw, 56px);
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 .home__stat-label {
-  font-size: clamp(11px, 1.4vw, 13px);
-  letter-spacing: 0.08em;
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 1.4vw, 12px);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
-/* ---- Grille des domaines ----------------------------------------- */
+/* ---- Titres de section --------------------------------------- */
 
 .home__section-head {
-  margin: 0 0 clamp(16px, 2.5vw, 26px);
+  margin: 0 0 clamp(14px, 2.5vw, 24px);
 }
 .home__section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
   margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(22px, 3.4vw, 34px);
+  font-size: clamp(21px, 3.2vw, 32px);
   letter-spacing: -0.015em;
   color: var(--text);
+}
+.home__section-title::before {
+  content: "";
+  flex: none;
+  width: 26px;
+  height: 2px;
+  background: var(--text);
+  transform: translateY(-0.28em);
 }
 .home__section-sub {
   margin: 8px 0 0;
@@ -1110,186 +1110,248 @@ a:hover {
   color: var(--muted);
 }
 
-.home__grid {
-  display: grid;
-  gap: clamp(12px, 1.6vw, 18px);
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+/* ---- Sommaire à pointillés (composant maison) --------------- */
+
+.toc {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.toc__entry {
+  position: relative;
+  padding: clamp(14px, 2.4vw, 22px) 0 clamp(14px, 2.4vw, 20px)
+    clamp(14px, 2.5vw, 22px);
+  border-top: 1px solid var(--line);
+}
+.toc__entry:last-child {
+  border-bottom: 1px solid var(--line);
+}
+/* Onglet d'accent qui se déplie au survol. */
+.toc__entry::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  bottom: -1px;
+  width: 3px;
+  background: var(--cat);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform 0.28s var(--ease-spring);
+}
+.toc__entry:hover::before,
+.toc__entry:focus-within::before {
+  transform: scaleY(1);
 }
 
-.home__card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: clamp(18px, 2vw, 24px);
-  border-radius: clamp(14px, 1.6vw, 20px);
-  border: 1px solid var(--line);
-  background: var(--fill);
+.toc__head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  column-gap: clamp(10px, 2vw, 18px);
+  text-decoration: none;
   color: var(--text);
-  transition: transform 0.24s var(--ease-spring), border-color 0.24s ease,
-    box-shadow 0.24s ease, background-color 0.24s ease;
 }
-@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .home__card {
-    background: color-mix(in srgb, var(--panel) 55%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+.toc__folio {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(28px, 5.5vw, 52px);
+  line-height: 0.85;
+  color: var(--muted);
+  transition: color 0.25s ease, transform 0.25s var(--ease-spring);
+}
+@supports (-webkit-text-stroke: 1px red) {
+  .toc__folio {
+    color: transparent;
+    -webkit-text-stroke: 1.4px var(--muted);
+    transition: -webkit-text-stroke-color 0.25s ease, color 0.25s ease,
+      transform 0.25s var(--ease-spring);
   }
 }
-.home__card:hover {
-  transform: translateY(-6px);
-  border-color: color-mix(in srgb, var(--cat) 45%, var(--line));
-  box-shadow: 0 22px 48px -24px color-mix(in srgb, var(--cat) 55%, transparent);
-  background: var(--fill-strong);
-}
-.home__card:active {
-  transform: translateY(-3px) scale(0.995);
-}
-
-.home__card-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  color: var(--text);
-}
-.home__card-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--cat) 16%, transparent);
+.toc__entry:hover .toc__folio,
+.toc__entry:focus-within .toc__folio {
   color: var(--cat);
-  transition: transform 0.24s var(--ease-spring);
+  -webkit-text-stroke-color: var(--cat);
+  transform: translateY(-2px);
 }
-.home__card:hover .home__card-icon {
-  transform: scale(1.08) rotate(-3deg);
+.toc__namewrap {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
 }
-.home__card-name {
-  font-size: 16px;
-  font-weight: 700;
+.toc__name {
+  flex: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(18px, 2.8vw, 26px);
   letter-spacing: -0.01em;
+  transition: transform 0.25s var(--ease-spring);
+}
+.toc__entry:hover .toc__name {
+  transform: translateX(4px);
+}
+.toc__leader {
+  flex: 1 1 auto;
+  min-width: 18px;
+  margin: 0 10px 0.34em;
+  border-bottom: 2px dotted var(--line);
+  transition: border-color 0.25s ease;
+}
+.toc__entry:hover .toc__leader {
+  border-bottom-color: color-mix(in srgb, var(--cat) 55%, var(--line));
+}
+.toc__count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.home__card-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+.toc__subs {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
 }
-.home__card-group {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  color: var(--muted);
+.toc__sub {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: 10px;
+  padding: 5px 0 5px 2px;
   text-decoration: none;
-  font-size: 13px;
-  transition: background-color 0.15s ease, color 0.15s ease,
-    transform 0.15s var(--ease-spring);
+  color: var(--muted);
+  transition: color 0.16s ease, transform 0.16s var(--ease-spring);
 }
-.home__card-group:hover {
-  background: var(--fill-strong);
+.toc__sub:hover {
   color: var(--text);
   transform: translateX(3px);
 }
-.home__card-group-n {
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  color: color-mix(in srgb, var(--cat) 70%, var(--muted));
+.toc__sub-label {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  font-size: 13.5px;
 }
-
-.home__card-go {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 4px;
-  font-size: 12.5px;
-  font-weight: 600;
+.toc__sub-label::after {
+  content: "";
+  flex: 1 1 auto;
+  min-width: 16px;
+  margin: 0 8px 0.28em;
+  border-bottom: 1px dotted var(--line);
+}
+.toc__sub-count {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
   color: var(--muted);
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
-.home__card-go svg {
-  transition: transform 0.22s var(--ease-spring);
-}
-.home__card:hover .home__card-go {
-  color: var(--text);
-}
-.home__card:hover .home__card-go svg {
-  transform: translate(3px, -3px);
+  font-variant-numeric: tabular-nums;
 }
 
-/* ---- Programme complet (écrans larges) -------------------------- */
+@media (min-width: 900px) {
+  .toc__subs {
+    grid-template-columns: 1fr 1fr;
+    column-gap: clamp(24px, 4vw, 56px);
+    margin-left: clamp(40px, 6vw, 84px);
+  }
+}
+
+/* ---- Index de fin d'ouvrage (écrans larges) ----------------- */
 
 .home__program {
   display: none;
 }
-.home__program-cols {
-  columns: 3 220px;
-  column-gap: clamp(20px, 3vw, 44px);
+.home__index {
+  columns: 3 200px;
+  column-gap: clamp(22px, 3.5vw, 52px);
+  border-top: 1px solid var(--line);
+  padding-top: clamp(16px, 2.5vw, 24px);
 }
-.home__program-cat {
+.home__index-cat {
   break-inside: avoid;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
-.home__program-cat-name {
-  margin: 0 0 8px;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+.home__index-cat-name {
+  margin: 0 0 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--cat) 78%, var(--text));
+  color: var(--cat);
 }
-.home__program-link {
+.home__index-link {
   display: block;
-  padding: 5px 0;
-  font-size: 13.5px;
+  padding: 4px 0;
+  font-size: 13px;
   color: var(--muted);
   text-decoration: none;
   transition: color 0.14s ease, transform 0.14s var(--ease-spring);
 }
-.home__program-link:hover {
+.home__index-link:hover {
   color: var(--text);
   transform: translateX(4px);
 }
-
 @media (min-width: 1000px) {
   .home__program {
     display: block;
   }
 }
 
-/* ---- Liens de pied ---------------------------------------------- */
+/* ---- Colophon / cachet ------------------------------------- */
 
-.home__links {
+.home__colophon {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
   align-items: center;
-  font-size: 13.5px;
+  flex-wrap: wrap;
+  gap: clamp(14px, 3vw, 28px);
+  padding-top: clamp(16px, 2.5vw, 22px);
+  border-top: 1px solid var(--text);
 }
-.home__links a {
+.home__seal {
+  flex: none;
+  color: var(--muted);
+}
+.home__seal-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sealSpin 44s linear infinite;
+}
+@keyframes sealSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.home__seal-text {
+  fill: var(--muted);
+  font-family: var(--font-mono);
+}
+.home__seal-mono {
+  fill: var(--text);
+  font-family: var(--font-display);
+}
+.home__colophon-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.home__colophon-meta a {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 9px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--fill);
+  width: fit-content;
+  padding-bottom: 1px;
   color: var(--text);
   text-decoration: none;
-  transition: transform 0.16s var(--ease-spring), border-color 0.2s ease,
-    background-color 0.2s ease;
+  border-bottom: 1px solid var(--line);
+  transition: border-color 0.18s ease;
 }
-.home__links a:hover {
-  transform: translateY(-2px);
-  border-color: var(--muted);
-  background: var(--fill-strong);
+.home__colophon-meta a:hover {
+  border-bottom-color: var(--text);
 }
 
 /* ---- Coloration syntaxique (highlight.js, thème maison) -------- */
