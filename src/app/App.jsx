@@ -159,8 +159,9 @@ export default function App() {
     const g = findGroup(initial.page);
     return new Set([g?.category].filter(Boolean));
   });
-  const [openGroups, setOpenGroups] = useState(
-    () => new Set([initial.page].filter((id) => findGroup(id)))
+  /* Un seul groupe déplié à la fois (accordéon) — pour la lisibilité. */
+  const [openGroup, setOpenGroup] = useState(() =>
+    findGroup(initial.page) ? initial.page : null
   );
   const [spyAnchor, setSpyAnchor] = useState(initial.anchor);
   const [query, setQuery] = useState("");
@@ -200,12 +201,7 @@ export default function App() {
   }, []);
 
   const toggleGroup = useCallback((id) => {
-    setOpenGroups((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    setOpenGroup((prev) => (prev === id ? null : id));
   }, []);
 
   const ensureSearch = useCallback(() => {
@@ -247,7 +243,7 @@ export default function App() {
   useEffect(() => {
     const grp = findGroup(page);
     if (!grp) return;
-    setOpenGroups((prev) => (prev.has(grp.id) ? prev : new Set(prev).add(grp.id)));
+    setOpenGroup((prev) => (prev === grp.id ? prev : grp.id));
   }, [page, anchor, spyAnchor]);
 
   /* Scrollspy : met en surbrillance la section survolée par le défilement. */
@@ -280,9 +276,7 @@ export default function App() {
     };
     const onScroll = () => {
       /* Le moindre défilement rouvre le groupe courant s'il a été replié. */
-      setOpenGroups((prev) =>
-        prev.has(grp.id) ? prev : new Set(prev).add(grp.id)
-      );
+      setOpenGroup((prev) => (prev === grp.id ? prev : grp.id));
       if (!raf) raf = requestAnimationFrame(compute);
     };
 
@@ -486,7 +480,7 @@ export default function App() {
                     <div className="nav__cat-body">
                       {cat.groups.map((g) => {
                         const onPage = page === g.id;
-                        const expanded = openGroups.has(g.id);
+                        const expanded = openGroup === g.id;
                         const activeAnchor = onPage
                           ? spyAnchor || anchor
                           : null;
