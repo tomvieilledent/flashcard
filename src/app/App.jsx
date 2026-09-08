@@ -241,9 +241,9 @@ export default function App() {
     setOpenCats((prev) => (prev.has(cat) ? prev : new Set(prev).add(cat)));
   }, [page]);
 
-  /* Déplie le groupe courant à chaque changement de page OU de sous-section,
-     pour toujours montrer « où je suis » — mais on peut le replier à la main
-     tant qu'on reste sur la même section. */
+  /* Déplie le groupe courant à chaque changement de page ou de sous-section.
+     On peut le replier à la main ; le prochain défilement le rouvre
+     (voir le scrollspy) pour toujours montrer « où je suis ». */
   useEffect(() => {
     const grp = findGroup(page);
     if (!grp) return;
@@ -279,6 +279,10 @@ export default function App() {
       setSpyAnchor(current);
     };
     const onScroll = () => {
+      /* Le moindre défilement rouvre le groupe courant s'il a été replié. */
+      setOpenGroups((prev) =>
+        prev.has(grp.id) ? prev : new Set(prev).add(grp.id)
+      );
       if (!raf) raf = requestAnimationFrame(compute);
     };
 
