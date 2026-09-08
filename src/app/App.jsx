@@ -235,6 +235,13 @@ export default function App() {
     setOpenGroup(null);
   }, [page]);
 
+  /* Titre de l'onglet dynamique — utile pour l'historique et les liens
+     profonds partagés (le routage par #hash ne le fait pas seul). */
+  useEffect(() => {
+    const base = "Holberton — spécialisation Full Stack";
+    document.title = group ? `${group.group} · Holberton Full Stack` : base;
+  }, [group]);
+
   /* Scrollspy : met en surbrillance la section survolée par le défilement. */
   useEffect(() => {
     const grp = page === HOME.id ? null : findGroup(page);
