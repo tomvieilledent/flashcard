@@ -75,6 +75,7 @@ server {
     listen 80;
     listen [::]:80;
     server_name ${DOMAIN} www.${DOMAIN};
+    server_tokens off;
     root ${WEBROOT};
     index index.html;
     location /.well-known/acme-challenge/ { root ${ACMEROOT}; }
@@ -94,21 +95,38 @@ certbot certonly --webroot -w "${ACMEROOT}" \
 
 echo ">> Snippet en-têtes de sécurité"
 install -d /etc/nginx/snippets
-cat > "/etc/nginx/snippets/vlldnt-security-headers.conf" <<'EOF'
+# SSOT = deploy/nginx/vlldnt-security-headers.conf. On le copie s'il est là
+# (dépôt cloné sur le VPS), sinon on écrit une copie de secours identique.
+SNIPPET_SRC="$(cd "$(dirname "$0")" && pwd)/../deploy/nginx/vlldnt-security-headers.conf"
+if [ -f "${SNIPPET_SRC}" ]; then
+  install -m 644 "${SNIPPET_SRC}" /etc/nginx/snippets/vlldnt-security-headers.conf
+else
+  # Copie de secours — DOIT rester identique à
+  # deploy/nginx/vlldnt-security-headers.conf.
+  cat > "/etc/nginx/snippets/vlldnt-security-headers.conf" <<'EOF'
 add_header X-Content-Type-Options "nosniff" always;
 add_header X-Frame-Options "DENY" always;
 add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 add_header Cross-Origin-Opener-Policy "same-origin" always;
-add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" always;
+add_header Permissions-Policy "geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()" always;
+add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-rc8oRlSkpzS65XHTf/ScPm0RzBk0KNZMHtDCcUOOmzc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" always;
 EOF
+fi
 
 echo ">> Vhost final (HTTPS)"
-cat > "/etc/nginx/sites-available/${DOMAIN}.conf" <<'EOF'
+# SSOT = deploy/nginx/vlldnt.fr.conf. On le copie s'il est là, sinon copie
+# de secours (à garder identique au fichier versionné).
+VHOST_SRC="$(cd "$(dirname "$0")" && pwd)/../deploy/nginx/vlldnt.fr.conf"
+if [ -f "${VHOST_SRC}" ]; then
+  install -m 644 "${VHOST_SRC}" "/etc/nginx/sites-available/${DOMAIN}.conf"
+else
+  cat > "/etc/nginx/sites-available/${DOMAIN}.conf" <<'EOF'
 server {
     listen 80;
     listen [::]:80;
     server_name vlldnt.fr www.vlldnt.fr;
+    server_tokens off;
     location /.well-known/acme-challenge/ { root /var/www/certbot; }
     location / { return 301 https://vlldnt.fr$request_uri; }
 }
@@ -117,6 +135,7 @@ server {
     listen [::]:443 ssl;
     http2 on;
     server_name www.vlldnt.fr;
+    server_tokens off;
     ssl_certificate     /etc/letsencrypt/live/vlldnt.fr/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/vlldnt.fr/privkey.pem;
     return 301 https://vlldnt.fr$request_uri;
@@ -126,6 +145,7 @@ server {
     listen [::]:443 ssl;
     http2 on;
     server_name vlldnt.fr;
+    server_tokens off;
     root /var/www/vlldnt.fr;
     index index.html;
 
@@ -133,6 +153,10 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/vlldnt.fr/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers off;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    resolver 127.0.0.53 valid=300s;
+    resolver_timeout 5s;
 
     gzip on;
     gzip_vary on;
@@ -153,6 +177,7 @@ server {
     }
 }
 EOF
+fi
 nginx -t
 systemctl reload nginx
 
