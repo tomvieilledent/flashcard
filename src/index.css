@@ -784,6 +784,14 @@ a:hover {
   background: var(--fill);
   color: var(--text);
 }
+.nav__group-toggle:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.nav__group-toggle:disabled:hover {
+  background: transparent;
+  color: var(--muted);
+}
 .nav__group-caret {
   transition: transform 0.18s var(--ease-spring);
 }

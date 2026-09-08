@@ -159,10 +159,10 @@ export default function App() {
     const g = findGroup(initial.page);
     return new Set([g?.category].filter(Boolean));
   });
-  /* Un seul groupe déplié à la fois (accordéon) — pour la lisibilité. */
-  const [openGroup, setOpenGroup] = useState(() =>
-    findGroup(initial.page) ? initial.page : null
-  );
+  /* Groupe (autre que celui de la page courante) déplié à la main.
+     Le groupe de la page courante est toujours ouvert et non repliable ;
+     un seul autre groupe peut l'être à la fois, et le défilement le referme. */
+  const [openGroup, setOpenGroup] = useState(null);
   const [spyAnchor, setSpyAnchor] = useState(initial.anchor);
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState(null); // { entries, run } — chargé à la demande
@@ -237,14 +237,11 @@ export default function App() {
     setOpenCats((prev) => (prev.has(cat) ? prev : new Set(prev).add(cat)));
   }, [page]);
 
-  /* Déplie le groupe courant à chaque changement de page ou de sous-section.
-     On peut le replier à la main ; le prochain défilement le rouvre
-     (voir le scrollspy) pour toujours montrer « où je suis ». */
+  /* Changer de page referme le groupe ouvert à la main (le groupe de la
+     nouvelle page prend le relais et reste ouvert). */
   useEffect(() => {
-    const grp = findGroup(page);
-    if (!grp) return;
-    setOpenGroup((prev) => (prev === grp.id ? prev : grp.id));
-  }, [page, anchor, spyAnchor]);
+    setOpenGroup(null);
+  }, [page]);
 
   /* Scrollspy : met en surbrillance la section survolée par le défilement. */
   useEffect(() => {
@@ -275,8 +272,9 @@ export default function App() {
       setSpyAnchor(current);
     };
     const onScroll = () => {
-      /* Le moindre défilement rouvre le groupe courant s'il a été replié. */
-      setOpenGroup((prev) => (prev === grp.id ? prev : grp.id));
+      /* Le moindre défilement referme le groupe ouvert à la main : on ne
+         garde à l'écran que le groupe de la page courante. */
+      setOpenGroup(null);
       if (!raf) raf = requestAnimationFrame(compute);
     };
 
@@ -480,7 +478,8 @@ export default function App() {
                     <div className="nav__cat-body">
                       {cat.groups.map((g) => {
                         const onPage = page === g.id;
-                        const expanded = openGroup === g.id;
+                        /* Groupe de la page courante : toujours ouvert, non repliable. */
+                        const expanded = onPage || openGroup === g.id;
                         const activeAnchor = onPage
                           ? spyAnchor || anchor
                           : null;
@@ -488,6 +487,7 @@ export default function App() {
                           <div
                             className="nav__group"
                             data-expanded={expanded || undefined}
+                            data-current={onPage || undefined}
                             key={g.id}
                           >
                             <div className="nav__group-row">
@@ -503,10 +503,13 @@ export default function App() {
                                 type="button"
                                 className="nav__group-toggle"
                                 aria-expanded={expanded}
+                                disabled={onPage}
                                 aria-label={
-                                  expanded
-                                    ? `Replier ${g.group}`
-                                    : `Déplier ${g.group}`
+                                  onPage
+                                    ? `${g.group} — groupe courant`
+                                    : expanded
+                                      ? `Replier ${g.group}`
+                                      : `Déplier ${g.group}`
                                 }
                                 style={{ "--accent": g.accent }}
                                 onClick={() => toggleGroup(g.id)}
