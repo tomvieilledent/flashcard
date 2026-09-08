@@ -166,6 +166,39 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      <section
+        id="mentions-legales"
+        className="home__legal home__reveal"
+        aria-label="Mentions légales"
+      >
+        <h3 className="home__section-title">Mentions légales</h3>
+        <p>
+          <strong>Éditeur & directeur de la publication :</strong> Tom
+          Vieilledent — projet personnel non commercial, dans le cadre de la
+          formation Holberton School. Contact :{" "}
+          <a href="mailto:tomvieilledent@gmail.com">tomvieilledent@gmail.com</a>.
+        </p>
+        <p>
+          <strong>Hébergeur :</strong> OVH SAS, 2 rue Kellermann, 59100 Roubaix,
+          France — <a href="https://www.ovhcloud.com" target="_blank" rel="noreferrer">ovhcloud.com</a>.
+        </p>
+        <p>
+          <strong>Données personnelles :</strong> ce site ne dépose aucun
+          cookie, n'utilise aucun outil de mesure d'audience et ne collecte
+          aucune donnée. Une préférence de thème est conservée localement dans
+          le navigateur. Les journaux du serveur (adresse IP, horodatage)
+          sont conservés à des fins de sécurité et d'exploitation pour une
+          durée limitée.
+        </p>
+        <p>
+          <strong>Code source :</strong> publié sous licence MIT —{" "}
+          <a href={REPO} target="_blank" rel="noreferrer">
+            dépôt GitHub
+          </a>
+          .
+        </p>
+      </section>
     </div>
   );
 }

@@ -1387,6 +1387,31 @@ a:hover {
   border-bottom-color: var(--text);
 }
 
+.home__legal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.home__legal p {
+  margin: 0;
+  max-width: 68ch;
+}
+.home__legal strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.home__legal a {
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+.home__legal a:hover {
+  border-bottom-color: var(--text);
+}
+
 /* ---- Coloration syntaxique (highlight.js, thème maison) -------- */
 
 .code-block {
