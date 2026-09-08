@@ -193,7 +193,12 @@ export default function App() {
     setOpenCat((prev) => (prev === name ? null : name));
   }, []);
 
-  const toggleGroup = useCallback((id) => {
+  const toggleGroup = useCallback((id, isCurrent) => {
+    /* Sur le groupe courant, le chevron ne fait que « revenir à moi ». */
+    if (isCurrent) {
+      setOpenGroup(null);
+      return;
+    }
     setOpenGroup((prev) => (prev === id ? null : id));
   }, []);
 
@@ -472,11 +477,15 @@ export default function App() {
                     <div className="nav__cat-body">
                       {cat.groups.map((g) => {
                         const onPage = page === g.id;
-                        /* Groupe de la page courante : toujours ouvert, non repliable. */
-                        const expanded = onPage || openGroup === g.id;
-                        const activeAnchor = onPage
-                          ? spyAnchor || anchor
-                          : null;
+                        /* Déplier un autre groupe referme tous les autres, y
+                           compris la liste du groupe courant. Sans groupe
+                           déplié à la main, c'est celle du groupe courant qui
+                           s'affiche (elle ne se referme jamais d'elle-même). */
+                        const expanded = openGroup
+                          ? openGroup === g.id
+                          : onPage;
+                        const activeAnchor =
+                          onPage && !openGroup ? spyAnchor || anchor : null;
                         return (
                           <div
                             className="nav__group"
@@ -497,16 +506,18 @@ export default function App() {
                                 type="button"
                                 className="nav__group-toggle"
                                 aria-expanded={expanded}
-                                disabled={onPage}
+                                disabled={onPage && expanded}
                                 aria-label={
-                                  onPage
+                                  onPage && expanded
                                     ? `${g.group} — groupe courant`
                                     : expanded
                                       ? `Replier ${g.group}`
-                                      : `Déplier ${g.group}`
+                                      : onPage
+                                        ? `Revenir à ${g.group}`
+                                        : `Déplier ${g.group}`
                                 }
                                 style={{ "--accent": g.accent }}
-                                onClick={() => toggleGroup(g.id)}
+                                onClick={() => toggleGroup(g.id, onPage)}
                               >
                                 <ChevronDown
                                   className="nav__group-caret"
