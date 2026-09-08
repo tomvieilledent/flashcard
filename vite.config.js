@@ -10,7 +10,9 @@ export default defineConfig({
   plugins: [react()],
   server: { host: "0.0.0.0", port: 3000 },
   preview: { host: "0.0.0.0", port: 4173 },
-  build: { outDir: "dist", sourcemap: true },
+  // Pas de source maps en prod (le code est déjà public sur GitHub) — évite
+  // de servir ~430 Ko de .map. Passer à "hidden" si on veut les garder hors ligne.
+  build: { outDir: "dist", sourcemap: false },
   test: {
     environment: "jsdom",
     globals: true,
