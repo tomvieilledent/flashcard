@@ -234,15 +234,21 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  /* La catégorie et le groupe de la page active restent dépliés. */
+  /* Ouvre la catégorie de la page active (elle ne se replie pas toute seule). */
+  useEffect(() => {
+    const cat = findGroup(page)?.category;
+    if (!cat) return;
+    setOpenCats((prev) => (prev.has(cat) ? prev : new Set(prev).add(cat)));
+  }, [page]);
+
+  /* Déplie le groupe courant à chaque changement de page OU de sous-section,
+     pour toujours montrer « où je suis » — mais on peut le replier à la main
+     tant qu'on reste sur la même section. */
   useEffect(() => {
     const grp = findGroup(page);
     if (!grp) return;
-    setOpenCats((prev) =>
-      prev.has(grp.category) ? prev : new Set(prev).add(grp.category)
-    );
     setOpenGroups((prev) => (prev.has(grp.id) ? prev : new Set(prev).add(grp.id)));
-  }, [page]);
+  }, [page, anchor, spyAnchor]);
 
   /* Scrollspy : met en surbrillance la section survolée par le défilement. */
   useEffect(() => {
@@ -476,7 +482,7 @@ export default function App() {
                     <div className="nav__cat-body">
                       {cat.groups.map((g) => {
                         const onPage = page === g.id;
-                        const expanded = onPage || openGroups.has(g.id);
+                        const expanded = openGroups.has(g.id);
                         const activeAnchor = onPage
                           ? spyAnchor || anchor
                           : null;
