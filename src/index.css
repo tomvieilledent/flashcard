@@ -649,6 +649,19 @@ a:hover {
 .nav__cat-toggle:active {
   transform: scale(0.98);
 }
+/* Catégorie de la page courante : ouverte en permanence, non repliable. */
+.nav__cat-toggle:disabled {
+  cursor: default;
+}
+.nav__cat-toggle:disabled:hover {
+  background: transparent;
+}
+.nav__cat-toggle:disabled:active {
+  transform: none;
+}
+.nav__cat-toggle:disabled .nav__cat-caret {
+  opacity: 0.4;
+}
 .nav__cat-toggle > :first-child {
   color: var(--accent, var(--muted));
 }

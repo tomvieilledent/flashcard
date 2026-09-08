@@ -8,16 +8,18 @@ beforeEach(() => {
   window.location.hash = "";
 });
 
-async function expandAllCategories(user) {
-  for (const toggle of document.querySelectorAll(".nav__cat-toggle")) {
-    if (toggle.getAttribute("aria-expanded") !== "true") {
-      await user.click(toggle);
-    }
-  }
+/* Accordéon : on ouvre une catégorie à la fois. */
+async function openCategory(user, name) {
+  const toggle = screen.getByRole("button", { name });
+  if (toggle.getAttribute("aria-expanded") !== "true") await user.click(toggle);
 }
 
-function navButtons() {
-  return Array.from(document.querySelectorAll(".nav__btn"));
+function groupButtonsOf(catName) {
+  return Array.from(
+    document.querySelectorAll(
+      `.nav__cat[data-cat="${catName}"] .nav__group .nav__btn`
+    )
+  );
 }
 
 describe("App — structure", () => {
@@ -54,22 +56,40 @@ describe("App — structure", () => {
     }
   });
 
-  it("une entrée de navigation par groupe (= page), catégories dépliées", async () => {
+  it("un bouton de navigation par groupe (= page), sur l'ensemble des catégories", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await expandAllCategories(user);
-    // 1 bouton Accueil + 1 bouton par groupe
-    expect(navButtons().length).toBe(GROUP_IDS.length + 1);
+    const seen = new Set();
+    for (const cat of NAV) {
+      await openCategory(user, cat.category);
+      for (const b of groupButtonsOf(cat.category)) seen.add(b.textContent);
+    }
+    expect(seen.size).toBe(GROUP_IDS.length);
   });
 
-  it("plie / déplie une catégorie et montre ses groupes", async () => {
+  it("accordéon : ouvrir une catégorie referme la précédente", async () => {
     const user = userEvent.setup();
     render(<App />);
-    const devops = screen.getByRole("button", { name: /^DevOps/i });
-    expect(devops).toHaveAttribute("aria-expanded", "false");
+    const devops = screen.getByRole("button", { name: "DevOps" });
+    const frontend = screen.getByRole("button", { name: "Frontend" });
+
     await user.click(devops);
     expect(devops).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByRole("button", { name: /^Docker/ })).toBeInTheDocument();
+
+    await user.click(frontend);
+    expect(frontend).toHaveAttribute("aria-expanded", "true");
+    expect(devops).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("la catégorie de la page courante reste ouverte et non repliable", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await openCategory(user, "DevOps");
+    await user.click(screen.getByRole("button", { name: /^Docker/ }));
+
+    const devops = screen.getByRole("button", { name: "DevOps" });
+    expect(devops).toHaveAttribute("aria-expanded", "true");
+    expect(devops).toBeDisabled();
   });
 });
 
@@ -77,7 +97,7 @@ describe("App — navigation SPA", () => {
   it("ouvre la page d'un groupe et pose son hash au clic", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await expandAllCategories(user);
+    await openCategory(user, "DevOps");
     const main = document.querySelector("main");
 
     await user.click(screen.getByRole("button", { name: /^Docker/ }));
@@ -90,7 +110,7 @@ describe("App — navigation SPA", () => {
   it("un sous-élément est une ancre de la page de groupe", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await expandAllCategories(user);
+    await openCategory(user, "DevOps");
     const main = document.querySelector("main");
 
     await user.click(screen.getByRole("button", { name: /^Docker/ }));
@@ -123,15 +143,20 @@ describe("App — navigation SPA", () => {
   it("rend chaque page de groupe sans planter", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await expandAllCategories(user);
     const main = document.querySelector("main");
 
-    for (const btn of navButtons()) {
-      if (btn.classList.contains("nav__home")) continue;
-      const label = btn.textContent;
-      await user.click(btn);
-      const h2s = await within(main).findAllByRole("heading", { level: 2 });
-      expect(h2s.length, `pas de section visible sur « ${label} »`).toBeGreaterThan(0);
+    for (const cat of NAV) {
+      await openCategory(user, cat.category);
+      const labels = groupButtonsOf(cat.category).map((b) => b.textContent);
+      for (const label of labels) {
+        await openCategory(user, cat.category);
+        const btn = groupButtonsOf(cat.category).find(
+          (b) => b.textContent === label
+        );
+        await user.click(btn);
+        const h2s = await within(main).findAllByRole("heading", { level: 2 });
+        expect(h2s.length, `pas de section visible sur « ${label} »`).toBeGreaterThan(0);
+      }
     }
   });
 });
@@ -189,6 +214,26 @@ describe("nav.js", () => {
       for (const group of cat.groups) {
         expect(typeof group.id, group.group).toBe("string");
         expect(group.id.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("aucun libellé répété entre catégorie, groupe et ses sections", () => {
+    for (const cat of NAV) {
+      for (const group of cat.groups) {
+        expect(group.group, `groupe = catégorie : ${group.group}`).not.toBe(
+          cat.category
+        );
+        for (const item of group.items) {
+          expect(
+            item.label,
+            `section = groupe : ${item.label}`
+          ).not.toBe(group.group);
+          expect(
+            item.label,
+            `section = catégorie : ${item.label}`
+          ).not.toBe(cat.category);
+        }
       }
     }
   });

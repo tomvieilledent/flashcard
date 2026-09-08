@@ -107,7 +107,7 @@ export const NAV = [
         accent: CI_ACCENT,
         icon: Cpu,
         items: [
-          { id: "c-intro", label: "Le langage C", icon: BookOpen, file: "foundations/CIntro.jsx" },
+          { id: "c-intro", label: "Les bases", icon: BookOpen, file: "foundations/CIntro.jsx" },
           { id: "c-betty", label: "Le style Betty", icon: ShieldCheck, file: "foundations/CBetty.jsx" },
           { id: "c-variables-types", label: "Variables, types & identificateurs", icon: Table2, file: "foundations/CVariablesTypes.jsx" },
           { id: "c-operators", label: "Opérateurs", icon: ListChecks, file: "foundations/COperators.jsx" },

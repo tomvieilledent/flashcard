@@ -4,7 +4,7 @@ import { CI_ACCENT } from "../../shared/ui/tokens.js";
 export default function CIntro() {
   return (
     <div>
-      <H2 accent={CI_ACCENT}>Le langage C</H2>
+      <H2 accent={CI_ACCENT}>Les bases</H2>
 
       <H3>D'où il vient</H3>
       <Ul>

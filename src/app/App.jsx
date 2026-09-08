@@ -155,13 +155,10 @@ export default function App() {
   const [anchor, setAnchor] = useState(initial.anchor);
   const [navSeq, setNavSeq] = useState(0); // force le re-scroll même si (page, anchor) inchangés
   const [menuOpen, setMenuOpen] = useState(false);
-  const [openCats, setOpenCats] = useState(() => {
-    const g = findGroup(initial.page);
-    return new Set([g?.category].filter(Boolean));
-  });
-  /* Groupe (autre que celui de la page courante) déplié à la main.
-     Le groupe de la page courante est toujours ouvert et non repliable ;
-     un seul autre groupe peut l'être à la fois, et le défilement le referme. */
+  /* Accordéon des catégories : la catégorie de la page courante est toujours
+     ouverte ; une seule autre peut l'être à la main, et changer de page la
+     referme. Même principe pour les groupes. */
+  const [openCat, setOpenCat] = useState(null);
   const [openGroup, setOpenGroup] = useState(null);
   const [spyAnchor, setSpyAnchor] = useState(initial.anchor);
   const [query, setQuery] = useState("");
@@ -177,6 +174,7 @@ export default function App() {
   }, [theme]);
 
   const group = useMemo(() => (page === HOME.id ? null : findGroup(page)), [page]);
+  const currentCat = group?.category ?? null;
 
   const go = useCallback((groupId, itemId = null) => {
     const nextHash = hashFor(groupId, itemId);
@@ -192,12 +190,7 @@ export default function App() {
   }, []);
 
   const toggleCat = useCallback((name) => {
-    setOpenCats((prev) => {
-      const next = new Set(prev);
-      if (next.has(name)) next.delete(name);
-      else next.add(name);
-      return next;
-    });
+    setOpenCat((prev) => (prev === name ? null : name));
   }, []);
 
   const toggleGroup = useCallback((id) => {
@@ -230,16 +223,10 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  /* Ouvre la catégorie de la page active (elle ne se replie pas toute seule). */
+  /* Changer de page referme la catégorie et le groupe ouverts à la main :
+     ceux de la nouvelle page prennent le relais et restent ouverts. */
   useEffect(() => {
-    const cat = findGroup(page)?.category;
-    if (!cat) return;
-    setOpenCats((prev) => (prev.has(cat) ? prev : new Set(prev).add(cat)));
-  }, [page]);
-
-  /* Changer de page referme le groupe ouvert à la main (le groupe de la
-     nouvelle page prend le relais et reste ouvert). */
-  useEffect(() => {
+    setOpenCat(null);
     setOpenGroup(null);
   }, [page]);
 
@@ -455,13 +442,20 @@ export default function App() {
             </button>
 
             {NAV.map((cat) => {
-              const open = openCats.has(cat.category);
+              const isCurrentCat = cat.category === currentCat;
+              const open = isCurrentCat || openCat === cat.category;
               return (
-                <section className="nav__cat" key={cat.category}>
+                <section
+                  className="nav__cat"
+                  data-cat={cat.category}
+                  data-current={isCurrentCat || undefined}
+                  key={cat.category}
+                >
                   <button
                     type="button"
                     className="nav__cat-toggle"
                     aria-expanded={open}
+                    disabled={isCurrentCat}
                     style={{ "--accent": cat.accent }}
                     onClick={() => toggleCat(cat.category)}
                   >
