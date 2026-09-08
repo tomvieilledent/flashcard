@@ -13,6 +13,7 @@ RUN npm run build
 # --- Étape 2 : image finale, nginx sert dist/ ------------------------
 FROM nginx:1.27-alpine AS runtime
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY deploy/nginx/vlldnt-security-headers.conf /etc/nginx/snippets/vlldnt-security-headers.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
