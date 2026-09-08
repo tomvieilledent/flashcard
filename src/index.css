@@ -754,17 +754,54 @@ a:hover {
   padding: 8px 0;
 }
 
-/* ---- Sous-liste d'ancres (sections de la page de groupe active) ---- */
+/* ---- Groupe dépliable + sous-liste d'ancres --------------------- */
+
+.nav__group-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nav__group-row .nav__btn {
+  flex: 1;
+  min-width: 0;
+}
+.nav__group-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 30px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.nav__group-toggle:hover {
+  background: var(--fill);
+  color: var(--text);
+}
+.nav__group-caret {
+  transition: transform 0.18s var(--ease-spring);
+}
+.nav__group-caret[data-open] {
+  transform: rotate(180deg);
+  color: var(--accent, var(--text));
+}
 
 .nav__anchors {
   display: flex;
   flex-direction: column;
-  margin: 2px 0 6px;
-  padding-left: 22px;
+  margin: 2px 0 6px 15px;
+  padding-left: 8px;
   border-left: 1px solid var(--line);
-  margin-left: 15px;
+  animation: navReveal 0.2s var(--ease-spring) both;
 }
 .nav__anchor {
+  position: relative;
   display: block;
   width: 100%;
   padding: 6px 10px;
@@ -784,8 +821,10 @@ a:hover {
   color: var(--text);
 }
 .nav__anchor[data-active] {
+  background: var(--fill);
   color: var(--accent, var(--text));
   font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--accent, var(--focus));
 }
 
 /* ---- Page de groupe : titre-ancre + sections ancrées -------------- */

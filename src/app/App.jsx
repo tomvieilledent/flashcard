@@ -58,7 +58,7 @@ function scrollToTop() {
   }
 }
 
-function NavButton({ label, active, accent, icon: Icon, onClick }) {
+function NavButton({ label, active, accent, icon: Icon, caret = true, onClick }) {
   return (
     <button
       type="button"
@@ -70,7 +70,7 @@ function NavButton({ label, active, accent, icon: Icon, onClick }) {
     >
       {Icon ? <Icon className="nav__btn-icon" size={15} aria-hidden="true" /> : null}
       <span className="nav__btn-label">{label}</span>
-      {active ? (
+      {active && caret ? (
         <ChevronRight className="nav__btn-caret" size={14} aria-hidden="true" />
       ) : null}
     </button>
@@ -159,6 +159,10 @@ export default function App() {
     const g = findGroup(initial.page);
     return new Set([g?.category].filter(Boolean));
   });
+  const [openGroups, setOpenGroups] = useState(
+    () => new Set([initial.page].filter((id) => findGroup(id)))
+  );
+  const [spyAnchor, setSpyAnchor] = useState(initial.anchor);
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState(null); // { entries, run } — chargé à la demande
   const [theme, setThemeState] = useState(getTheme);
@@ -177,6 +181,7 @@ export default function App() {
     const nextHash = hashFor(groupId, itemId);
     setPage(groupId);
     setAnchor(groupId === HOME.id ? null : itemId);
+    setSpyAnchor(groupId === HOME.id ? null : itemId); // repère immédiat, affiné au scroll
     setNavSeq((n) => n + 1);
     setMenuOpen(false);
     setQuery("");
@@ -190,6 +195,15 @@ export default function App() {
       const next = new Set(prev);
       if (next.has(name)) next.delete(name);
       else next.add(name);
+      return next;
+    });
+  }, []);
+
+  const toggleGroup = useCallback((id) => {
+    setOpenGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }, []);
@@ -220,11 +234,59 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  /* La catégorie de la page active reste dépliée. */
+  /* La catégorie et le groupe de la page active restent dépliés. */
   useEffect(() => {
-    const cat = findGroup(page)?.category;
-    if (!cat) return;
-    setOpenCats((prev) => (prev.has(cat) ? prev : new Set(prev).add(cat)));
+    const grp = findGroup(page);
+    if (!grp) return;
+    setOpenCats((prev) =>
+      prev.has(grp.category) ? prev : new Set(prev).add(grp.category)
+    );
+    setOpenGroups((prev) => (prev.has(grp.id) ? prev : new Set(prev).add(grp.id)));
+  }, [page]);
+
+  /* Scrollspy : met en surbrillance la section survolée par le défilement. */
+  useEffect(() => {
+    const grp = page === HOME.id ? null : findGroup(page);
+    if (!grp) {
+      setSpyAnchor(null);
+      return;
+    }
+    const ids = grp.items.map((i) => i.id);
+    const topbar =
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--topbar-h")
+      ) || 56;
+    const line = topbar + 24;
+
+    let raf = 0;
+    const compute = () => {
+      raf = 0;
+      let current = ids[0] || null;
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top - line <= 0) current = id;
+      }
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+      if (atBottom) current = ids[ids.length - 1] || current;
+      setSpyAnchor(current);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(compute);
+    };
+
+    /* Recalcule aussi le temps que les sections paresseuses se montent. */
+    const timers = [80, 250, 600, 1000, 1600].map((ms) => setTimeout(compute, ms));
+    compute();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+    };
   }, [page]);
 
   /* Normalise l'URL des liens profonds hérités (#section → #groupe/section). */
@@ -414,16 +476,46 @@ export default function App() {
                     <div className="nav__cat-body">
                       {cat.groups.map((g) => {
                         const onPage = page === g.id;
+                        const expanded = onPage || openGroups.has(g.id);
+                        const activeAnchor = onPage
+                          ? spyAnchor || anchor
+                          : null;
                         return (
-                          <div className="nav__group" key={g.id}>
-                            <NavButton
-                              label={g.group}
-                              accent={g.accent}
-                              icon={g.icon}
-                              active={onPage}
-                              onClick={() => go(g.id)}
-                            />
-                            {onPage ? (
+                          <div
+                            className="nav__group"
+                            data-expanded={expanded || undefined}
+                            key={g.id}
+                          >
+                            <div className="nav__group-row">
+                              <NavButton
+                                label={g.group}
+                                accent={g.accent}
+                                icon={g.icon}
+                                active={onPage}
+                                caret={false}
+                                onClick={() => go(g.id)}
+                              />
+                              <button
+                                type="button"
+                                className="nav__group-toggle"
+                                aria-expanded={expanded}
+                                aria-label={
+                                  expanded
+                                    ? `Replier ${g.group}`
+                                    : `Déplier ${g.group}`
+                                }
+                                style={{ "--accent": g.accent }}
+                                onClick={() => toggleGroup(g.id)}
+                              >
+                                <ChevronDown
+                                  className="nav__group-caret"
+                                  data-open={expanded || undefined}
+                                  size={14}
+                                  aria-hidden="true"
+                                />
+                              </button>
+                            </div>
+                            {expanded ? (
                               <div
                                 className="nav__anchors"
                                 style={{ "--accent": g.accent }}
@@ -433,9 +525,13 @@ export default function App() {
                                     key={it.id}
                                     type="button"
                                     className="nav__anchor"
-                                    data-active={anchor === it.id || undefined}
+                                    data-active={
+                                      activeAnchor === it.id || undefined
+                                    }
                                     aria-current={
-                                      anchor === it.id ? "location" : undefined
+                                      activeAnchor === it.id
+                                        ? "location"
+                                        : undefined
                                     }
                                     onClick={() => go(g.id, it.id)}
                                   >
