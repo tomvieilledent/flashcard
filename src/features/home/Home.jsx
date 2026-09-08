@@ -172,7 +172,7 @@ export default function Home() {
         className="home__legal home__reveal"
         aria-label="Mentions légales"
       >
-        <h3 className="home__section-title">Mentions légales</h3>
+        <h3 className="home__legal-title">Mentions légales</h3>
         <p>
           <strong>Éditeur & directeur de la publication :</strong> Tom
           Vieilledent — projet personnel non commercial, dans le cadre de la
