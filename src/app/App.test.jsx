@@ -101,7 +101,7 @@ describe("App — navigation SPA", () => {
     expect(window.location.hash).toBe("#docker/docker-dockerfile");
     expect(document.getElementById("docker-dockerfile")).toBeInTheDocument();
     expect(
-      await within(main).findByRole("heading", { name: /Dockerfile/ })
+      await within(main).findByRole("heading", { level: 2, name: "Le Dockerfile" })
     ).toBeInTheDocument();
   });
 
@@ -164,7 +164,7 @@ describe("App — recherche", () => {
 
     const main = document.querySelector("main");
     expect(
-      await within(main).findByRole("heading", { name: /Dockerfile/ })
+      await within(main).findByRole("heading", { level: 2, name: "Le Dockerfile" })
     ).toBeInTheDocument();
     expect(window.location.hash).toBe("#docker/docker-dockerfile");
     expect(input).toHaveValue("");
