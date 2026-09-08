@@ -101,11 +101,21 @@ export default function App() {
   const ActiveComponent = entry.Component;
 
   const go = useCallback((id) => {
+    const sameSection = readHash() === id;
     setActive(id);
     setMenuOpen(false);
     setQuery("");
     if (window.location.hash.slice(1) !== id) {
       window.location.hash = id;
+    }
+    /* Déjà sur la section : l'effet de scroll ne se déclenche pas, on remonte à la main. */
+    if (sameSection) {
+      mainRef.current?.focus();
+      try {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch {
+        /* jsdom */
+      }
     }
   }, []);
 
