@@ -164,6 +164,72 @@ export const NAV = [
     ],
   },
   {
+    category: "Conception & méthode",
+    icon: Library,
+    accent: ARCH_ACCENT,
+    groups: [
+      {
+        group: "Spécifier le besoin",
+        accent: SPEC_ACCENT,
+        icon: ClipboardCheck,
+        items: [
+          { id: "spec-prd-user-story", label: "PRD & User Stories (INVEST)", icon: ClipboardCheck, file: "specs-bdd/SpecPrdUserStory.jsx" },
+          { id: "bdd-gherkin", label: "BDD & Gherkin", icon: ScrollText, file: "specs-bdd/BddGherkin.jsx" },
+          { id: "bdd-scenario-outline", label: "Scénarios paramétrés", icon: Table2, file: "specs-bdd/BddScenarioOutline.jsx" },
+        ],
+      },
+      {
+        group: "UML & architecture",
+        accent: UML_ACCENT,
+        icon: Share2,
+        items: [
+          { id: "uml-class-diagram", label: "Diagramme de classes", icon: Share2, file: "uml/UmlClassDiagram.jsx" },
+          { id: "arch-dynamic-diagrams", label: "Diagrammes de séquence & d'états", icon: Workflow, file: "architecture/ArchDynamicDiagrams.jsx" },
+          { id: "arch-repository", label: "Repository & inversion des dépendances", icon: Boxes, file: "architecture/ArchRepository.jsx" },
+        ],
+      },
+      {
+        group: "Cohérence & documentation",
+        accent: URBA_ACCENT,
+        icon: Building2,
+        items: [
+          { id: "urban-information", label: "Aligner les modèles", icon: Building2, file: "urbanization/UrbanInformation.jsx" },
+          { id: "inter-model-consistency", label: "Cohérence entre modèles", icon: GitPullRequest, file: "urbanization/InterModelConsistency.jsx" },
+          { id: "docs-as-code-ssot", label: "Documentation as Code (SSOT)", icon: FileCode, file: "urbanization/DocsAsCodeSsot.jsx" },
+        ],
+      },
+    ],
+  },
+  {
+    category: "Backend",
+    icon: Server,
+    accent: SPEC_ACCENT,
+    groups: [
+      {
+        group: "Bases de données",
+        accent: MERISE_ACCENT,
+        icon: Database,
+        items: [
+          { id: "merise-entities", label: "Entités & méthode Merise", icon: BookOpen, file: "merise/MeriseEntities.jsx" },
+          { id: "merise-cardinalities", label: "Associations & cardinalités", icon: GitBranch, file: "merise/MeriseCardinalities.jsx" },
+          { id: "merise-porteuse", label: "L'association porteuse", icon: Boxes, file: "merise/MeriseAssociationPorteuse.jsx" },
+          { id: "merise-normalization", label: "Normalisation (1NF–3NF)", icon: ShieldCheck, file: "merise/MeriseNormalization.jsx" },
+          { id: "data-physical-model", label: "MLD & MPD : schéma SQL", icon: KeyRound, file: "data-modeling/DataPhysicalModel.jsx" },
+        ],
+      },
+      {
+        group: "API & contrats",
+        accent: API_ACCENT,
+        icon: Network,
+        items: [
+          { id: "rest-principles", label: "Principes REST", icon: Network, file: "api-rest/RestPrinciples.jsx" },
+          { id: "openapi-spec", label: "OpenAPI (Swagger)", icon: FileJson, file: "api-rest/OpenApiSpec.jsx" },
+          { id: "json-schema-validation", label: "Validation JSON Schema", icon: ListChecks, file: "api-rest/JsonSchemaValidation.jsx" },
+        ],
+      },
+    ],
+  },
+  {
     category: "Frontend",
     icon: LayoutGrid,
     accent: REACT_ACCENT,
@@ -209,48 +275,20 @@ export const NAV = [
     ],
   },
   {
-    category: "Backend",
-    icon: Server,
-    accent: SPEC_ACCENT,
-    groups: [
-      {
-        group: "Bases de données",
-        accent: MERISE_ACCENT,
-        icon: Database,
-        items: [
-          { id: "merise-entities", label: "Entités & propriétés", icon: BookOpen, file: "merise/MeriseEntities.jsx" },
-          { id: "merise-cardinalities", label: "Associations & cardinalités", icon: GitBranch, file: "merise/MeriseCardinalities.jsx" },
-          { id: "merise-porteuse", label: "L'association porteuse", icon: Boxes, file: "merise/MeriseAssociationPorteuse.jsx" },
-          { id: "merise-normalization", label: "Normalisation (1NF–3NF)", icon: ShieldCheck, file: "merise/MeriseNormalization.jsx" },
-        ],
-      },
-      {
-        group: "Modélisation des données",
-        accent: MERISE_ACCENT,
-        icon: Table2,
-        items: [
-          { id: "data-business-rules", label: "Règles de gestion & MCD", icon: Table2, file: "data-modeling/DataBusinessRules.jsx" },
-          { id: "data-normalization-strict", label: "Normalisation stricte", icon: ShieldCheck, file: "data-modeling/DataNormalizationStrict.jsx" },
-          { id: "data-physical-model", label: "Schéma SQL de production", icon: KeyRound, file: "data-modeling/DataPhysicalModel.jsx" },
-        ],
-      },
-      {
-        group: "API & contrats",
-        accent: API_ACCENT,
-        icon: Network,
-        items: [
-          { id: "rest-principles", label: "Principes REST", icon: Network, file: "api-rest/RestPrinciples.jsx" },
-          { id: "openapi-spec", label: "OpenAPI (Swagger)", icon: FileJson, file: "api-rest/OpenApiSpec.jsx" },
-          { id: "json-schema-validation", label: "Validation JSON Schema", icon: ListChecks, file: "api-rest/JsonSchemaValidation.jsx" },
-        ],
-      },
-    ],
-  },
-  {
     category: "DevOps",
     icon: InfinityIcon,
     accent: DOCKER_ACCENT,
     groups: [
+      {
+        group: "Culture & Git",
+        accent: DEVOPS_ACCENT,
+        icon: GitBranch,
+        items: [
+          { id: "devops-culture", label: "Culture DevOps (CALMS)", icon: ShieldCheck, file: "devops/DevOpsCulture.jsx" },
+          { id: "devops-metrics", label: "Métriques DORA", icon: Rocket, file: "devops/DevOpsMetrics.jsx" },
+          { id: "git-workflows", label: "Workflows Git & commits", icon: GitBranch, file: "devops/GitWorkflows.jsx" },
+        ],
+      },
       {
         group: "Docker",
         accent: DOCKER_ACCENT,
@@ -270,16 +308,6 @@ export const NAV = [
           { id: "ci-basics", label: "GitHub Actions — les bases", icon: BookOpen, file: "cicd/CIBasics.jsx" },
           { id: "ci-secrets-matrix", label: "Secrets, cache & matrices", icon: Lock, file: "cicd/CISecretsMatrix.jsx" },
           { id: "ci-publish-docker", label: "Publier une image Docker", icon: UploadCloud, file: "cicd/CIPublishDocker.jsx" },
-        ],
-      },
-      {
-        group: "Culture & Git",
-        accent: DEVOPS_ACCENT,
-        icon: GitBranch,
-        items: [
-          { id: "devops-culture", label: "Culture DevOps (CALMS)", icon: ShieldCheck, file: "devops/DevOpsCulture.jsx" },
-          { id: "devops-metrics", label: "Métriques DORA", icon: Rocket, file: "devops/DevOpsMetrics.jsx" },
-          { id: "git-workflows", label: "Workflows Git & commits", icon: GitBranch, file: "devops/GitWorkflows.jsx" },
         ],
       },
     ],
@@ -302,50 +330,6 @@ export const NAV = [
           { id: "intent-driven-development", label: "Intent-Driven Development & dette sémantique", icon: Compass, file: "agentic-ai/IntentDrivenDevelopment.jsx" },
           { id: "model-confrontation", label: "Confrontation de deux modèles (cas pratique)", icon: Swords, file: "agentic-ai/ModelConfrontation.jsx" },
           { id: "ai-finops", label: "Modèle économique (FinOps 101)", icon: Coins, file: "agentic-ai/AiFinops.jsx" },
-        ],
-      },
-    ],
-  },
-  {
-    category: "Documentation & méthode",
-    icon: Library,
-    accent: DEVOPS_ACCENT,
-    groups: [
-      {
-        group: "Architecture",
-        accent: ARCH_ACCENT,
-        icon: Layers,
-        items: [
-          { id: "arch-repository", label: "Repository & inversion des dépendances", icon: Boxes, file: "architecture/ArchRepository.jsx" },
-          { id: "arch-dynamic-diagrams", label: "Diagrammes de séquence & d'états", icon: Workflow, file: "architecture/ArchDynamicDiagrams.jsx" },
-        ],
-      },
-      {
-        group: "Modélisation UML",
-        accent: UML_ACCENT,
-        icon: Share2,
-        items: [
-          { id: "uml-class-diagram", label: "Diagramme de classes", icon: Share2, file: "uml/UmlClassDiagram.jsx" },
-        ],
-      },
-      {
-        group: "Spécifier le besoin",
-        accent: SPEC_ACCENT,
-        icon: ClipboardCheck,
-        items: [
-          { id: "spec-prd-user-story", label: "PRD & User Stories (INVEST)", icon: ClipboardCheck, file: "specs-bdd/SpecPrdUserStory.jsx" },
-          { id: "bdd-gherkin", label: "BDD & Gherkin", icon: ScrollText, file: "specs-bdd/BddGherkin.jsx" },
-          { id: "bdd-scenario-outline", label: "Scénarios paramétrés", icon: Table2, file: "specs-bdd/BddScenarioOutline.jsx" },
-        ],
-      },
-      {
-        group: "Cohérence & documentation",
-        accent: URBA_ACCENT,
-        icon: Building2,
-        items: [
-          { id: "urban-information", label: "Aligner les modèles", icon: Building2, file: "urbanization/UrbanInformation.jsx" },
-          { id: "inter-model-consistency", label: "Cohérence entre modèles", icon: GitPullRequest, file: "urbanization/InterModelConsistency.jsx" },
-          { id: "docs-as-code-ssot", label: "Documentation as Code (SSOT)", icon: FileCode, file: "urbanization/DocsAsCodeSsot.jsx" },
         ],
       },
     ],

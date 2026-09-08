@@ -51,7 +51,7 @@ describe("App — structure", () => {
 
   it("liste les catégories", () => {
     render(<App />);
-    for (const name of ["Frontend", "Backend", "DevOps", "Documentation & méthode", "IA & agents"]) {
+    for (const name of ["Frontend", "Backend", "DevOps", "Conception & méthode", "IA & agents"]) {
       expect(screen.getByRole("button", { name: new RegExp(name, "i") })).toBeInTheDocument();
     }
   });
@@ -130,13 +130,13 @@ describe("App — navigation SPA", () => {
     render(<App />);
     const main = document.querySelector("main");
     expect(
-      await within(main).findByRole("heading", { level: 1, name: /Modélisation UML/ })
+      await within(main).findByRole("heading", { level: 1, name: /UML & architecture/ })
     ).toBeInTheDocument();
     expect(
       await within(main).findByRole("heading", { name: /Diagramme de classes/ })
     ).toBeInTheDocument();
     await waitFor(() =>
-      expect(window.location.hash).toBe("#modelisation-uml/uml-class-diagram")
+      expect(window.location.hash).toBe("#uml-architecture/uml-class-diagram")
     );
   });
 
