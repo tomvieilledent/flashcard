@@ -7,18 +7,58 @@ import {
   useState,
 } from "react";
 import { ChevronDown, ChevronRight, Menu, Moon, Search, Sun, X } from "lucide-react";
-import { NAV, ALL_IDS, DEFAULT_ID, HOME, findEntry } from "./nav.js";
+import {
+  NAV,
+  PAGE_IDS,
+  DEFAULT_ID,
+  HOME,
+  findGroup,
+  parseHash,
+  hashFor,
+} from "./nav.js";
 import { getTheme, resolveMode, setTheme } from "../shared/ui/theme.js";
 
-const VALID_IDS = new Set(ALL_IDS);
+const VALID_PAGES = new Set(PAGE_IDS);
 const HomeIcon = HOME.icon;
 
-function readHash() {
-  const id = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
-  return VALID_IDS.has(id) ? id : DEFAULT_ID;
+/* État de navigation dérivé de l'URL : page (= groupe) + ancre (= section). */
+function readRoute() {
+  const raw = typeof window !== "undefined" ? window.location.hash : "";
+  const { groupId, itemId } = parseHash(raw);
+  const page = VALID_PAGES.has(groupId) ? groupId : DEFAULT_ID;
+  return { page, anchor: page === groupId ? itemId : null };
 }
 
-function NavButton({ label, active, accent, onClick }) {
+/* Fait défiler jusqu'à une section ; réessaie tant que le composant paresseux
+   n'est pas monté (fenêtre ~1 s). */
+function scrollToAnchor(id) {
+  let tries = 0;
+  const tick = () => {
+    const el = typeof document !== "undefined" && document.getElementById(id);
+    if (el) {
+      try {
+        if (typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ block: "start" });
+        }
+      } catch {
+        /* jsdom */
+      }
+      return;
+    }
+    if (tries++ < 60) requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+function scrollToTop() {
+  try {
+    window.scrollTo({ top: 0 });
+  } catch {
+    /* jsdom */
+  }
+}
+
+function NavButton({ label, active, accent, icon: Icon, onClick }) {
   return (
     <button
       type="button"
@@ -28,6 +68,7 @@ function NavButton({ label, active, accent, onClick }) {
       style={{ "--accent": accent }}
       onClick={onClick}
     >
+      {Icon ? <Icon className="nav__btn-icon" size={15} aria-hidden="true" /> : null}
       <span className="nav__btn-label">{label}</span>
       {active ? (
         <ChevronRight className="nav__btn-caret" size={14} aria-hidden="true" />
@@ -79,12 +120,45 @@ function SectionFallback() {
   );
 }
 
-export default function App() {
-  const [active, setActive] = useState(readHash);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [openCats, setOpenCats] = useState(
-    () => new Set([findEntry(readHash()).category].filter(Boolean))
+/* Une page = un groupe. Titre de groupe en ancre en haut, puis une section
+   ancrée par sous-élément (chaque composant rend son propre <h2>). */
+function GroupPage({ group }) {
+  return (
+    <article className="group-page">
+      <header className="group-page__head" style={{ "--accent": group.accent }}>
+        <p className="group-page__eyebrow">{group.category}</p>
+        <h1 className="group-page__title" id={group.id}>
+          {group.icon ? <group.icon size={22} aria-hidden="true" /> : null}
+          {group.group}
+        </h1>
+      </header>
+
+      {group.items.map((it) => (
+        <section
+          key={it.id}
+          id={it.id}
+          className="group-section"
+          aria-label={it.label}
+        >
+          <Suspense fallback={<SectionFallback />}>
+            <it.Component />
+          </Suspense>
+        </section>
+      ))}
+    </article>
   );
+}
+
+export default function App() {
+  const initial = readRoute();
+  const [page, setPage] = useState(initial.page);
+  const [anchor, setAnchor] = useState(initial.anchor);
+  const [navSeq, setNavSeq] = useState(0); // force le re-scroll même si (page, anchor) inchangés
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [openCats, setOpenCats] = useState(() => {
+    const g = findGroup(initial.page);
+    return new Set([g?.category].filter(Boolean));
+  });
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState(null); // { entries, run } — chargé à la demande
   const [theme, setThemeState] = useState(getTheme);
@@ -97,25 +171,17 @@ export default function App() {
     setThemeState(next);
   }, [theme]);
 
-  const entry = useMemo(() => findEntry(active), [active]);
-  const ActiveComponent = entry.Component;
+  const group = useMemo(() => (page === HOME.id ? null : findGroup(page)), [page]);
 
-  const go = useCallback((id) => {
-    const sameSection = readHash() === id;
-    setActive(id);
+  const go = useCallback((groupId, itemId = null) => {
+    const nextHash = hashFor(groupId, itemId);
+    setPage(groupId);
+    setAnchor(groupId === HOME.id ? null : itemId);
+    setNavSeq((n) => n + 1);
     setMenuOpen(false);
     setQuery("");
-    if (window.location.hash.slice(1) !== id) {
-      window.location.hash = id;
-    }
-    /* Déjà sur la section : l'effet de scroll ne se déclenche pas, on remonte à la main. */
-    if (sameSection) {
-      mainRef.current?.focus();
-      try {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } catch {
-        /* jsdom */
-      }
+    if (window.location.hash !== nextHash) {
+      window.location.hash = nextHash;
     }
   }, []);
 
@@ -142,29 +208,40 @@ export default function App() {
 
   const searching = query.trim().length >= 2;
 
-  /* Navigation arrière/avant du navigateur. */
+  /* Navigation arrière/avant du navigateur (et liens profonds hérités). */
   useEffect(() => {
-    const onHashChange = () => setActive(readHash());
+    const onHashChange = () => {
+      const r = readRoute();
+      setPage(r.page);
+      setAnchor(r.anchor);
+      setNavSeq((n) => n + 1);
+    };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  /* La catégorie de la section active reste dépliée. */
+  /* La catégorie de la page active reste dépliée. */
   useEffect(() => {
-    const cat = findEntry(active).category;
+    const cat = findGroup(page)?.category;
     if (!cat) return;
     setOpenCats((prev) => (prev.has(cat) ? prev : new Set(prev).add(cat)));
-  }, [active]);
+  }, [page]);
 
-  /* Changement de section : focus + retour en haut. */
+  /* Normalise l'URL des liens profonds hérités (#section → #groupe/section). */
+  useEffect(() => {
+    if (page === HOME.id) return;
+    const canonical = hashFor(page, anchor);
+    if (window.location.hash !== canonical) {
+      window.history.replaceState(null, "", canonical);
+    }
+  }, [page, anchor]);
+
+  /* Changement de page ou d'ancre : focus + défilement. */
   useEffect(() => {
     mainRef.current?.focus();
-    try {
-      window.scrollTo({ top: 0 });
-    } catch {
-      /* jsdom */
-    }
-  }, [active]);
+    if (anchor) scrollToAnchor(anchor);
+    else scrollToTop();
+  }, [page, anchor, navSeq]);
 
   /* Échap ferme le tiroir mobile. */
   useEffect(() => {
@@ -284,7 +361,7 @@ export default function App() {
                   type="button"
                   className="nav__result"
                   style={{ "--accent": r.accent }}
-                  onClick={() => go(r.id)}
+                  onClick={() => go(r.groupId, r.id)}
                 >
                   <span className="nav__result-label">{r.label}</span>
                   <span className="nav__result-path">
@@ -302,13 +379,13 @@ export default function App() {
             <button
               type="button"
               className="nav__btn nav__home"
-              data-active={active === "home" || undefined}
-              aria-current={active === "home" ? "page" : undefined}
+              data-active={page === "home" || undefined}
+              aria-current={page === "home" ? "page" : undefined}
               onClick={() => go("home")}
             >
               <HomeIcon className="nav__btn-icon" size={15} aria-hidden="true" />
               <span className="nav__btn-label">Accueil</span>
-              {active === "home" ? (
+              {page === "home" ? (
                 <ChevronRight className="nav__btn-caret" size={14} aria-hidden="true" />
               ) : null}
             </button>
@@ -335,28 +412,41 @@ export default function App() {
                   </button>
                   {open ? (
                     <div className="nav__cat-body">
-                      {cat.groups.map((g) => (
-                        <div className="nav__group" key={g.group}>
-                          <div
-                            className="nav__group-label"
-                            style={{ "--accent": g.accent }}
-                          >
-                            {g.icon ? (
-                              <g.icon size={13} aria-hidden="true" />
-                            ) : null}
-                            {g.group}
-                          </div>
-                          {g.items.map((it) => (
+                      {cat.groups.map((g) => {
+                        const onPage = page === g.id;
+                        return (
+                          <div className="nav__group" key={g.id}>
                             <NavButton
-                              key={it.id}
-                              label={it.label}
+                              label={g.group}
                               accent={g.accent}
-                              active={active === it.id}
-                              onClick={() => go(it.id)}
+                              icon={g.icon}
+                              active={onPage}
+                              onClick={() => go(g.id)}
                             />
-                          ))}
-                        </div>
-                      ))}
+                            {onPage ? (
+                              <div
+                                className="nav__anchors"
+                                style={{ "--accent": g.accent }}
+                              >
+                                {g.items.map((it) => (
+                                  <button
+                                    key={it.id}
+                                    type="button"
+                                    className="nav__anchor"
+                                    data-active={anchor === it.id || undefined}
+                                    aria-current={
+                                      anchor === it.id ? "location" : undefined
+                                    }
+                                    onClick={() => go(g.id, it.id)}
+                                  >
+                                    {it.label}
+                                  </button>
+                                ))}
+                              </div>
+                            ) : null}
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : null}
                 </section>
@@ -368,10 +458,14 @@ export default function App() {
 
       <main id="section" className="app__main" tabIndex={-1} ref={mainRef}>
         <div className="app__content">
-          <div className="section-view" key={active}>
-            <Suspense fallback={<SectionFallback />}>
-              {ActiveComponent ? <ActiveComponent /> : null}
-            </Suspense>
+          <div className="section-view" key={page}>
+            {page === HOME.id ? (
+              <Suspense fallback={<SectionFallback />}>
+                <HOME.Component />
+              </Suspense>
+            ) : group ? (
+              <GroupPage group={group} />
+            ) : null}
           </div>
         </div>
       </main>

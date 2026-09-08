@@ -85,7 +85,7 @@ export default function Home() {
 
         <ol className="toc">
           {NAV.map((cat, i) => {
-            const id = cat.groups[0]?.items[0]?.id;
+            const id = cat.groups[0]?.id;
             return (
               <li
                 key={cat.category}
@@ -107,7 +107,7 @@ export default function Home() {
 
                 <ul className="toc__subs">
                   {cat.groups.map((g) => {
-                    const gid = g.items[0]?.id;
+                    const gid = g.id;
                     return (
                       <li key={g.group}>
                         <a className="toc__sub" href={gid ? `#${gid}` : "#"}>
@@ -145,7 +145,7 @@ export default function Home() {
                   <a
                     key={it.id}
                     className="home__index-link"
-                    href={`#${it.id}`}
+                    href={`#${g.id}/${it.id}`}
                   >
                     {it.label}
                   </a>

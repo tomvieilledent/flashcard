@@ -754,6 +754,85 @@ a:hover {
   padding: 8px 0;
 }
 
+/* ---- Sous-liste d'ancres (sections de la page de groupe active) ---- */
+
+.nav__anchors {
+  display: flex;
+  flex-direction: column;
+  margin: 2px 0 6px;
+  padding-left: 22px;
+  border-left: 1px solid var(--line);
+  margin-left: 15px;
+}
+.nav__anchor {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.nav__anchor:hover {
+  background: var(--fill);
+  color: var(--text);
+}
+.nav__anchor[data-active] {
+  color: var(--accent, var(--text));
+  font-weight: 600;
+}
+
+/* ---- Page de groupe : titre-ancre + sections ancrées -------------- */
+
+.group-page {
+  display: flex;
+  flex-direction: column;
+}
+.group-page__head {
+  margin-bottom: 8px;
+}
+.group-page__eyebrow {
+  margin: 0 0 6px;
+  color: var(--accent, var(--muted));
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.group-page__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5vw, 40px);
+  font-weight: 700;
+  color: var(--text);
+  scroll-margin-top: calc(var(--topbar-h) + 16px);
+}
+.group-page__title > svg {
+  color: var(--accent, var(--text));
+}
+
+.group-section {
+  scroll-margin-top: calc(var(--topbar-h) + 16px);
+}
+.group-section + .group-section {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+/* Le premier <h2> d'une section ouvre déjà large : on resserre le liseré. */
+.group-section + .group-section > div > h2:first-child {
+  margin-top: 18px;
+}
+
 /* ---- Desktop --------------------------------------------------- */
 
 @media (min-width: 900px) {

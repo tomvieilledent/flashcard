@@ -123,9 +123,9 @@ export const NAV = [
         icon: Layers,
         items: [
           { id: "c-arrays", label: "Tableaux", icon: Table2, file: "foundations/CArrays.jsx" },
+          { id: "c-strings", label: "Chaînes de caractères", icon: ScrollText, file: "foundations/CStrings.jsx" },
           { id: "c-pointers", label: "Pointeurs", icon: Share2, file: "foundations/CPointers.jsx" },
           { id: "c-multidim-pointers", label: "Tableaux 2D & pointeurs de pointeurs", icon: Layers, file: "foundations/CMultidimPointers.jsx" },
-          { id: "c-strings", label: "Chaînes de caractères", icon: ScrollText, file: "foundations/CStrings.jsx" },
           { id: "c-memory-layout", label: "Organisation mémoire", icon: Boxes, file: "foundations/CMemoryLayout.jsx" },
           { id: "c-malloc", label: "Mémoire dynamique : malloc, free", icon: Boxes, file: "foundations/CMalloc.jsx" },
         ],
@@ -294,13 +294,13 @@ export const NAV = [
         accent: AI_ACCENT,
         icon: Sparkles,
         items: [
-          { id: "intent-driven-development", label: "Intent-Driven Development & dette sémantique", icon: Compass, file: "agentic-ai/IntentDrivenDevelopment.jsx" },
-          { id: "model-confrontation", label: "Confrontation de deux modèles (cas pratique)", icon: Swords, file: "agentic-ai/ModelConfrontation.jsx" },
           { id: "llm-architecture", label: "Architecture des LLMs (tokens & probabilités)", icon: Cpu, file: "agentic-ai/LlmArchitecture.jsx" },
           { id: "context-window", label: "Fenêtre de contexte & amnésie", icon: Brain, file: "agentic-ai/ContextWindow.jsx" },
           { id: "copilot-fim-rag", label: "Entrailles de Copilot — FIM & RAG local", icon: Layers, file: "agentic-ai/CopilotFimRag.jsx" },
           { id: "interaction-modes-operators", label: "Modes d'interaction & opérateurs de ciblage", icon: Network, file: "agentic-ai/InteractionModesOperators.jsx" },
           { id: "prompt-engineering-code-centric", label: "Prompt engineering « code-centric » & N-shot", icon: ListChecks, file: "agentic-ai/PromptEngineeringCodeCentric.jsx" },
+          { id: "intent-driven-development", label: "Intent-Driven Development & dette sémantique", icon: Compass, file: "agentic-ai/IntentDrivenDevelopment.jsx" },
+          { id: "model-confrontation", label: "Confrontation de deux modèles (cas pratique)", icon: Swords, file: "agentic-ai/ModelConfrontation.jsx" },
           { id: "ai-finops", label: "Modèle économique (FinOps 101)", icon: Coins, file: "agentic-ai/AiFinops.jsx" },
         ],
       },
@@ -352,19 +352,7 @@ export const NAV = [
   },
 ];
 
-/* Résolution du composant paresseux depuis le fichier de la section. */
-for (const cat of NAV) {
-  for (const group of cat.groups) {
-    for (const item of group.items) {
-      const key = `../features/${item.file}`;
-      const loader = loaders[key];
-      if (!loader) throw new Error(`Section introuvable : ${key}`);
-      item.Component = lazy(loader);
-    }
-  }
-}
-
-/* Entrée d'accueil : hors catégories, section par défaut. */
+/* Entrée d'accueil : hors catégories, page par défaut. */
 export const HOME = {
   id: "home",
   label: "Accueil",
@@ -373,30 +361,91 @@ export const HOME = {
   Component: lazy(loaders["../features/home/Home.jsx"]),
 };
 
-export const ALL_IDS = [
-  HOME.id,
-  ...NAV.flatMap((cat) =>
-    cat.groups.flatMap((group) => group.items.map((item) => item.id))
-  ),
-];
+/* Slug d'ancre à partir d'un libellé de groupe (sans accents, kebab-case). */
+function slugify(label) {
+  return label
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/* Résolution :
+   - id d'ancre stable sur chaque groupe (= 1 page) ;
+   - lien groupe ↔ catégorie ;
+   - composant paresseux + table item → groupe pour les liens profonds. */
+const GROUP_BY_ID = new Map();
+const ITEM_TO_GROUP = new Map();
+
+for (const cat of NAV) {
+  for (const group of cat.groups) {
+    group.id = group.id || slugify(group.group);
+    group.category = cat.category;
+    group.catIcon = cat.icon;
+    if (GROUP_BY_ID.has(group.id)) {
+      throw new Error(`Id de groupe en double : ${group.id}`);
+    }
+    GROUP_BY_ID.set(group.id, group);
+    for (const item of group.items) {
+      const key = `../features/${item.file}`;
+      const loader = loaders[key];
+      if (!loader) throw new Error(`Section introuvable : ${key}`);
+      item.Component = lazy(loader);
+      if (ITEM_TO_GROUP.has(item.id)) {
+        throw new Error(`Id de section en double : ${item.id}`);
+      }
+      ITEM_TO_GROUP.set(item.id, group.id);
+    }
+  }
+}
+
+export const GROUP_IDS = [...GROUP_BY_ID.keys()];
+export const ITEM_IDS = [...ITEM_TO_GROUP.keys()];
+
+/* Pages navigables : accueil + une page par groupe. */
+export const PAGE_IDS = [HOME.id, ...GROUP_IDS];
+
+/* Toutes les ancres de contenu (accueil + sections), pour la validation d'URL. */
+export const ALL_IDS = [HOME.id, ...ITEM_IDS];
 
 export const DEFAULT_ID = HOME.id;
 
-export function findEntry(id) {
-  if (id === HOME.id) {
-    return { ...HOME, group: null, groupAccent: null, category: null };
-  }
-  for (const cat of NAV) {
-    for (const group of cat.groups) {
-      const hit = group.items.find((i) => i.id === id);
-      if (hit) {
-        return { ...hit, group: group.group, groupAccent: group.accent, category: cat.category };
-      }
-    }
-  }
-  return { ...HOME, group: null, groupAccent: null, category: null };
+export function findGroup(groupId) {
+  return GROUP_BY_ID.get(groupId) || null;
 }
 
-export function findComponent(id) {
-  return findEntry(id).Component;
+export function groupIdOfItem(itemId) {
+  return ITEM_TO_GROUP.get(itemId) || null;
+}
+
+/* Analyse un hash → { groupId, itemId }.
+   Formes acceptées :
+     #home
+     #<groupId>
+     #<groupId>/<itemId>
+     #<itemId>            (lien profond hérité : redirigé vers sa page de groupe) */
+export function parseHash(rawHash) {
+  const h = (rawHash || "").replace(/^#/, "").trim();
+  if (!h || h === HOME.id) return { groupId: HOME.id, itemId: null };
+
+  const [head, tail] = h.split("/");
+
+  if (GROUP_BY_ID.has(head)) {
+    const group = GROUP_BY_ID.get(head);
+    const itemId = tail && group.items.some((i) => i.id === tail) ? tail : null;
+    return { groupId: head, itemId };
+  }
+
+  if (ITEM_TO_GROUP.has(head)) {
+    return { groupId: ITEM_TO_GROUP.get(head), itemId: head };
+  }
+
+  return { groupId: HOME.id, itemId: null };
+}
+
+/* Hash canonique d'une page (+ ancre de section optionnelle). */
+export function hashFor(groupId, itemId) {
+  if (!groupId || groupId === HOME.id) return `#${HOME.id}`;
+  return itemId ? `#${groupId}/${itemId}` : `#${groupId}`;
 }

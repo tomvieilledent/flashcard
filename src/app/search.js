@@ -25,6 +25,7 @@ export function buildIndex() {
     const text = toText(sources[`../features/${HOME.file}`] || "");
     entries.push({
       id: HOME.id,
+      groupId: HOME.id,
       label: HOME.label,
       group: "Présentation",
       category: "Accueil",
@@ -42,6 +43,7 @@ export function buildIndex() {
         const text = toText(raw);
         entries.push({
           id: item.id,
+          groupId: group.id,
           label: item.label,
           group: group.group,
           category: cat.category,

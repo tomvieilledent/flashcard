@@ -2,7 +2,7 @@ import { render, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, beforeEach } from "vitest";
 import App from "./App.jsx";
-import { NAV, ALL_IDS } from "./nav.js";
+import { NAV, GROUP_IDS, ALL_IDS, parseHash } from "./nav.js";
 
 beforeEach(() => {
   window.location.hash = "";
@@ -47,65 +47,91 @@ describe("App — structure", () => {
     );
   });
 
-  it("liste les 5 catégories", () => {
+  it("liste les catégories", () => {
     render(<App />);
     for (const name of ["Frontend", "Backend", "DevOps", "Documentation & méthode", "IA & agents"]) {
       expect(screen.getByRole("button", { name: new RegExp(name, "i") })).toBeInTheDocument();
     }
   });
 
-  it("une entrée de navigation par section, catégories dépliées", async () => {
+  it("une entrée de navigation par groupe (= page), catégories dépliées", async () => {
     const user = userEvent.setup();
     render(<App />);
     await expandAllCategories(user);
-    expect(navButtons().length).toBe(ALL_IDS.length);
+    // 1 bouton Accueil + 1 bouton par groupe
+    expect(navButtons().length).toBe(GROUP_IDS.length + 1);
   });
 
-  it("plie / déplie une catégorie", async () => {
+  it("plie / déplie une catégorie et montre ses groupes", async () => {
     const user = userEvent.setup();
     render(<App />);
     const devops = screen.getByRole("button", { name: /^DevOps/i });
     expect(devops).toHaveAttribute("aria-expanded", "false");
     await user.click(devops);
     expect(devops).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByRole("button", { name: "Le Dockerfile" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^Docker/ })).toBeInTheDocument();
   });
 });
 
 describe("App — navigation SPA", () => {
-  it("change la section et le hash au clic", async () => {
+  it("ouvre la page d'un groupe et pose son hash au clic", async () => {
     const user = userEvent.setup();
     render(<App />);
     await expandAllCategories(user);
     const main = document.querySelector("main");
 
-    await user.click(screen.getByRole("button", { name: "Le Dockerfile" }));
+    await user.click(screen.getByRole("button", { name: /^Docker/ }));
+    expect(
+      await within(main).findByRole("heading", { level: 1, name: "Docker" })
+    ).toBeInTheDocument();
+    expect(window.location.hash).toBe("#docker");
+  });
+
+  it("un sous-élément est une ancre de la page de groupe", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await expandAllCategories(user);
+    const main = document.querySelector("main");
+
+    await user.click(screen.getByRole("button", { name: /^Docker/ }));
+    // le sous-élément n'apparaît qu'une fois la page du groupe active
+    const anchor = await screen.findByRole("button", { name: "Le Dockerfile" });
+    await user.click(anchor);
+
+    expect(window.location.hash).toBe("#docker/docker-dockerfile");
+    expect(document.getElementById("docker-dockerfile")).toBeInTheDocument();
     expect(
       await within(main).findByRole("heading", { name: /Dockerfile/ })
     ).toBeInTheDocument();
-    expect(window.location.hash).toBe("#docker-dockerfile");
   });
 
-  it("ouvre une section depuis le hash de l'URL (et déplie sa catégorie)", async () => {
+  it("ouvre la bonne page depuis un lien profond hérité (#section)", async () => {
     window.location.hash = "#uml-class-diagram";
     render(<App />);
     const main = document.querySelector("main");
     expect(
+      await within(main).findByRole("heading", { level: 1, name: /Modélisation UML/ })
+    ).toBeInTheDocument();
+    expect(
       await within(main).findByRole("heading", { name: /Diagramme de classes/ })
     ).toBeInTheDocument();
+    await waitFor(() =>
+      expect(window.location.hash).toBe("#modelisation-uml/uml-class-diagram")
+    );
   });
 
-  it("rend chaque section sans planter", async () => {
+  it("rend chaque page de groupe sans planter", async () => {
     const user = userEvent.setup();
     render(<App />);
     await expandAllCategories(user);
     const main = document.querySelector("main");
 
     for (const btn of navButtons()) {
+      if (btn.classList.contains("nav__home")) continue;
       const label = btn.textContent;
       await user.click(btn);
-      const h2 = await within(main).findByRole("heading", { level: 2 });
-      expect(h2, `pas de titre visible après « ${label} »`).toBeInTheDocument();
+      const h2s = await within(main).findAllByRole("heading", { level: 2 });
+      expect(h2s.length, `pas de section visible sur « ${label} »`).toBeGreaterThan(0);
     }
   });
 });
@@ -123,11 +149,10 @@ describe("App — recherche", () => {
     await waitFor(() => {
       expect(within(results).getByText("Diagramme de classes")).toBeInTheDocument();
     });
-    // au moins deux sections mentionnent UML
     expect(results.querySelectorAll(".nav__result").length).toBeGreaterThanOrEqual(2);
   });
 
-  it("un résultat de recherche ouvre la section et vide le champ", async () => {
+  it("un résultat de recherche ouvre la page, scrolle vers la section et vide le champ", async () => {
     const user = userEvent.setup();
     render(<App />);
     const input = screen.getByRole("searchbox", { name: /rechercher/i });
@@ -141,14 +166,14 @@ describe("App — recherche", () => {
     expect(
       await within(main).findByRole("heading", { name: /Dockerfile/ })
     ).toBeInTheDocument();
+    expect(window.location.hash).toBe("#docker/docker-dockerfile");
     expect(input).toHaveValue("");
   });
 });
 
 describe("nav.js", () => {
   it("chaque section a un id unique et un composant résolu", () => {
-    const ids = ALL_IDS;
-    expect(new Set(ids).size).toBe(ids.length);
+    expect(new Set(ALL_IDS).size).toBe(ALL_IDS.length);
     for (const cat of NAV) {
       for (const group of cat.groups) {
         for (const item of group.items) {
@@ -156,5 +181,29 @@ describe("nav.js", () => {
         }
       }
     }
+  });
+
+  it("chaque groupe a un id d'ancre unique", () => {
+    expect(new Set(GROUP_IDS).size).toBe(GROUP_IDS.length);
+    for (const cat of NAV) {
+      for (const group of cat.groups) {
+        expect(typeof group.id, group.group).toBe("string");
+        expect(group.id.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("parseHash résout les 3 formes d'URL", () => {
+    expect(parseHash("")).toEqual({ groupId: "home", itemId: null });
+    expect(parseHash("#docker")).toEqual({ groupId: "docker", itemId: null });
+    expect(parseHash("#docker/docker-dockerfile")).toEqual({
+      groupId: "docker",
+      itemId: "docker-dockerfile",
+    });
+    // lien profond hérité : l'item seul renvoie vers sa page de groupe
+    expect(parseHash("#docker-dockerfile")).toEqual({
+      groupId: "docker",
+      itemId: "docker-dockerfile",
+    });
   });
 });
