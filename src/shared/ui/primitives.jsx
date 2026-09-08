@@ -22,6 +22,10 @@ export function Code({ children }) {
         margin: "14px 0",
       }}
     >
+      {/* Sûr tant que `children` reste du contenu STATIQUE du dépôt : highlight()
+          échappe l'entrée (hljs.highlight / escapeHtml) et ne produit que des
+          <span> de coloration. Ne JAMAIS passer ici du contenu distant ou saisi
+          par un utilisateur sans assainissement (DOMPurify) — ce serait un XSS. */}
       <code
         className="hljs"
         dangerouslySetInnerHTML={{ __html: html }}
