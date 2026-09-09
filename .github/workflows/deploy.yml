@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://vlldnt.fr
+      url: https://flashcard.vlldnt.fr
     env:
-      DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/var/www/vlldnt.fr' }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/var/www/flashcard.vlldnt.fr' }}
       SSH_PORT: ${{ vars.SSH_PORT || '22' }}
     steps:
       - name: Checkout

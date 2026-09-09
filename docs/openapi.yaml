@@ -7,7 +7,7 @@ info:
     site reste statique ; devient exécutable si un backend est déployé sur le
     VPS. Sert d'exercice pour REST, OpenAPI 3.0 et JSON Schema.
 servers:
-  - url: https://www.vlldnt.fr/api/v1
+  - url: https://flashcard.vlldnt.fr/api/v1
 
 tags:
   - name: weeks

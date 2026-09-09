@@ -238,8 +238,8 @@ export default function App() {
   /* Titre de l'onglet dynamique — utile pour l'historique et les liens
      profonds partagés (le routage par #hash ne le fait pas seul). */
   useEffect(() => {
-    const base = "Holberton — spécialisation Full Stack";
-    document.title = group ? `${group.group} · Holberton Full Stack` : base;
+    const base = "Flashcard — notes de cours dev fullstack";
+    document.title = group ? `${group.group} · Flashcard` : base;
   }, [group]);
 
   /* Scrollspy : met en surbrillance la section survolée par le défilement. */
@@ -335,7 +335,7 @@ export default function App() {
         >
           <Menu size={22} aria-hidden="true" />
         </button>
-        <span className="app__brand-mobile">Holberton · Full Stack</span>
+        <span className="app__brand-mobile">Flashcard</span>
       </header>
 
       <div
@@ -354,8 +354,8 @@ export default function App() {
           >
             <BrandMark />
             <span className="app__brand-text">
-              <span className="app__brand-name">Holberton</span>
-              <span className="app__brand-sub">Full Stack</span>
+              <span className="app__brand-name">Flashcard</span>
+              <span className="app__brand-sub">Notes de cours</span>
             </span>
           </button>
           <button

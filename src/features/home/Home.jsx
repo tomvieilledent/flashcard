@@ -5,7 +5,7 @@
 import { Github } from "lucide-react";
 import { NAV } from "../../app/nav.js";
 
-const REPO = "https://github.com/tomvieilledent/holberton-spe-fullstack";
+const REPO = "https://github.com/tomvieilledent/flashcard";
 
 const FICHES = (n) => `${n} fiche${n > 1 ? "s" : ""}`;
 
@@ -35,7 +35,7 @@ function Seal() {
         <circle cx="50" cy="50" r="28" fill="none" stroke="currentColor" strokeWidth="0.8" opacity="0.3" />
         <text className="home__seal-text" fontSize="7.3" letterSpacing="1.7">
           <textPath href="#seal-arc" startOffset="0">
-            · CARNET DE RÉVISION · HOLBERTON FULL STACK&nbsp;
+            · FLASHCARD · NOTES DE COURS DÉVELOPPEMENT FULLSTACK&nbsp;
           </textPath>
         </text>
       </g>
@@ -48,7 +48,7 @@ function Seal() {
         fontSize="30"
         fontWeight="600"
       >
-        V
+        F
       </text>
     </svg>
   );
@@ -57,22 +57,22 @@ function Seal() {
 export default function Home() {
   return (
     <div className="home">
-      <section className="home__hero" aria-label="Holberton — Spécialisation Full Stack">
+      <section className="home__hero" aria-label="Flashcard — notes de cours de développement fullstack">
         <p className="home__runhead">
-          <span>Carnet de révision</span>
+          <span>Notes de cours</span>
           <b>№ 01</b>
-          <span>Spécialisation Full Stack</span>
+          <span>Développement fullstack</span>
         </p>
 
-        <p className="home__kicker">vlldnt.fr</p>
-        <h2 className="home__title">Holberton — Spécialisation Full Stack</h2>
+        <p className="home__kicker">flashcard.vlldnt.fr</p>
+        <h2 className="home__title">Flashcard</h2>
         <p className="home__tagline">
-          Le carnet de révision de l'année, mis à jour à chaque notion.
+          Les notes de cours de développement fullstack, mises à jour au fil des cours.
         </p>
         <p className="home__lead">
-          Toutes les notions vues depuis le début de la spécialisation,
-          regroupées par domaine et reliées entre elles : shell, C, front,
-          back, bases de données, DevOps, CI/CD, modélisation et IA agentique.
+          Toutes les notions vues depuis le début de l'année, regroupées par
+          domaine et reliées entre elles : shell, C, front, back, bases de
+          données, DevOps, CI/CD, modélisation et IA agentique.
           La barre latérale ouvre chaque section ; la recherche retrouve une
           notion par mot-clé.
         </p>
@@ -162,7 +162,7 @@ export default function Home() {
           <span>Écrit et tenu à jour tout au long de l'année.</span>
           <a href={REPO} target="_blank" rel="noreferrer">
             <Github size={14} aria-hidden="true" />
-            github.com/tomvieilledent/holberton-spe-fullstack
+            github.com/tomvieilledent/flashcard
           </a>
         </div>
       </section>
@@ -175,8 +175,8 @@ export default function Home() {
         <h3 className="home__legal-title">Mentions légales</h3>
         <p>
           <strong>Éditeur & directeur de la publication :</strong> Tom
-          Vieilledent — projet personnel non commercial, dans le cadre de la
-          formation Holberton School. Contact :{" "}
+          Vieilledent — projet personnel non commercial, à vocation
+          pédagogique. Contact :{" "}
           <a href="mailto:tomvieilledent@gmail.com">tomvieilledent@gmail.com</a>.
         </p>
         <p>

@@ -25,7 +25,8 @@ function groupButtonsOf(catName) {
 describe("App — structure", () => {
   it("affiche la marque, sans vue d'ensemble", async () => {
     render(<App />);
-    expect(screen.getByText("Holberton")).toBeInTheDocument();
+    const brand = screen.getByRole("button", { name: "Aller à l'accueil" });
+    expect(within(brand).getByText("Flashcard")).toBeInTheDocument();
     expect(screen.queryByText("Vue d'ensemble")).not.toBeInTheDocument();
     expect(screen.queryByText("Récap de la semaine")).not.toBeInTheDocument();
   });
@@ -34,14 +35,14 @@ describe("App — structure", () => {
     render(<App />);
     const main = document.querySelector("main");
     expect(
-      await within(main).findByRole("heading", { name: /Holberton — Spécialisation Full Stack/i })
+      await within(main).findByRole("heading", { name: /^Flashcard$/i })
     ).toBeInTheDocument();
     const link = within(main).getByRole("link", {
-      name: /tomvieilledent\/holberton-spe-fullstack/,
+      name: /tomvieilledent\/flashcard/,
     });
     expect(link).toHaveAttribute(
       "href",
-      "https://github.com/tomvieilledent/holberton-spe-fullstack"
+      "https://github.com/tomvieilledent/flashcard"
     );
     expect(screen.getByRole("button", { name: /^Accueil/ })).toHaveAttribute(
       "aria-current",

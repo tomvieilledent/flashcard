@@ -1,142 +1,120 @@
-# Déploiement — VPS OVH, `https://vlldnt.fr`
+# Déploiement — `https://flashcard.vlldnt.fr`
 
-Le site est un build statique (`dist/`) servi par **nginx** sur un **VPS OVH**.
-Chaque `push` sur `main` reconstruit et publie automatiquement via
-`.github/workflows/deploy.yml` (`rsync` over SSH).
-
-```
-push main ─► GitHub Actions ─► npm ci + npm run build ─► rsync dist/ ─► /var/www/vlldnt.fr ─► nginx ─► https://vlldnt.fr
-```
-
-## 1. État constaté du VPS (2026-09-02)
-
-| Point | Constat |
-| --- | --- |
-| IPv4 / IPv6 | `<IPv4 du VPS>` / `<IPv6 du VPS>` (voir la zone DNS OVH / `dig +short vlldnt.fr`) |
-| OS | **Ubuntu** (OpenSSH 10.2p1 → Ubuntu 25.x) |
-| SSH | port **22**, joignable |
-| nginx | **déjà installé** (`nginx/1.28.3 (Ubuntu)`), sert `:80` et `:443` |
-| TLS | un certificat valide pour `vlldnt.fr` est **déjà en place** ; HTTP→HTTPS déjà actif |
-| Site actuel | une app **« Avyro — Training & Room »** (React/Vite) est servie sur `https://vlldnt.fr` |
-| Firewall OVH (edge) | 22 / 80 / 443 joignables → rien à ouvrir |
-| DNS | `A vlldnt.fr` et `A www.vlldnt.fr` → IPv4 du VPS **déjà OK** ; pas de `AAAA` |
-
-> ⚠️ **Le site « Avyro » sera remplacé.** `vps-setup.sh` sauvegarde
-> `/etc/nginx` (`/etc/nginx.bak.<date>`), désactive tout vhost qui déclare
-> `server_name vlldnt.fr` (renommé en `*.disabled`) puis installe le nôtre.
-> Les fichiers de l'ancien site restent sur le disque, simplement plus servis.
-
-## 2. Ce qu'il reste à faire / me fournir
-
-| Élément | Détail |
-| --- | --- |
-| Dépôt GitHub | `gh repo create` (bloqué de mon côté, à lancer par toi) |
-| Exécution de `scripts/vps-setup.sh` | en root sur le VPS (ou me donner un accès SSH) |
-| Clé de déploiement | générée ci-dessous, ajoutée en secret GitHub |
-| Email Let's Encrypt | `tomvieilledent@gmail.com` (modifiable) |
-| `AAAA` (optionnel) | `AAAA vlldnt.fr` et `AAAA www.vlldnt.fr` → IPv6 du VPS |
-
-## 3. DNS
-
-Zone gérée chez **OVH**. État actuel + ajout optionnel :
+Le site est un build statique (`dist/`) servi par **nginx** sur le **VPS OVH**,
+sur le sous-domaine `flashcard.vlldnt.fr`. La landing publique du projet est une
+page du portail : `https://vlldnt.fr/flashcard` (repo séparé `vlldnt-portal`).
 
 ```
-A     vlldnt.fr        <IPv4 du VPS>     # déjà présent
-A     www.vlldnt.fr    <IPv4 du VPS>     # déjà présent
-AAAA  vlldnt.fr        <IPv6 du VPS>     # à ajouter (optionnel)
-AAAA  www.vlldnt.fr    <IPv6 du VPS>     # à ajouter (optionnel)
+push main ─► GitHub Actions ─► npm ci + npm run build ─► rsync dist/ ─► /var/www/flashcard.vlldnt.fr ─► nginx ─► https://flashcard.vlldnt.fr
 ```
 
-> Les adresses réelles sont dans la zone DNS OVH (et publiques via `dig`) ;
-> elles ne sont pas recopiées dans le dépôt.
+Chaque `push` sur `main` reconstruit et publie via `.github/workflows/deploy.yml`
+(`rsync` over SSH). `workflow_dispatch` permet un déclenchement manuel.
 
-Les enregistrements `MX` / `SPF` / `TXT` de la messagerie OVH ne sont **pas**
-touchés. `dig +short vlldnt.fr` pour vérifier.
+## Pré-requis (déjà en place)
 
-## 4. Générer la clé de déploiement (sur ta machine)
+L'**apex** `vlldnt.fr` est provisionné par le repo `vlldnt-portal` :
+nginx + certbot, utilisateur `deploy`, `/var/www/certbot`, snippet
+`/etc/nginx/snippets/vlldnt-security-headers.conf`, hook de reload
+post-renouvellement, pare-feu UFW (22 / 80 / 443). Le VPS écoute déjà en HTTPS.
 
-```bash
-ssh-keygen -t ed25519 -f ~/.ssh/vlldnt_deploy -N "" -C "gha-deploy-vlldnt"
-```
-
-- `~/.ssh/vlldnt_deploy.pub` → passée au script du VPS (`CI_PUBKEY`)
-- `~/.ssh/vlldnt_deploy` (privée) → secret GitHub `SSH_KEY`
-
-## 5. Provisionner le VPS (une fois, en root)
-
-Copier `scripts/vps-setup.sh` sur le VPS, puis :
-
-```bash
-export EMAIL="tomvieilledent@gmail.com"
-export CI_PUBKEY="$(cat ~/.ssh/vlldnt_deploy.pub)"   # depuis ta machine, colle la valeur
-bash vps-setup.sh
-```
-
-Le script : installe nginx + certbot, crée l'utilisateur `deploy`, la racine
-`/var/www/vlldnt.fr`, le pare-feu UFW, obtient le certificat, écrit le snippet
-`/etc/nginx/snippets/vlldnt-security-headers.conf`
-(`deploy/nginx/vlldnt-security-headers.conf`), pose le vhost final
-(`deploy/nginx/vlldnt.fr.conf`) et le hook de reload post-renouvellement.
-
-> **Mise à jour des en-têtes seuls** (CSP, COOP, HSTS…) sans reprovisionner :
-> recopier `deploy/nginx/vlldnt-security-headers.conf` dans
-> `/etc/nginx/snippets/` puis `sudo nginx -t && sudo systemctl reload nginx`.
-> Les `add_header` sont répétés dans chaque `location` via `include` : nginx
-> cesse d'hériter des en-têtes parents dès qu'un `location` en déclare un.
-
-## 6. Secrets & variables GitHub
-
-Repo → *Settings → Secrets and variables → Actions* :
+Secrets GitHub de **ce** repo (`Settings → Secrets and variables → Actions`) —
+mêmes valeurs que le portail :
 
 | Type | Nom | Valeur |
 | --- | --- | --- |
-| Secret | `SSH_HOST` | IP ou hostname du VPS |
+| Secret | `SSH_HOST` | IP du VPS |
 | Secret | `SSH_USER` | `deploy` |
-| Secret | `SSH_KEY` | contenu de `~/.ssh/vlldnt_deploy` (clé privée) |
-| Variable | `SSH_PORT` | `22` (optionnel, défaut 22) |
-| Variable | `DEPLOY_PATH` | `/var/www/vlldnt.fr` (optionnel, valeur par défaut) |
+| Secret | `SSH_KEY` | clé privée de déploiement |
+| Secret | `SSH_KNOWN_HOSTS` | sortie de `ssh-keyscan -p 22 <IP>` (évite le TOFU) |
+| Variable | `SSH_PORT` | `22` (optionnel) |
+| Variable | `DEPLOY_PATH` | `/var/www/flashcard.vlldnt.fr` (optionnel, valeur par défaut) |
 
-En CLI :
+## Mise en route du sous-domaine (une fois)
 
-```bash
-gh secret set SSH_HOST  --repo tomvieilledent/holberton-spe-fullstack --body "<IP>"
-gh secret set SSH_USER  --repo tomvieilledent/holberton-spe-fullstack --body "deploy"
-gh secret set SSH_KEY   --repo tomvieilledent/holberton-spe-fullstack < ~/.ssh/vlldnt_deploy
+### 1. DNS (OVH)
+
+```
+A  flashcard.vlldnt.fr  <IPv4 du VPS>
 ```
 
-## 7. Déployer
+Vérifier : `dig +short flashcard.vlldnt.fr`. Les enregistrements `MX` / `SPF` /
+`TXT` de la messagerie ne sont pas touchés.
+
+### 2. Certificat — étendre la lignée mutualisée
+
+`flashcard.vlldnt.fr` est ajouté en SAN au certificat `vlldnt.fr` existant
+(challenge HTTP-01) :
+
+```bash
+sudo certbot certonly --webroot -w /var/www/certbot --cert-name vlldnt.fr \
+  -d vlldnt.fr -d www.vlldnt.fr -d flashcard.vlldnt.fr \
+  --expand --non-interactive --agree-tos -m tomvieilledent@gmail.com
+```
+
+> `Strict-Transport-Security: includeSubDomains` est déjà servi sur l'apex :
+> `flashcard.vlldnt.fr` **doit** répondre en HTTPS dès le premier accès.
+
+### 3. Provisionner le vhost — `scripts/vps-add-subdomain.sh`
+
+Copier le dépôt (ou au moins `scripts/` + `deploy/`) sur le VPS, puis en root :
+
+```bash
+export EMAIL="tomvieilledent@gmail.com"
+bash scripts/vps-add-subdomain.sh
+```
+
+Le script (idempotent) : crée `/var/www/flashcard.vlldnt.fr` (propriétaire
+`deploy`), pose un vhost bootstrap HTTP, étend le certificat au besoin, installe
+le vhost final `deploy/nginx/flashcard.vlldnt.fr.conf`, teste et recharge nginx.
+
+À la main :
+
+```bash
+scp deploy/nginx/flashcard.vlldnt.fr.conf ubuntu@<IP>:/tmp/
+ssh ubuntu@<IP> '
+  sudo install -d -o deploy -g deploy /var/www/flashcard.vlldnt.fr &&
+  sudo install -m 644 /tmp/flashcard.vlldnt.fr.conf /etc/nginx/sites-available/ &&
+  sudo ln -sf /etc/nginx/sites-available/flashcard.vlldnt.fr.conf /etc/nginx/sites-enabled/ &&
+  sudo nginx -t && sudo systemctl reload nginx'
+```
+
+### 4. Déployer
 
 ```bash
 git push origin main
 ```
 
-Le workflow *Deploy to VPS (vlldnt.fr)* build et `rsync` le `dist/`.
-`workflow_dispatch` permet aussi un déclenchement manuel.
-
-## 8. Vérifier
+## Vérifier
 
 ```bash
-curl -I https://vlldnt.fr            # 200 ; HSTS + CSP + COOP + X-Frame-Options: DENY
-curl -I http://vlldnt.fr             # 301 -> https
-curl -I https://www.vlldnt.fr        # 301 -> https://vlldnt.fr
-curl -sI https://vlldnt.fr/robots.txt | head -1   # 200 (text/plain, pas de HTML)
-curl -sI https://vlldnt.fr/llms.txt  | head -1    # 200
+curl -I  https://flashcard.vlldnt.fr        # 200 ; HSTS + CSP + COOP + X-Frame-Options: DENY
+curl -I  http://flashcard.vlldnt.fr         # 301 -> https
+curl -sI https://flashcard.vlldnt.fr/robots.txt | head -1   # 200 text/plain
+curl -sI https://flashcard.vlldnt.fr/llms.txt  | head -1    # 200
 ```
+
+## Mise à jour des en-têtes seuls
+
+Le snippet `deploy/nginx/vlldnt-security-headers.conf` est partagé avec l'apex
+(SSOT dans `vlldnt-portal`). Pour le rafraîchir : le recopier dans
+`/etc/nginx/snippets/` puis `sudo nginx -t && sudo systemctl reload nginx`. Les
+`add_header` sont répétés dans chaque `location` via `include` (nginx cesse
+d'hériter des en-têtes parents dès qu'un `location` en déclare un).
 
 ## Renouvellement TLS
 
-`certbot` installe son timer systemd. Le hook
-`/etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh` recharge nginx après
-chaque renouvellement. Test : `certbot renew --dry-run`.
+`certbot` a son timer systemd ; le hook
+`/etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh` (posé par le portail)
+recharge nginx après renouvellement. Test : `sudo certbot renew --dry-run`.
 
 ## Rollback
 
-`dist/` est reconstruit à chaque déploiement ; pour revenir en arrière,
-`git revert` le commit fautif et `push` (ou relancer le workflow sur un SHA
-antérieur via `workflow_dispatch`).
+`dist/` est reconstruit à chaque déploiement : `git revert` le commit fautif et
+`push`, ou relancer le workflow sur un SHA antérieur via `workflow_dispatch`.
 
 ## Backend (plus tard)
 
 Prévu découplé : service Node (Fastify) en `systemd`, exposé par nginx sous
-`/api`, base PostgreSQL locale (schéma : `docs/data-model.sql`, contrat :
+`/api`, base PostgreSQL locale (schéma `docs/data-model.sql`, contrat
 `docs/openapi.yaml`). À cadrer quand le besoin est défini.

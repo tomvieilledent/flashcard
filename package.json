@@ -1,9 +1,9 @@
 {
-  "name": "holberton-fullstack",
+  "name": "flashcard",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Site de révision de la spécialisation Holberton Full Stack (React + Vite).",
+  "description": "Flashcard — notes de cours de développement fullstack (React + Vite).",
   "license": "MIT",
   "author": "Tom Vieilledent <tomvieilledent@gmail.com>",
   "engines": {

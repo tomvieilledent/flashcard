@@ -1,18 +1,19 @@
-# Holberton — spécialisation Full Stack
+# Flashcard — notes de cours dev fullstack
 
-[![CI](https://github.com/tomvieilledent/holberton-spe-fullstack/actions/workflows/ci.yml/badge.svg)](https://github.com/tomvieilledent/holberton-spe-fullstack/actions/workflows/ci.yml)
-[![Deploy](https://github.com/tomvieilledent/holberton-spe-fullstack/actions/workflows/deploy.yml/badge.svg)](https://github.com/tomvieilledent/holberton-spe-fullstack/actions/workflows/deploy.yml)
-[![Site](https://img.shields.io/badge/site-vlldnt.fr-2ea44f)](https://vlldnt.fr)
+[![CI](https://github.com/tomvieilledent/flashcard/actions/workflows/ci.yml/badge.svg)](https://github.com/tomvieilledent/flashcard/actions/workflows/ci.yml)
+[![Deploy](https://github.com/tomvieilledent/flashcard/actions/workflows/deploy.yml/badge.svg)](https://github.com/tomvieilledent/flashcard/actions/workflows/deploy.yml)
+[![Site](https://img.shields.io/badge/site-flashcard.vlldnt.fr-2ea44f)](https://flashcard.vlldnt.fr)
 
-Site **statique** de révision de la spécialisation Holberton Full Stack : une
-seule application React (Vite) qui présente, semaine après semaine, les notions
-vues en cours — React / Vue / Svelte, l'outillage front, Docker, la culture
-DevOps & Git, GitHub Actions, l'analyse et la conception (Merise, UML), les API
-REST / OpenAPI / JSON Schema, les spécifications (PRD, INVEST, BDD/Gherkin) et
-l'urbanisation du SI.
+**Flashcard** : site **statique** de notes de cours de développement fullstack —
+une seule application React (Vite) qui présente, au fil des cours, les notions
+vues — React / Vue / Svelte, l'outillage front, Docker, la culture DevOps & Git,
+GitHub Actions, l'analyse et la conception (Merise, UML), les API REST / OpenAPI
+/ JSON Schema, les spécifications (PRD, INVEST, BDD/Gherkin) et l'urbanisation du
+SI.
 
-> 🔗 **Site en ligne :** <https://vlldnt.fr> — VPS OVH + nginx, déploiement
-> automatique à chaque `push` sur `main`.
+> 🔗 **Site en ligne :** <https://flashcard.vlldnt.fr> — VPS OVH + nginx,
+> déploiement automatique à chaque `push` sur `main`.
+> Landing du projet : <https://vlldnt.fr/flashcard>.
 
 Le site est un catalogue de toutes les notions vues depuis le début de l'année,
 complété à chaque nouvelle notion, construit en appliquant (ou en s'en
@@ -37,7 +38,7 @@ maximum de concepts du cursus.
 | ESLint (guillemets, points-virgules, variables inutilisées) | `eslint.config.js` |
 | Icônes Lucide | `src/shared/ui/`, `src/features/**` (import `lucide-react`) |
 | Rédaction de contenu assistée par IA, vérifiée et complétée | `docs/ai/authoring.md` |
-| Déploiement continu sur VPS (nginx, HTTPS Let's Encrypt) | `.github/workflows/deploy.yml`, `scripts/vps-setup.sh`, `deploy/nginx/` |
+| Déploiement continu sur VPS (nginx, HTTPS Let's Encrypt) | `.github/workflows/deploy.yml`, `scripts/vps-add-subdomain.sh`, `deploy/nginx/` |
 | Docker : empaqueter une application (build multi-stage) | `Dockerfile`, `nginx.conf`, `.dockerignore` |
 | Culture DevOps (CALMS), métriques DORA | `docs/adr/`, CI qui mesure lint + tests + build |
 | Workflows Git, GitHub flow, Conventional Commits | `CONTRIBUTING.md`, `.github/pull_request_template.md` |
@@ -53,7 +54,7 @@ maximum de concepts du cursus.
 | Aligner les modèles, cohérence entre modèles | `docs/architecture.md` (dictionnaire de données) |
 | Documentation as Code, SSOT, ADR | `docs/` versionné avec le code |
 | SEO / robots / plan de site / `llms.txt` | `public/robots.txt`, `public/sitemap.xml`, `public/llms.txt`, `index.html` (canonical + Open Graph) |
-| En-têtes de sécurité HTTP (CSP, HSTS, COOP, anti-clickjacking) | `deploy/nginx/vlldnt-security-headers.conf`, `deploy/nginx/vlldnt.fr.conf` |
+| En-têtes de sécurité HTTP (CSP, HSTS, COOP, anti-clickjacking) | `deploy/nginx/vlldnt-security-headers.conf`, `deploy/nginx/flashcard.vlldnt.fr.conf` |
 
 ## Stack
 
@@ -91,8 +92,8 @@ npm run dev        # http://localhost:3000
 ## Docker
 
 ```bash
-docker build -t holberton-fullstack .
-docker run --rm -p 8080:80 holberton-fullstack
+docker build -t flashcard .
+docker run --rm -p 8080:80 flashcard
 # http://localhost:8080
 ```
 
@@ -100,10 +101,11 @@ docker run --rm -p 8080:80 holberton-fullstack
 
 **Automatique** : tout `push` sur `main` déclenche
 `.github/workflows/deploy.yml`, qui build le site puis `rsync` le `dist/` sur le
-**VPS OVH** où **nginx** le sert en HTTPS sur `https://vlldnt.fr`.
+**VPS OVH** où **nginx** le sert en HTTPS sur `https://flashcard.vlldnt.fr`.
 
 Mise en route (une fois) et détail des secrets : **[`docs/deployment.md`](./docs/deployment.md)**.
-Décision d'architecture : [`docs/adr/0004-deploiement-vps-ovh.md`](./docs/adr/0004-deploiement-vps-ovh.md).
+Décisions d'architecture : [`docs/adr/0004-deploiement-vps-ovh.md`](./docs/adr/0004-deploiement-vps-ovh.md),
+[`docs/adr/0005-sous-domaine-flashcard.md`](./docs/adr/0005-sous-domaine-flashcard.md).
 
 ## Rythme hebdomadaire
 
@@ -114,7 +116,7 @@ décrit dans [`CONTRIBUTING.md`](./CONTRIBUTING.md) et suivi dans
 ## Structure
 
 ```
-holberton-fullstack/
+flashcard/
 ├── src/
 │   ├── app/
 │   │   ├── App.jsx          # shell : layout mobile-first, tiroir, nav 2 niveaux, #hash, Suspense
@@ -136,13 +138,13 @@ holberton-fullstack/
 ├── docs/
 │   ├── architecture.md      # diagrammes UML (Mermaid), dictionnaire de données
 │   ├── curriculum.md        # journal semaine par semaine
-│   ├── deployment.md        # runbook VPS OVH + HTTPS
+│   ├── deployment.md        # runbook sous-domaine flashcard.vlldnt.fr
 │   ├── data-model.sql       # MPD PostgreSQL du domaine "cursus"
 │   ├── openapi.yaml         # contrat d'API (hypothétique, read-only)
 │   ├── ai/authoring.md      # pipeline de rédaction assistée par IA
-│   └── adr/                 # Architecture Decision Records (0001..0004)
-├── deploy/nginx/vlldnt.fr.conf  # vhost de référence (SSOT)
-├── scripts/vps-setup.sh     # provisionnement du VPS (idempotent)
+│   └── adr/                 # Architecture Decision Records (0001..0005)
+├── deploy/nginx/flashcard.vlldnt.fr.conf  # vhost du sous-domaine (SSOT)
+├── scripts/vps-add-subdomain.sh  # ajout du sous-domaine sur le VPS (idempotent)
 ├── features/
 │   └── navigation.feature   # spécification exécutable (Gherkin)
 ├── .github/

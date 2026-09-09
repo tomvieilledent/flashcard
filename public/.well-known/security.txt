@@ -1,5 +1,5 @@
-# https://vlldnt.fr — politique de divulgation (RFC 9116)
+# https://flashcard.vlldnt.fr — politique de divulgation (RFC 9116)
 Contact: mailto:tomvieilledent@gmail.com
-Expires: 2027-06-01T00:00:00.000Z
+Expires: 2027-12-31T00:00:00.000Z
 Preferred-Languages: fr, en
-Canonical: https://vlldnt.fr/.well-known/security.txt
+Canonical: https://flashcard.vlldnt.fr/.well-known/security.txt

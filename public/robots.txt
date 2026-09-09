@@ -1,5 +1,5 @@
-# https://vlldnt.fr — site statique de révision, tout est public.
+# https://flashcard.vlldnt.fr — site statique de révision, tout est public.
 User-agent: *
 Allow: /
 
-Sitemap: https://vlldnt.fr/sitemap.xml
+Sitemap: https://flashcard.vlldnt.fr/sitemap.xml

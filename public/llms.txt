@@ -1,21 +1,21 @@
-# Holberton — spécialisation Full Stack
+# Flashcard — notes de cours dev fullstack
 
-> Site statique de révision qui répertorie, semaine après semaine, toutes les
-> notions vues durant l'année de spécialisation Holberton Full Stack. Le contenu
-> est mis à jour à chaque nouvelle notion abordée en cours.
+> Site statique qui répertorie, au fil des cours, toutes les notions de
+> développement fullstack vues durant l'année. Le contenu est mis à jour à
+> chaque nouvelle notion abordée.
 
 Chaque section suit la même trame : Problème -> Solution -> exemples de code
 colorés -> ressources officielles. Le dépôt est public et sa structure applique
-elle-même un maximum de notions du cursus (Documentation as Code).
+elle-même un maximum de ces notions (Documentation as Code).
 
 ## Ressources
 
-- [Site en ligne](https://vlldnt.fr): l'application déployée.
-- [Code source (GitHub)](https://github.com/tomvieilledent/holberton-spe-fullstack): dépôt public, architecture et documentation as code.
+- [Site en ligne](https://flashcard.vlldnt.fr): l'application déployée.
+- [Code source (GitHub)](https://github.com/tomvieilledent/flashcard): dépôt public, architecture et documentation as code.
 
 ## Domaines couverts
 
-- [Frontend](https://vlldnt.fr/#react-basics): React, Vue.js, Svelte, outillage (Vite, ESLint, Tailwind, Lucide).
-- [Backend](https://vlldnt.fr/#merise-entities): modélisation Merise (MCD/MLD/MPD), normalisation, API REST, OpenAPI 3.0, JSON Schema.
-- [DevOps](https://vlldnt.fr/#docker-basics): Docker, intégration et déploiement continus, culture DevOps, workflows Git.
-- [Documentation & méthode](https://vlldnt.fr/#arch-repository): patterns architecturaux, UML, PRD & User Stories (INVEST), BDD/Gherkin, Documentation as Code.
+- [Frontend](https://flashcard.vlldnt.fr/#react-basics): React, Vue.js, Svelte, outillage (Vite, ESLint, Tailwind, Lucide).
+- [Backend](https://flashcard.vlldnt.fr/#merise-entities): modélisation Merise (MCD/MLD/MPD), normalisation, API REST, OpenAPI 3.0, JSON Schema.
+- [DevOps](https://flashcard.vlldnt.fr/#docker-basics): Docker, intégration et déploiement continus, culture DevOps, workflows Git.
+- [Documentation & méthode](https://flashcard.vlldnt.fr/#arch-repository): patterns architecturaux, UML, PRD & User Stories (INVEST), BDD/Gherkin, Documentation as Code.

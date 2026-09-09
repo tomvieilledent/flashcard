@@ -6,6 +6,20 @@ versionnage sémantique + Conventional Commits.
 
 ## [Unreleased]
 
+### Changed
+- **Renommage `Holberton — spécialisation Full Stack` → `Flashcard`** (marque,
+  `<title>`, Open Graph, `package.json`, README). Les mentions de « Holberton »
+  dans le contenu de cours (conventions Betty, etc.) sont conservées.
+- **Adresse** : le site passe de l'apex `vlldnt.fr` au sous-domaine
+  `https://flashcard.vlldnt.fr` ; l'apex devient un portail (repo `vlldnt-portal`)
+  exposant la landing `https://vlldnt.fr/flashcard`. Voir
+  [`docs/adr/0005-sous-domaine-flashcard.md`](docs/adr/0005-sous-domaine-flashcard.md).
+- `deploy/nginx/vlldnt.fr.conf` → `deploy/nginx/flashcard.vlldnt.fr.conf` ;
+  `scripts/vps-setup.sh` → `scripts/vps-add-subdomain.sh` (n'installe que le
+  sous-domaine, l'apex étant provisionné par le portail).
+- `deploy.yml` : `DEPLOY_PATH` par défaut → `/var/www/flashcard.vlldnt.fr`.
+- `security.txt` : `Expires` repoussé au 2027-12-31.
+
 ### Added
 - `public/robots.txt` + `public/sitemap.xml` (corrige l'audit SEO Lighthouse
   `robots-txt`) et `public/llms.txt` (audit *agentic browsing* `llms-txt`).
