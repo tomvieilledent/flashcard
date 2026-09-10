@@ -12,8 +12,11 @@
   <meta property="og:url" content="https://vlldnt.fr/flashcard/" />
   <meta property="og:title" content="Flashcard — notes de cours dev fullstack" />
   <meta property="og:description" content="Toutes les notions de développement fullstack, révisées au fil des cours." />
+  <script src="theme.js"></script>
   <style>
     /* ==== Charte Flashcard (reprise de src/index.css) ==================== */
+    /* Sombre = défaut. Clair : préférence système (tant qu'aucun choix posé)
+       ou choix explicite [data-theme="light"]. Le bouton pose data-theme. */
     :root {
       --ink: #12141a;
       --panel: #1a1d25;
@@ -35,20 +38,36 @@
 
       color-scheme: dark;
     }
+
+    /* Palette claire — réutilisée par le média système et le choix explicite. */
     @media (prefers-color-scheme: light) {
-      :root {
-        --ink: #f3efe6;
-        --panel: #fbf8f1;
-        --line: #e1d9c8;
-        --text: #2b2723;
-        --muted: #6f685c;
-        --fill: rgba(43, 39, 35, 0.04);
-        --focus: #1f5fd0;
+      :root:not([data-theme]) {
+        --ink: #f3efe6; --panel: #fbf8f1; --line: #e1d9c8;
+        --text: #2b2723; --muted: #6f685c;
+        --fill: rgba(43, 39, 35, 0.04); --focus: #1f5fd0;
         --react: #0c7b8f;  --vue: #0f8a5f;   --svelte: #d24a28;
         --docker: #2c5fc7; --devops: #6d4bc4; --ci: #0e8c74;
         --merise: #b23a79; --uml: #b4671e;   --api: #0b7c7c;   --ai: #c4442b;
         color-scheme: light;
       }
+    }
+    :root[data-theme="light"] {
+      --ink: #f3efe6; --panel: #fbf8f1; --line: #e1d9c8;
+      --text: #2b2723; --muted: #6f685c;
+      --fill: rgba(43, 39, 35, 0.04); --focus: #1f5fd0;
+      --react: #0c7b8f;  --vue: #0f8a5f;   --svelte: #d24a28;
+      --docker: #2c5fc7; --devops: #6d4bc4; --ci: #0e8c74;
+      --merise: #b23a79; --uml: #b4671e;   --api: #0b7c7c;   --ai: #c4442b;
+      color-scheme: light;
+    }
+    :root[data-theme="dark"] {
+      --ink: #12141a; --panel: #1a1d25; --line: #2a2e38;
+      --text: #e8e6e1; --muted: #9098a8;
+      --fill: rgba(255, 255, 255, 0.03); --focus: #7ea9ff;
+      --react: #4fd1e8;  --vue: #6ee7b7;   --svelte: #ff6b4a;
+      --docker: #4c8bf5; --devops: #c4a2ff; --ci: #7ee0c3;
+      --merise: #f0a6ca; --uml: #f2a65a;   --api: #5ec8c8;   --ai: #ef6f53;
+      color-scheme: dark;
     }
 
     * { box-sizing: border-box; }
@@ -60,6 +79,7 @@
       font-size: 16px;
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
     a { color: inherit; }
     :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 3px; }
@@ -69,6 +89,37 @@
       margin: 0 auto;
       padding: clamp(20px, 5vw, 40px) 20px clamp(48px, 10vw, 96px);
     }
+
+    /* ---- Bouton de thème ---- */
+    #theme-toggle {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      z-index: 10;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.15s ease, border-color 0.15s ease, transform 0.25s var(--ease-spring);
+    }
+    #theme-toggle:hover { color: var(--text); border-color: var(--text); transform: rotate(12deg); }
+    #theme-toggle svg { width: 18px; height: 18px; }
+    #theme-toggle .i-sun,
+    #theme-toggle .i-auto { display: none; }
+    #theme-toggle[data-state="light"] .i-sun,
+    #theme-toggle[data-state="dark"] .i-moon,
+    #theme-toggle[data-state="auto"] .i-auto { display: block; }
+    #theme-toggle[data-state="light"] .i-moon,
+    #theme-toggle[data-state="light"] .i-auto,
+    #theme-toggle[data-state="dark"] .i-sun,
+    #theme-toggle[data-state="dark"] .i-auto,
+    #theme-toggle[data-state="auto"] .i-sun,
+    #theme-toggle[data-state="auto"] .i-moon { display: none; }
 
     /* ---- Running head (comme le carnet) ---- */
     .runhead {
@@ -132,7 +183,7 @@
       text-decoration: none;
       font-weight: 600;
       font-size: 15px;
-      transition: transform 0.25s var(--ease-spring), opacity 0.2s ease;
+      transition: transform 0.25s var(--ease-spring);
     }
     .cta:hover { transform: translateY(-2px); }
     .cta svg { width: 16px; height: 16px; }
@@ -200,6 +251,20 @@
   </style>
 </head>
 <body>
+  <button id="theme-toggle" type="button" hidden aria-label="Changer de thème">
+    <svg class="i-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </svg>
+    <svg class="i-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+    <svg class="i-auto" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M12 3.5v17A8.5 8.5 0 0 0 12 3.5Z" fill="currentColor"/>
+    </svg>
+  </button>
+
   <div class="wrap">
     <p class="runhead">
       <span>Notes de cours</span>
