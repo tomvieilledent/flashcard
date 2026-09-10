@@ -6,144 +6,256 @@
   <title>Flashcard — notes de cours dev fullstack</title>
   <meta name="description" content="Flashcard : toutes les notions de développement fullstack vues en cours, révisées au fil de l'année — React, Vue, Svelte, Docker, DevOps, CI/CD, Merise, UML, API REST." />
   <link rel="canonical" href="https://vlldnt.fr/flashcard/" />
+  <meta name="theme-color" content="#12141a" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f3efe6" media="(prefers-color-scheme: light)" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://vlldnt.fr/flashcard/" />
   <meta property="og:title" content="Flashcard — notes de cours dev fullstack" />
   <meta property="og:description" content="Toutes les notions de développement fullstack, révisées au fil des cours." />
   <style>
+    /* ==== Charte Flashcard (reprise de src/index.css) ==================== */
     :root {
-      color-scheme: light dark;
-      --bg: #fbfbfa;
-      --fg: #16181d;
-      --muted: #5b6270;
-      --line: #e4e4e2;
-      --card: #ffffff;
-      --accent: #2f6df6;
-      --accent-fg: #ffffff;
+      --ink: #12141a;
+      --panel: #1a1d25;
+      --line: #2a2e38;
+      --text: #e8e6e1;
+      --muted: #9098a8;
+      --fill: rgba(255, 255, 255, 0.03);
+      --focus: #7ea9ff;
+
+      --react: #4fd1e8;  --vue: #6ee7b7;   --svelte: #ff6b4a;
+      --docker: #4c8bf5; --devops: #c4a2ff; --ci: #7ee0c3;
+      --merise: #f0a6ca; --uml: #f2a65a;   --api: #5ec8c8;   --ai: #ef6f53;
+
+      --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "IBM Plex Sans", sans-serif;
+      --font-display: "Iowan Old Style", Georgia, "Times New Roman", serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+      --content-max: 760px;
+
+      color-scheme: dark;
     }
-    @media (prefers-color-scheme: dark) {
+    @media (prefers-color-scheme: light) {
       :root {
-        --bg: #0e1015;
-        --fg: #e7e9ee;
-        --muted: #9aa3b2;
-        --line: #262a33;
-        --card: #161922;
-        --accent: #5b8dff;
-        --accent-fg: #0e1015;
+        --ink: #f3efe6;
+        --panel: #fbf8f1;
+        --line: #e1d9c8;
+        --text: #2b2723;
+        --muted: #6f685c;
+        --fill: rgba(43, 39, 35, 0.04);
+        --focus: #1f5fd0;
+        --react: #0c7b8f;  --vue: #0f8a5f;   --svelte: #d24a28;
+        --docker: #2c5fc7; --devops: #6d4bc4; --ci: #0e8c74;
+        --merise: #b23a79; --uml: #b4671e;   --api: #0b7c7c;   --ai: #c4442b;
+        color-scheme: light;
       }
     }
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--fg);
+      background: var(--ink);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
-    .wrap { max-width: 46rem; margin: 0 auto; padding: clamp(2rem, 6vw, 5rem) 1.25rem 4rem; }
-    header { display: flex; align-items: center; gap: .6rem; margin-bottom: clamp(2.5rem, 8vw, 4.5rem); }
-    .logo {
-      width: 2.1rem; height: 2.1rem; border-radius: .55rem;
-      background: var(--accent); color: var(--accent-fg);
-      display: grid; place-items: center; font-weight: 700; font-size: 1.15rem;
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 3px; }
+
+    .wrap {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: clamp(20px, 5vw, 40px) 20px clamp(48px, 10vw, 96px);
     }
-    .brand { font-weight: 650; letter-spacing: -.01em; }
+
+    /* ---- Running head (comme le carnet) ---- */
+    .runhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding-top: 10px;
+      border-top: 1px solid var(--text);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .runhead b { color: var(--text); font-weight: 600; }
+
+    /* ---- Hero ---- */
+    .hero { position: relative; padding: clamp(40px, 9vw, 72px) 0 clamp(28px, 6vw, 52px); }
+    .kicker {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
     h1 {
-      font-size: clamp(2rem, 7vw, 3.1rem);
-      line-height: 1.1; letter-spacing: -.02em; margin: 0 0 1rem;
+      margin: 14px 0 0;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(34px, 8vw, 68px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      max-width: 16ch;
     }
-    .lead { font-size: clamp(1.05rem, 3.5vw, 1.2rem); color: var(--muted); margin: 0 0 2rem; max-width: 34rem; }
+    .tagline {
+      margin: 22px 0 0;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(17px, 2.6vw, 24px);
+      line-height: 1.4;
+      max-width: 42ch;
+    }
+    .lead {
+      margin: 20px 0 0;
+      color: var(--muted);
+      max-width: 54ch;
+    }
+
     .cta {
-      display: inline-flex; align-items: center; gap: .5rem;
-      background: var(--accent); color: var(--accent-fg);
-      text-decoration: none; font-weight: 600;
-      padding: .8rem 1.4rem; border-radius: .7rem;
-      transition: transform .12s ease, opacity .12s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 30px;
+      padding: 13px 22px;
+      border: 1px solid var(--text);
+      border-radius: 999px;
+      background: var(--text);
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: transform 0.25s var(--ease-spring), opacity 0.2s ease;
     }
-    .cta:hover { transform: translateY(-1px); opacity: .93; }
-    .cta svg { width: 1.05em; height: 1.05em; }
-    .grid {
-      margin-top: clamp(3rem, 10vw, 5rem);
-      display: grid; gap: .9rem;
-      grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    .cta:hover { transform: translateY(-2px); }
+    .cta svg { width: 16px; height: 16px; }
+
+    /* ---- Cachet tournant (signature du carnet) ---- */
+    .seal {
+      position: absolute;
+      top: clamp(24px, 6vw, 48px);
+      right: 0;
+      width: clamp(96px, 22vw, 148px);
+      height: clamp(96px, 22vw, 148px);
+      color: var(--muted);
+      opacity: 0.85;
+      pointer-events: none;
     }
-    .card {
-      background: var(--card); border: 1px solid var(--line);
-      border-radius: .8rem; padding: 1.1rem 1.2rem;
+    @media (max-width: 620px) { .seal { display: none; } }
+    .seal-ring { transform-box: fill-box; transform-origin: center; animation: spin 44s linear infinite; }
+    @media (prefers-reduced-motion: reduce) { .seal-ring { animation: none; } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .seal-text { fill: var(--muted); font-family: var(--font-mono); }
+    .seal-mono { fill: var(--text); font-family: var(--font-display); }
+
+    /* ---- Sommaire des domaines (comme la TOC de l'app) ---- */
+    .toc { margin-top: clamp(44px, 10vw, 72px); }
+    .toc h2 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin: 0 0 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
     }
-    .card h3 { margin: 0 0 .35rem; font-size: 1rem; }
-    .card p { margin: 0; color: var(--muted); font-size: .92rem; }
-    .tags { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: .5rem; }
-    .tag {
-      font-size: .82rem; color: var(--muted);
-      border: 1px solid var(--line); border-radius: 2rem;
-      padding: .25rem .75rem;
+    .toc ul { list-style: none; margin: 0; padding: 0; }
+    .toc li {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
     }
+    .dot { flex: none; width: 7px; height: 7px; border-radius: 999px; background: var(--c); transform: translateY(-1px); }
+    .toc .name { font-family: var(--font-display); font-size: 17px; }
+    .toc .desc { color: var(--muted); font-size: 14px; margin-left: auto; text-align: right; }
+    @media (max-width: 520px) { .toc .desc { display: none; } }
+
     footer {
-      margin-top: clamp(3.5rem, 12vw, 6rem);
-      padding-top: 1.5rem; border-top: 1px solid var(--line);
-      color: var(--muted); font-size: .88rem;
-      display: flex; flex-wrap: wrap; gap: .35rem .9rem;
+      margin-top: clamp(44px, 10vw, 72px);
+      padding-top: 12px;
+      border-top: 1px solid var(--text);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
-    footer a { color: inherit; }
+    footer a { text-decoration: none; }
+    footer a:hover { color: var(--text); }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <span class="logo" aria-hidden="true">F</span>
-      <span class="brand">Flashcard</span>
-    </header>
+    <p class="runhead">
+      <span>Notes de cours</span>
+      <b>№ 01</b>
+      <span>Développement fullstack</span>
+    </p>
 
-    <main>
-      <h1>Toutes les notions du cursus fullstack, au même endroit.</h1>
+    <section class="hero">
+      <svg class="seal" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <path id="arc" d="M50,50 m-33,0 a33,33 0 1,1 66,0 a33,33 0 1,1 -66,0" fill="none" />
+        </defs>
+        <g class="seal-ring">
+          <circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5" />
+          <circle cx="50" cy="50" r="28" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.3" />
+          <text class="seal-text" font-size="7.3" letter-spacing="1.7">
+            <textPath href="#arc" startOffset="0">· FLASHCARD · NOTES DE COURS DÉVELOPPEMENT FULLSTACK&nbsp;</textPath>
+          </text>
+        </g>
+        <text class="seal-mono" x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="600">F</text>
+      </svg>
+
+      <p class="kicker">flashcard.vlldnt.fr</p>
+      <h1>Le carnet de révision de l'année.</h1>
+      <p class="tagline">Toutes les notions vues en cours, expliquées et reliées entre elles.</p>
       <p class="lead">
-        Un carnet de révision vivant : chaque notion vue en cours y est ajoutée,
-        expliquée avec des exemples de code, et reliée aux autres. Front, back,
-        bases de données, DevOps, conception.
+        Front, back, bases de données, DevOps, conception. Chaque fiche suit la
+        même trame — problème, solution, exemples de code, ressources — et se
+        complète à chaque nouvelle notion abordée.
       </p>
 
       <a class="cta" href="https://flashcard.vlldnt.fr">
         Ouvrir Flashcard
         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M5 10h10M11 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 10h10M11 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </a>
+    </section>
 
-      <div class="grid">
-        <div class="card">
-          <h3>Trame constante</h3>
-          <p>Problème → solution → exemples de code colorés → ressources officielles.</p>
-        </div>
-        <div class="card">
-          <h3>Navigation par domaine</h3>
-          <p>Catégories repliables, recherche plein texte, liens profonds.</p>
-        </div>
-        <div class="card">
-          <h3>Mis à jour en continu</h3>
-          <p>Complété à chaque nouvelle notion abordée en cours.</p>
-        </div>
-      </div>
-
-      <div class="tags" aria-label="Sujets couverts">
-        <span class="tag">React</span>
-        <span class="tag">Vue</span>
-        <span class="tag">Svelte</span>
-        <span class="tag">Docker</span>
-        <span class="tag">CI/CD</span>
-        <span class="tag">DevOps &amp; Git</span>
-        <span class="tag">Merise</span>
-        <span class="tag">UML</span>
-        <span class="tag">API REST / OpenAPI</span>
-        <span class="tag">BDD / Gherkin</span>
-      </div>
-    </main>
+    <nav class="toc" aria-label="Domaines couverts">
+      <h2>Au sommaire</h2>
+      <ul>
+        <li><span class="dot" style="--c: var(--react)"></span><span class="name">Frontend</span><span class="desc">React · Vue · Svelte · Vite</span></li>
+        <li><span class="dot" style="--c: var(--merise)"></span><span class="name">Modélisation</span><span class="desc">Merise · normalisation · SQL</span></li>
+        <li><span class="dot" style="--c: var(--api)"></span><span class="name">API</span><span class="desc">REST · OpenAPI · JSON Schema</span></li>
+        <li><span class="dot" style="--c: var(--docker)"></span><span class="name">Conteneurs</span><span class="desc">Docker · Compose</span></li>
+        <li><span class="dot" style="--c: var(--devops)"></span><span class="name">DevOps &amp; CI/CD</span><span class="desc">GitHub Actions · culture DevOps · Git</span></li>
+        <li><span class="dot" style="--c: var(--uml)"></span><span class="name">Conception</span><span class="desc">UML · patterns · BDD / Gherkin</span></li>
+        <li><span class="dot" style="--c: var(--ai)"></span><span class="name">IA &amp; agents</span><span class="desc">LLM · prompt engineering · RAG</span></li>
+      </ul>
+    </nav>
 
     <footer>
-      <span>© 2026 Tom Vieilledent</span>
       <a href="https://flashcard.vlldnt.fr">flashcard.vlldnt.fr</a>
       <a href="https://github.com/tomvieilledent/flashcard">Code source</a>
-      <a href="https://vlldnt.fr">vlldnt.fr</a>
+      <a href="https://vlldnt.fr">© Tom Vieilledent</a>
     </footer>
   </div>
 </body>
