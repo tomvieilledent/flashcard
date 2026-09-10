@@ -1,120 +1,41 @@
 # Déploiement — `https://flashcard.vlldnt.fr`
 
-Le site est un build statique (`dist/`) servi par **nginx** sur le **VPS OVH**,
-sur le sous-domaine `flashcard.vlldnt.fr`. La landing publique du projet est une
-page du portail : `https://vlldnt.fr/flashcard` (repo séparé `vlldnt-portal`).
+Ce dépôt ne gère plus lui-même son infrastructure. Le déploiement est piloté
+par l'orchestrateur du domaine, dans le dépôt **`portfolio`**
+(`~/Documents/Vieilledent conseil/vlldnt.fr/portfolio/`).
+
+## Comment ça marche
 
 ```
-push main ─► GitHub Actions ─► npm ci + npm run build ─► rsync dist/ ─► /var/www/flashcard.vlldnt.fr ─► nginx ─► https://flashcard.vlldnt.fr
+push main ─► .github/workflows/deploy.yml ─► SSH VPS ─► /opt/vlldnt/scripts/deploy-project.sh flashcard
 ```
 
-Chaque `push` sur `main` reconstruit et publie via `.github/workflows/deploy.yml`
-(`rsync` over SSH). `workflow_dispatch` permet un déclenchement manuel.
+`deploy-project.sh` :
+1. lit `/opt/vlldnt/config/projects.yml` — si `flashcard` n'est pas `deployed: true`, **ne fait rien** ;
+2. sinon : `git clone/pull` de ce dépôt sur le VPS → `npm ci && npm run build` →
+   publie `dist/` dans `/opt/vlldnt/projects/flashcard/current` ;
+3. si un dossier `landing-page/` existe à la racine → il est publié sur
+   `https://vlldnt.fr/flashcard` ;
+4. génère le vhost nginx `flashcard.vlldnt.fr` (certificat wildcard `*.vlldnt.fr`)
+   et recharge nginx.
 
-## Pré-requis (déjà en place)
+## Activer / désactiver / supprimer
 
-L'**apex** `vlldnt.fr` est provisionné par le repo `vlldnt-portal` :
-nginx + certbot, utilisateur `deploy`, `/var/www/certbot`, snippet
-`/etc/nginx/snippets/vlldnt-security-headers.conf`, hook de reload
-post-renouvellement, pare-feu UFW (22 / 80 / 443). Le VPS écoute déjà en HTTPS.
+Tout se passe dans `portfolio/projects.yml` :
 
-Secrets GitHub de **ce** repo (`Settings → Secrets and variables → Actions`) —
-mêmes valeurs que le portail :
+| Action | Dans `projects.yml` |
+| --- | --- |
+| activer | ligne `flashcard` → `deployed: true`, puis workflow *Sync projects* |
+| désactiver | `deployed: false` → retiré du VPS au prochain sync |
+| supprimer | retirer la ligne → suppression du VPS (backup + confirmation) |
 
-| Type | Nom | Valeur |
-| --- | --- | --- |
-| Secret | `SSH_HOST` | IP du VPS |
-| Secret | `SSH_USER` | `deploy` |
-| Secret | `SSH_KEY` | clé privée de déploiement |
-| Secret | `SSH_KNOWN_HOSTS` | sortie de `ssh-keyscan -p 22 <IP>` (évite le TOFU) |
-| Variable | `SSH_PORT` | `22` (optionnel) |
-| Variable | `DEPLOY_PATH` | `/var/www/flashcard.vlldnt.fr` (optionnel, valeur par défaut) |
+## Secrets GitHub de ce dépôt
 
-## Mise en route du sous-domaine (une fois)
+`SSH_HOST`, `SSH_USER` (= `deploy`), `SSH_KEY` (clé privée de déploiement),
+`SSH_KNOWN_HOSTS`. Mêmes valeurs que le dépôt `portfolio`.
 
-### 1. DNS (OVH)
+## Détails
 
-```
-A  flashcard.vlldnt.fr  <IPv4 du VPS>
-```
-
-Vérifier : `dig +short flashcard.vlldnt.fr`. Les enregistrements `MX` / `SPF` /
-`TXT` de la messagerie ne sont pas touchés.
-
-### 2. Certificat — étendre la lignée mutualisée
-
-`flashcard.vlldnt.fr` est ajouté en SAN au certificat `vlldnt.fr` existant
-(challenge HTTP-01) :
-
-```bash
-sudo certbot certonly --webroot -w /var/www/certbot --cert-name vlldnt.fr \
-  -d vlldnt.fr -d www.vlldnt.fr -d flashcard.vlldnt.fr \
-  --expand --non-interactive --agree-tos -m tomvieilledent@gmail.com
-```
-
-> `Strict-Transport-Security: includeSubDomains` est déjà servi sur l'apex :
-> `flashcard.vlldnt.fr` **doit** répondre en HTTPS dès le premier accès.
-
-### 3. Provisionner le vhost — `scripts/vps-add-subdomain.sh`
-
-Copier le dépôt (ou au moins `scripts/` + `deploy/`) sur le VPS, puis en root :
-
-```bash
-export EMAIL="tomvieilledent@gmail.com"
-bash scripts/vps-add-subdomain.sh
-```
-
-Le script (idempotent) : crée `/var/www/flashcard.vlldnt.fr` (propriétaire
-`deploy`), pose un vhost bootstrap HTTP, étend le certificat au besoin, installe
-le vhost final `deploy/nginx/flashcard.vlldnt.fr.conf`, teste et recharge nginx.
-
-À la main :
-
-```bash
-scp deploy/nginx/flashcard.vlldnt.fr.conf ubuntu@<IP>:/tmp/
-ssh ubuntu@<IP> '
-  sudo install -d -o deploy -g deploy /var/www/flashcard.vlldnt.fr &&
-  sudo install -m 644 /tmp/flashcard.vlldnt.fr.conf /etc/nginx/sites-available/ &&
-  sudo ln -sf /etc/nginx/sites-available/flashcard.vlldnt.fr.conf /etc/nginx/sites-enabled/ &&
-  sudo nginx -t && sudo systemctl reload nginx'
-```
-
-### 4. Déployer
-
-```bash
-git push origin main
-```
-
-## Vérifier
-
-```bash
-curl -I  https://flashcard.vlldnt.fr        # 200 ; HSTS + CSP + COOP + X-Frame-Options: DENY
-curl -I  http://flashcard.vlldnt.fr         # 301 -> https
-curl -sI https://flashcard.vlldnt.fr/robots.txt | head -1   # 200 text/plain
-curl -sI https://flashcard.vlldnt.fr/llms.txt  | head -1    # 200
-```
-
-## Mise à jour des en-têtes seuls
-
-Le snippet `deploy/nginx/vlldnt-security-headers.conf` est partagé avec l'apex
-(SSOT dans `vlldnt-portal`). Pour le rafraîchir : le recopier dans
-`/etc/nginx/snippets/` puis `sudo nginx -t && sudo systemctl reload nginx`. Les
-`add_header` sont répétés dans chaque `location` via `include` (nginx cesse
-d'hériter des en-têtes parents dès qu'un `location` en déclare un).
-
-## Renouvellement TLS
-
-`certbot` a son timer systemd ; le hook
-`/etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh` (posé par le portail)
-recharge nginx après renouvellement. Test : `sudo certbot renew --dry-run`.
-
-## Rollback
-
-`dist/` est reconstruit à chaque déploiement : `git revert` le commit fautif et
-`push`, ou relancer le workflow sur un SHA antérieur via `workflow_dispatch`.
-
-## Backend (plus tard)
-
-Prévu découplé : service Node (Fastify) en `systemd`, exposé par nginx sous
-`/api`, base PostgreSQL locale (schéma `docs/data-model.sql`, contrat
-`docs/openapi.yaml`). À cadrer quand le besoin est défini.
+- Infra complète : `portfolio/DEPLOYMENT.md` et `portfolio/README.md`.
+- Runbook de mise en place : `~/Documents/Vieilledent conseil/vlldnt.fr/RUNBOOK.md`.
+- Historique : `docs/adr/0005-sous-domaine-flashcard.md`.
