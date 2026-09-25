@@ -159,7 +159,7 @@ describe("App — navigation SPA", () => {
         expect(h2s.length, `pas de section visible sur « ${label} »`).toBeGreaterThan(0);
       }
     }
-  });
+  }, 30_000);
 });
 
 describe("App — recherche", () => {

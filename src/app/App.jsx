@@ -161,6 +161,7 @@ export default function App() {
   const [openCat, setOpenCat] = useState(null);
   const [openGroup, setOpenGroup] = useState(null);
   const [spyAnchor, setSpyAnchor] = useState(initial.anchor);
+  const [prevPage, setPrevPage] = useState(initial.page);
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState(null); // { entries, run } — chargé à la demande
   const [theme, setThemeState] = useState(getTheme);
@@ -229,11 +230,15 @@ export default function App() {
   }, []);
 
   /* Changer de page referme la catégorie et le groupe ouverts à la main :
-     ceux de la nouvelle page prennent le relais et restent ouverts. */
-  useEffect(() => {
+     ceux de la nouvelle page prennent le relais et restent ouverts.
+     État ajusté pendant le rendu (et non dans un effet) : c'est le motif
+     recommandé par React quand un état dérive d'un changement de valeur. */
+  if (page !== prevPage) {
+    setPrevPage(page);
     setOpenCat(null);
     setOpenGroup(null);
-  }, [page]);
+    setSpyAnchor(null);
+  }
 
   /* Titre de l'onglet dynamique — utile pour l'historique et les liens
      profonds partagés (le routage par #hash ne le fait pas seul). */
@@ -245,10 +250,7 @@ export default function App() {
   /* Scrollspy : met en surbrillance la section survolée par le défilement. */
   useEffect(() => {
     const grp = page === HOME.id ? null : findGroup(page);
-    if (!grp) {
-      setSpyAnchor(null);
-      return;
-    }
+    if (!grp) return;
     const ids = grp.items.map((i) => i.id);
     const topbar =
       parseFloat(
