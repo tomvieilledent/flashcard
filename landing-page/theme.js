@@ -10,7 +10,7 @@
   }
 
   var stored = null;
-  try { stored = localStorage.getItem(KEY); } catch (e) {}
+  try { stored = localStorage.getItem(KEY); } catch { /* stockage indisponible */ }
   apply(stored);
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -36,7 +36,7 @@
       try {
         if (next) localStorage.setItem(KEY, next);
         else localStorage.removeItem(KEY);
-      } catch (e) {}
+      } catch { /* stockage indisponible */ }
       refresh();
     });
   });

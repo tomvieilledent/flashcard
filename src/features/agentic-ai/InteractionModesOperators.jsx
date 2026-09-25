@@ -137,6 +137,10 @@ Format : uniquement le code, sans explications.`}</Code>
       <SourceLink href="https://github.blog/ai-and-ml/github-copilot/how-github-copilot-is-getting-better-at-understanding-your-code/">
         github.blog — How GitHub Copilot handles context under the hood
       </SourceLink>
+      {" · "}
+      <SourceLink href="https://docs.github.com/en/copilot/concepts/prompting/prompt-engineering">
+        docs.github.com — Prompt engineering for GitHub Copilot
+      </SourceLink>
     </div>
   );
 }
