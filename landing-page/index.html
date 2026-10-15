@@ -3,91 +3,97 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Flashcard — notes de cours du cursus fullstack</title>
+<title>Flashcard — le carnet de révision fullstack</title>
 <meta name="description" content="Flashcard : les notions du cursus fullstack regroupées par domaine, avec exemples de code et recherche plein texte. Projet personnel de Tom Vieilledent." />
 <link rel="canonical" href="https://vlldnt.fr/flashcard/" />
 <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
 <link rel="apple-touch-icon" href="./favicon.svg" />
 <meta name="theme-color" content="#12141a" />
 <style>
-:root{--bg:#12141a;--surface:#1a1d25;--text:#e8e6e1;--muted:#9aa3b2;--rule:#2a2e38;--accent:#4fd1e8;--accent-ink:#0c1218;--head:#f3f1ec;
---sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color-scheme:dark}
+:root{--bg:#12141a;--surface:#171a21;--card:#1a1d25;--text:#e8e6e1;--muted:#9aa3b2;--border:#2a2e38;--heading:#f3f1ec;--accent:#4fd1e8;--cta-text:#0c1218;--ok:#6ee7b7;--wip:#f0b445;--glow:rgba(79,209,232,.28);
+--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
-a{color:var(--accent)}a:hover{text-underline-offset:3px}
-img{display:block;max-width:100%;height:auto}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
-.wrap{max-width:68rem;margin:0 auto;padding:0 24px}
-.bar{border-bottom:1px solid var(--rule)}
-.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px}
-.brand{display:flex;align-items:center;gap:10px;color:var(--head);font-weight:650;letter-spacing:-.01em;text-decoration:none}
-.brand img{width:26px;height:26px;border-radius:6px}
-.bar nav{display:flex;gap:22px;font-size:.9rem}
-.bar nav a{color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--head);text-decoration:underline}
-@media(max-width:620px){.bar nav a:not(.back){display:none}}
-.hero{padding:clamp(40px,7vw,88px) 0 clamp(32px,6vw,72px)}
-.hero .wrap{display:grid;gap:clamp(28px,5vw,56px);align-items:center;grid-template-columns:1fr}
-@media(min-width:900px){.hero .wrap{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}}
-.eyebrow{margin:0 0 14px;font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
-h1{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(2.3rem,5.6vw,3.7rem);line-height:1.06;letter-spacing:-.025em;color:var(--head)}
-.lead{margin:20px 0 0;max-width:34rem;font-size:clamp(1.02rem,1.9vw,1.15rem);color:var(--muted)}
-.actions{margin:28px 0 0;display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
-.btn{display:inline-block;padding:11px 20px;border-radius:6px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:.95rem;text-decoration:none}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}img{max-width:100%;height:auto;display:block}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:66rem;margin:0 auto;padding:0 20px}
+header.top{padding:18px 0}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.25rem;font-weight:600;color:var(--heading);text-decoration:none}
+.brand img{width:30px;height:30px;border-radius:7px}
+header.top nav{display:flex;gap:20px;font-size:.92rem}
+header.top nav a{color:var(--muted);text-decoration:none}header.top nav a:hover{color:var(--heading);text-decoration:underline}
+@media(max-width:620px){header.top nav a:not(:last-child){display:none}}
+.hero{padding:clamp(36px,7vw,80px) 0 clamp(24px,5vw,44px);text-align:center}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;border:1px solid var(--bc);color:var(--bc);font-size:.82rem;font-weight:600;background:var(--card)}
+.badge i{width:8px;height:8px;border-radius:50%;background:var(--bc)}
+.badge.live i{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.3}}
+h1{margin:18px auto 0;max-width:20ch;font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,7vw,3.9rem);line-height:1.08;letter-spacing:-.02em;color:var(--heading)}
+h1 em{font-style:normal;color:var(--accent)}
+.lead{margin:20px auto 0;max-width:40rem;font-size:clamp(1.02rem,2.3vw,1.18rem);color:var(--muted)}
+.cta-row{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.btn{display:inline-block;padding:12px 24px;border-radius:999px;font-weight:600;font-size:.98rem;text-decoration:none;border:1px solid var(--accent)}
+.btn.primary{background:var(--accent);color:var(--cta-text)}
+.btn.ghost{background:transparent;color:var(--heading);border-color:var(--border)}
 .btn:hover{filter:brightness(1.08)}
-.link{font-weight:600;font-size:.95rem}
-.shot{margin:0;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface)}
-section.s{padding:clamp(36px,6vw,68px) 0;border-top:1px solid var(--rule)}
-.cols{display:grid;gap:clamp(24px,5vw,64px);grid-template-columns:1fr}
-@media(min-width:820px){.cols{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr)}}
-h2{margin:0;font-family:var(--serif);font-weight:650;font-size:clamp(1.4rem,3vw,1.85rem);line-height:1.2;letter-spacing:-.015em;color:var(--head)}
-.prose{margin:0;color:var(--muted);max-width:38rem}
-.prose+.prose{margin-top:14px}
-dl{margin:0;display:grid;grid-template-columns:minmax(7rem,.35fr) 1fr;gap:0}
-dt,dd{margin:0;padding:11px 0;border-top:1px solid var(--rule)}
-dt{font-size:.85rem;color:var(--muted)}dd{font-size:.97rem}
-dl>:nth-last-child(-n+2){border-bottom:1px solid var(--rule)}
-ol.items,ul.items{list-style:none;margin:0;padding:0;display:grid;gap:0 clamp(24px,5vw,56px);grid-template-columns:1fr}
-@media(min-width:760px){ol.items,ul.items{grid-template-columns:1fr 1fr}}
-.items li{padding:18px 0;border-top:1px solid var(--rule)}
-.items h3{margin:0;font-size:1.02rem;font-weight:650;color:var(--head);letter-spacing:-.005em}
-.items p{margin:6px 0 0;color:var(--muted);font-size:.96rem}
-.items .n{display:block;margin-bottom:4px;font-size:.78rem;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
-@media(min-width:760px){.gallery{grid-template-columns:1fr 1fr}.gallery figure:last-child{grid-column:1}}
-.gallery{display:grid;gap:22px;grid-template-columns:1fr}
-.gallery figure{margin:0}.gallery img{border:1px solid var(--rule);border-radius:8px;background:var(--surface)}
-.gallery img[src$="mobile.jpg"]{max-width:300px}
+.shot{margin-top:clamp(28px,5vw,48px);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px -28px var(--glow);background:var(--card);text-align:left}
+.shot .bar{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface)}
+.shot .bar i{width:10px;height:10px;border-radius:50%;background:var(--border)}
+section{padding:clamp(32px,6vw,64px) 0}
+h2{margin:0 0 10px;font-family:var(--serif);font-weight:600;font-size:clamp(1.55rem,4.2vw,2.1rem);color:var(--heading);line-height:1.2}
+.sub{margin:0 0 28px;color:var(--muted);max-width:42rem}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px}
+.card h3{margin:0 0 6px;font-family:var(--serif);font-size:1.1rem;color:var(--heading)}
+.card p{margin:0;color:var(--muted);font-size:.96rem}
+.card .k{margin-top:10px;font-size:.84rem;color:var(--accent)}
+.band{background:var(--surface);border-block:1px solid var(--border)}
+.gallery{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+.gallery figure{margin:0}
+.gallery img{border:1px solid var(--border);border-radius:14px;background:var(--card)}
 .gallery figcaption{margin-top:8px;font-size:.88rem;color:var(--muted)}
-table{width:100%;border-collapse:collapse;font-size:.95rem}
-th,td{text-align:left;padding:11px 12px 11px 0;border-top:1px solid var(--rule);vertical-align:top}
-th{font-weight:600;color:var(--muted);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
-tr:last-child td{border-bottom:1px solid var(--rule)}
-td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
-.st{font-weight:600}
-.st.ok{color:#2f6b3b}.st.warn{color:#8a5a00}.st.full{color:#a4501a}.st.over{color:#a33a2a}
-footer{border-top:1px solid var(--rule);padding:24px 0 36px;font-size:.88rem;color:var(--muted)}
-footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.gallery .tall img{max-width:260px;margin:0 auto}.gallery .tall figcaption{text-align:center}
+.status{display:grid;gap:12px;padding:0;margin:0;list-style:none;max-width:42rem}
+.status li{display:flex;gap:12px;align-items:baseline;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:14px}
+.status b{flex:none;min-width:8.5rem;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;padding:2px 10px;border-radius:999px;border:1px solid currentColor;text-align:center}
+.st-ok{color:var(--ok)}.st-warn{color:var(--wip)}.st-full{color:#a4501a}.st-over{color:#a33a2a}.st-todo{color:var(--muted)}
+.status span{color:var(--text)}
+.steps{counter-reset:s;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));padding:0;margin:0;list-style:none}
+.steps li{counter-increment:s;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px}
+.steps li::before{content:counter(s);display:inline-grid;place-items:center;width:30px;height:30px;margin-bottom:12px;border-radius:50%;background:var(--accent);color:var(--cta-text);font-weight:700;font-size:.9rem}
+.steps h3{margin:0 0 6px;font-family:var(--serif);font-size:1.1rem;color:var(--heading)}.steps p{margin:0;color:var(--muted);font-size:.96rem}
+.stack{display:flex;flex-wrap:wrap;gap:10px;padding:0;margin:0;list-style:none}
+.stack li{padding:7px 16px;border:1px solid var(--border);border-radius:999px;background:var(--card);font-size:.9rem}
+.final{text-align:center}
+footer{padding:28px 0 40px;border-top:1px solid var(--border);font-size:.85rem;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.badge i{animation:none}}
 </style>
 </head>
 <body>
-<header class="bar"><div class="wrap"><a class="brand" href="./"><img src="./favicon.svg" alt="" width="26" height="26" />Flashcard</a><nav aria-label="Navigation"><a href="#projet">Le projet</a><a href="#domaines">Domaines</a><a class="back" href="https://vlldnt.fr/">← vlldnt.fr</a></nav></div></header>
+<header class="top"><div class="wrap"><a class="brand" href="./"><img src="./favicon.svg" alt="" width="30" height="30" />Flashcard</a><nav aria-label="Navigation principale"><a href="#projet">Le projet</a><a href="#apercu">Aperçu</a><a href="#sommaire">Au sommaire</a><a href="#technique">Technique</a><a href="https://vlldnt.fr/">← vlldnt.fr</a></nav></div></header>
 <main>
-<section class="hero"><div class="wrap"><div><p class="eyebrow">Application de révision · Développement fullstack</p><h1>Flashcard</h1><p class="lead">Les notions vues en cours, regroupées par domaine et reliées entre elles, avec exemples de code et recherche plein texte.</p><div class="actions"><a class="btn" href="https://flashcard.vlldnt.fr" rel="noopener">Ouvrir Flashcard</a><a class="link" href="https://github.com/tomvieilledent/flashcard" rel="noopener">Code source</a></div></div>
-<figure class="shot"><img src="./portfolio.png" width="1919" height="933" alt="Une fiche de Flashcard : « Le langage C », avec la navigation par domaine à gauche et un exemple de code." /></figure></div></section>
-<section class="s" id="projet"><div class="wrap cols"><div><h2>Le projet</h2></div><div>
-<p class="prose">Front, back, bases de données, DevOps, conception : chaque fiche suit la même trame — problème, solution, exemples de code, ressources — et se complète à chaque nouvelle notion abordée.</p>
-<dl style="margin-top:26px"><dt>Rôle</dt><dd>Projet personnel — conception, développement, hébergement</dd><dt>Stack</dt><dd>React · Vite</dd><dt>Statut</dt><dd>En production</dd><dt>Accès</dt><dd><a href="https://flashcard.vlldnt.fr">flashcard.vlldnt.fr</a></dd></dl></div></div></section>
-<section class="s" id="domaines"><div class="wrap cols"><div><h2>Domaines couverts</h2><p class="prose" style="margin-top:12px">Sept familles de notions, chacune avec ses fiches.</p></div><div>
-<ul class="items">
-<li><span class="n">01</span><h3>Frontend</h3><p>React · Vue · Svelte · Vite</p></li>
-<li><span class="n">02</span><h3>Modélisation</h3><p>Merise · normalisation · SQL</p></li>
-<li><span class="n">03</span><h3>API</h3><p>REST · OpenAPI · JSON Schema</p></li>
-<li><span class="n">04</span><h3>Conteneurs</h3><p>Docker · Compose</p></li>
-<li><span class="n">05</span><h3>DevOps &amp; CI/CD</h3><p>GitHub Actions · culture DevOps · Git</p></li>
-<li><span class="n">06</span><h3>Conception</h3><p>UML · patterns · BDD / Gherkin</p></li>
-<li><span class="n">07</span><h3>IA &amp; agents</h3><p>LLM · prompt engineering · RAG</p></li>
-</ul>
-</div></div></section>
+<section class="hero"><div class="wrap"><p class="badge live" style="--bc:var(--ok)"><i></i>En production</p><h1>Le carnet de révision <em>fullstack</em></h1><p class="lead">Toutes les notions vues en cours, regroupées par domaine et reliées entre elles : shell, C, Python, front, back, bases de données, DevOps, CI/CD, modélisation et IA agentique.</p><div class="cta-row"><a class="btn primary" href="https://flashcard.vlldnt.fr" rel="noopener">Ouvrir Flashcard</a><a class="btn ghost" href="https://github.com/tomvieilledent/flashcard" rel="noopener">Code source</a></div>
+<div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="./portfolio.png" width="1600" height="1000" alt="Une fiche de Flashcard, « Le langage C » : navigation par domaine à gauche, plan de la fiche et exemple de code." /></div></div></section>
+<section id="projet"><div class="wrap"><h2>Le projet</h2><p class="sub">Un support de révision personnel, mis à jour au fil des cours.</p>
+<div class="grid"><article class="card"><h3>Une trame unique</h3><p>Chaque fiche suit la même structure : problème, solution, exemples de code, ressources.</p></article><article class="card"><h3>Navigation par domaine</h3><p>La barre latérale ouvre chaque section ; la fiche et la partie en cours restent repérées.</p></article><article class="card"><h3>Recherche plein texte</h3><p>Retrouvez une notion par mot-clé : les résultats indiquent le domaine et affichent un extrait.</p></article><article class="card"><h3>Clair ou sombre</h3><p>Un bouton bascule le thème ; la mise en page s&#x27;adapte du téléphone au poste de travail.</p></article></div>
+</div></section>
+<section class="band" id="apercu"><div class="wrap"><h2>Aperçu</h2><p class="sub">Captures de la version en ligne.</p>
+<div class="gallery">
+<figure><img src="./shot-sommaire.jpg" loading="lazy" alt="Le sommaire de l&#x27;accueil : domaines numérotés avec le nombre de fiches." /><figcaption>Le sommaire, par domaine.</figcaption></figure>
+<figure><img src="./shot-fiche-code.jpg" loading="lazy" alt="Une fiche avec un exemple de code, un lien de ressources et un tableau de règles." /><figcaption>Une fiche : exemples de code, ressources, tableaux.</figcaption></figure>
+<figure><img src="./shot-recherche.jpg" loading="lazy" alt="Résultats de la recherche « pointeur » avec le domaine et un extrait pour chacun." /><figcaption>Recherche plein texte : « pointeur ».</figcaption></figure>
+<figure class="tall"><img src="./shot-mobile.jpg" loading="lazy" alt="Accueil de Flashcard sur téléphone." /><figcaption>Version mobile.</figcaption></figure>
+</div>
+</div></section>
+<section id="sommaire"><div class="wrap"><h2>Au sommaire</h2><p class="sub">Huit domaines de notions.</p>
+<div class="grid"><article class="card"><h3>Shell &amp; éditeurs</h3><p>Ligne de commande · Éditeurs de texte</p><p class="k">13 fiches</p></article><article class="card"><h3>Programmation bas niveau</h3><p>Le langage C · Pointeurs, tableaux &amp; mémoire · Structures de données · Algorithmes</p><p class="k">25 fiches</p></article><article class="card"><h3>Python</h3><p>Bases du langage · Objets, erreurs &amp; qualité · Fichiers, données &amp; bases · Python sous le capot</p><p class="k">17 fiches</p></article><article class="card"><h3>Conception &amp; méthode</h3><p>Spécifier le besoin · UML &amp; architecture · Cohérence &amp; documentation</p><p class="k">9 fiches</p></article><article class="card"><h3>Backend</h3><p>Bases de données · SQL &amp; MySQL · API &amp; contrats</p><p class="k">13 fiches</p></article><article class="card"><h3>Frontend</h3><p>HTML · CSS · JavaScript · React · Vue.js · Svelte</p><p class="k">23 fiches</p></article><article class="card"><h3>DevOps</h3><p>GitHub Actions · culture DevOps · Git</p></article><article class="card"><h3>IA &amp; agents</h3><p>LLM · prompt engineering · RAG</p></article></div>
+</div></section>
+<section id="technique"><div class="wrap"><h2>Technique</h2><p class="sub">Une application statique, hébergée sur mon propre serveur.</p>
+<ul class="stack" aria-label="Technologies utilisées"><li>React</li><li>Vite</li><li>Docker Compose</li><li>nginx</li><li>HTTPS</li></ul>
+</div></section>
+<section class="final"><div class="wrap"><h2>Ouvrir le carnet</h2><p class="sub" style="margin-inline:auto">Les fiches sont consultables directement dans le navigateur.</p><div class="cta-row"><a class="btn primary" href="https://flashcard.vlldnt.fr" rel="noopener">Ouvrir Flashcard</a></div></div></section>
 </main>
 <footer><div class="wrap"><span>© Tom Vieilledent</span><a href="https://vlldnt.fr/">← Retour au portfolio</a></div></footer>
 </body>
