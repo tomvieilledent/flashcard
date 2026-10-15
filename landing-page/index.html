@@ -1,329 +1,94 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Flashcard — notes de cours dev fullstack</title>
-  <meta name="description" content="Flashcard : toutes les notions de développement fullstack vues en cours, révisées au fil de l'année — React, Vue, Svelte, Docker, DevOps, CI/CD, Merise, UML, API REST." />
-  <link rel="canonical" href="https://vlldnt.fr/flashcard/" />
-  <link rel="icon" type="image/svg+xml" href="/flashcard/favicon.svg" />
-  <link rel="apple-touch-icon" href="/flashcard/favicon.svg" />
-  <meta name="theme-color" content="#12141a" media="(prefers-color-scheme: dark)" />
-  <meta name="theme-color" content="#f3efe6" media="(prefers-color-scheme: light)" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://vlldnt.fr/flashcard/" />
-  <meta property="og:title" content="Flashcard — notes de cours dev fullstack" />
-  <meta property="og:description" content="Toutes les notions de développement fullstack, révisées au fil des cours." />
-  <script src="theme.js"></script>
-  <style>
-    /* ==== Charte Flashcard (reprise de src/index.css) ==================== */
-    /* Sombre = défaut. Clair : préférence système (tant qu'aucun choix posé)
-       ou choix explicite [data-theme="light"]. Le bouton pose data-theme. */
-    :root {
-      --ink: #12141a;
-      --panel: #1a1d25;
-      --line: #2a2e38;
-      --text: #e8e6e1;
-      --muted: #9098a8;
-      --fill: rgba(255, 255, 255, 0.03);
-      --focus: #7ea9ff;
-
-      --react: #4fd1e8;  --vue: #6ee7b7;   --svelte: #ff6b4a;
-      --docker: #4c8bf5; --devops: #c4a2ff; --ci: #7ee0c3;
-      --merise: #f0a6ca; --uml: #f2a65a;   --api: #5ec8c8;   --ai: #ef6f53;
-
-      --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "IBM Plex Sans", sans-serif;
-      --font-display: "Iowan Old Style", Georgia, "Times New Roman", serif;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-      --content-max: 760px;
-
-      color-scheme: dark;
-    }
-
-    /* Palette claire — réutilisée par le média système et le choix explicite. */
-    @media (prefers-color-scheme: light) {
-      :root:not([data-theme]) {
-        --ink: #f3efe6; --panel: #fbf8f1; --line: #e1d9c8;
-        --text: #2b2723; --muted: #6f685c;
-        --fill: rgba(43, 39, 35, 0.04); --focus: #1f5fd0;
-        --react: #0c7b8f;  --vue: #0f8a5f;   --svelte: #d24a28;
-        --docker: #2c5fc7; --devops: #6d4bc4; --ci: #0e8c74;
-        --merise: #b23a79; --uml: #b4671e;   --api: #0b7c7c;   --ai: #c4442b;
-        color-scheme: light;
-      }
-    }
-    :root[data-theme="light"] {
-      --ink: #f3efe6; --panel: #fbf8f1; --line: #e1d9c8;
-      --text: #2b2723; --muted: #6f685c;
-      --fill: rgba(43, 39, 35, 0.04); --focus: #1f5fd0;
-      --react: #0c7b8f;  --vue: #0f8a5f;   --svelte: #d24a28;
-      --docker: #2c5fc7; --devops: #6d4bc4; --ci: #0e8c74;
-      --merise: #b23a79; --uml: #b4671e;   --api: #0b7c7c;   --ai: #c4442b;
-      color-scheme: light;
-    }
-    :root[data-theme="dark"] {
-      --ink: #12141a; --panel: #1a1d25; --line: #2a2e38;
-      --text: #e8e6e1; --muted: #9098a8;
-      --fill: rgba(255, 255, 255, 0.03); --focus: #7ea9ff;
-      --react: #4fd1e8;  --vue: #6ee7b7;   --svelte: #ff6b4a;
-      --docker: #4c8bf5; --devops: #c4a2ff; --ci: #7ee0c3;
-      --merise: #f0a6ca; --uml: #f2a65a;   --api: #5ec8c8;   --ai: #ef6f53;
-      color-scheme: dark;
-    }
-
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--ink);
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.65;
-      -webkit-font-smoothing: antialiased;
-      transition: background-color 0.25s ease, color 0.25s ease;
-    }
-    a { color: inherit; }
-    :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 3px; }
-
-    .wrap {
-      max-width: var(--content-max);
-      margin: 0 auto;
-      padding: clamp(20px, 5vw, 40px) 20px clamp(48px, 10vw, 96px);
-    }
-
-    /* ---- Bouton de thème ---- */
-    #theme-toggle {
-      position: fixed;
-      top: 14px;
-      right: 14px;
-      z-index: 10;
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--panel);
-      color: var(--muted);
-      cursor: pointer;
-      transition: color 0.15s ease, border-color 0.15s ease, transform 0.25s var(--ease-spring);
-    }
-    #theme-toggle:hover { color: var(--text); border-color: var(--text); transform: rotate(12deg); }
-    #theme-toggle svg { width: 18px; height: 18px; }
-    #theme-toggle .i-sun,
-    #theme-toggle .i-auto { display: none; }
-    #theme-toggle[data-state="light"] .i-sun,
-    #theme-toggle[data-state="dark"] .i-moon,
-    #theme-toggle[data-state="auto"] .i-auto { display: block; }
-    #theme-toggle[data-state="light"] .i-moon,
-    #theme-toggle[data-state="light"] .i-auto,
-    #theme-toggle[data-state="dark"] .i-sun,
-    #theme-toggle[data-state="dark"] .i-auto,
-    #theme-toggle[data-state="auto"] .i-sun,
-    #theme-toggle[data-state="auto"] .i-moon { display: none; }
-
-    /* ---- Running head (comme le carnet) ---- */
-    .runhead {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 16px;
-      padding-top: 10px;
-      border-top: 1px solid var(--text);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .runhead b { color: var(--text); font-weight: 600; }
-
-    /* ---- Hero ---- */
-    .hero { position: relative; padding: clamp(40px, 9vw, 72px) 0 clamp(28px, 6vw, 52px); }
-    .kicker {
-      margin: 0;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    h1 {
-      margin: 14px 0 0;
-      font-family: var(--font-display);
-      font-weight: 600;
-      font-size: clamp(34px, 8vw, 68px);
-      line-height: 1.04;
-      letter-spacing: -0.02em;
-      max-width: 16ch;
-    }
-    .tagline {
-      margin: 22px 0 0;
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: clamp(17px, 2.6vw, 24px);
-      line-height: 1.4;
-      max-width: 42ch;
-    }
-    .lead {
-      margin: 20px 0 0;
-      color: var(--muted);
-      max-width: 54ch;
-    }
-
-    .cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 30px;
-      padding: 13px 22px;
-      border: 1px solid var(--text);
-      border-radius: 999px;
-      background: var(--text);
-      color: var(--ink);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 15px;
-      transition: transform 0.25s var(--ease-spring);
-    }
-    .cta:hover { transform: translateY(-2px); }
-    .cta svg { width: 16px; height: 16px; }
-
-    /* ---- Cachet tournant (signature du carnet) ---- */
-    .seal {
-      position: absolute;
-      top: clamp(24px, 6vw, 48px);
-      right: 0;
-      width: clamp(96px, 22vw, 148px);
-      height: clamp(96px, 22vw, 148px);
-      color: var(--muted);
-      opacity: 0.85;
-      pointer-events: none;
-    }
-    @media (max-width: 620px) { .seal { display: none; } }
-    .seal-ring { transform-box: fill-box; transform-origin: center; animation: spin 44s linear infinite; }
-    @media (prefers-reduced-motion: reduce) { .seal-ring { animation: none; } }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .seal-text { fill: var(--muted); font-family: var(--font-mono); }
-    .seal-mono { fill: var(--text); font-family: var(--font-display); }
-
-    /* ---- Sommaire des domaines (comme la TOC de l'app) ---- */
-    .toc { margin-top: clamp(44px, 10vw, 72px); }
-    .toc h2 {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 600;
-      margin: 0 0 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--line);
-    }
-    .toc ul { list-style: none; margin: 0; padding: 0; }
-    .toc li {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      padding: 11px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .dot { flex: none; width: 7px; height: 7px; border-radius: 999px; background: var(--c); transform: translateY(-1px); }
-    .toc .name { font-family: var(--font-display); font-size: 17px; }
-    .toc .desc { color: var(--muted); font-size: 14px; margin-left: auto; text-align: right; }
-    @media (max-width: 520px) { .toc .desc { display: none; } }
-
-    footer {
-      margin-top: clamp(44px, 10vw, 72px);
-      padding-top: 12px;
-      border-top: 1px solid var(--text);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px 18px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    footer a { text-decoration: none; }
-    footer a:hover { color: var(--text); }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Flashcard — notes de cours du cursus fullstack</title>
+<meta name="description" content="Flashcard : les notions du cursus fullstack regroupées par domaine, avec exemples de code et recherche plein texte. Projet personnel de Tom Vieilledent." />
+<link rel="canonical" href="https://vlldnt.fr/flashcard/" />
+<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+<link rel="apple-touch-icon" href="./favicon.svg" />
+<meta name="theme-color" content="#12141a" />
+<style>
+:root{--bg:#12141a;--surface:#1a1d25;--text:#e8e6e1;--muted:#9aa3b2;--rule:#2a2e38;--accent:#4fd1e8;--accent-ink:#0c1218;--head:#f3f1ec;
+--sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}a:hover{text-underline-offset:3px}
+img{display:block;max-width:100%;height:auto}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+.wrap{max-width:68rem;margin:0 auto;padding:0 24px}
+.bar{border-bottom:1px solid var(--rule)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--head);font-weight:650;letter-spacing:-.01em;text-decoration:none}
+.brand img{width:26px;height:26px;border-radius:6px}
+.bar nav{display:flex;gap:22px;font-size:.9rem}
+.bar nav a{color:var(--muted);text-decoration:none}.bar nav a:hover{color:var(--head);text-decoration:underline}
+@media(max-width:620px){.bar nav a:not(.back){display:none}}
+.hero{padding:clamp(40px,7vw,88px) 0 clamp(32px,6vw,72px)}
+.hero .wrap{display:grid;gap:clamp(28px,5vw,56px);align-items:center;grid-template-columns:1fr}
+@media(min-width:900px){.hero .wrap{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)}}
+.eyebrow{margin:0 0 14px;font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(2.3rem,5.6vw,3.7rem);line-height:1.06;letter-spacing:-.025em;color:var(--head)}
+.lead{margin:20px 0 0;max-width:34rem;font-size:clamp(1.02rem,1.9vw,1.15rem);color:var(--muted)}
+.actions{margin:28px 0 0;display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
+.btn{display:inline-block;padding:11px 20px;border-radius:6px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:.95rem;text-decoration:none}
+.btn:hover{filter:brightness(1.08)}
+.link{font-weight:600;font-size:.95rem}
+.shot{margin:0;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface)}
+section.s{padding:clamp(36px,6vw,68px) 0;border-top:1px solid var(--rule)}
+.cols{display:grid;gap:clamp(24px,5vw,64px);grid-template-columns:1fr}
+@media(min-width:820px){.cols{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr)}}
+h2{margin:0;font-family:var(--serif);font-weight:650;font-size:clamp(1.4rem,3vw,1.85rem);line-height:1.2;letter-spacing:-.015em;color:var(--head)}
+.prose{margin:0;color:var(--muted);max-width:38rem}
+.prose+.prose{margin-top:14px}
+dl{margin:0;display:grid;grid-template-columns:minmax(7rem,.35fr) 1fr;gap:0}
+dt,dd{margin:0;padding:11px 0;border-top:1px solid var(--rule)}
+dt{font-size:.85rem;color:var(--muted)}dd{font-size:.97rem}
+dl>:nth-last-child(-n+2){border-bottom:1px solid var(--rule)}
+ol.items,ul.items{list-style:none;margin:0;padding:0;display:grid;gap:0 clamp(24px,5vw,56px);grid-template-columns:1fr}
+@media(min-width:760px){ol.items,ul.items{grid-template-columns:1fr 1fr}}
+.items li{padding:18px 0;border-top:1px solid var(--rule)}
+.items h3{margin:0;font-size:1.02rem;font-weight:650;color:var(--head);letter-spacing:-.005em}
+.items p{margin:6px 0 0;color:var(--muted);font-size:.96rem}
+.items .n{display:block;margin-bottom:4px;font-size:.78rem;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+@media(min-width:760px){.gallery{grid-template-columns:1fr 1fr}.gallery figure:last-child{grid-column:1}}
+.gallery{display:grid;gap:22px;grid-template-columns:1fr}
+.gallery figure{margin:0}.gallery img{border:1px solid var(--rule);border-radius:8px;background:var(--surface)}
+.gallery img[src$="mobile.jpg"]{max-width:300px}
+.gallery figcaption{margin-top:8px;font-size:.88rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{text-align:left;padding:11px 12px 11px 0;border-top:1px solid var(--rule);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+tr:last-child td{border-bottom:1px solid var(--rule)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.st{font-weight:600}
+.st.ok{color:#2f6b3b}.st.warn{color:#8a5a00}.st.full{color:#a4501a}.st.over{color:#a33a2a}
+footer{border-top:1px solid var(--rule);padding:24px 0 36px;font-size:.88rem;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
 </head>
 <body>
-  <button id="theme-toggle" type="button" hidden aria-label="Changer de thème">
-    <svg class="i-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-    </svg>
-    <svg class="i-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/>
-      <path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-    </svg>
-    <svg class="i-auto" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/>
-      <path d="M12 3.5v17A8.5 8.5 0 0 0 12 3.5Z" fill="currentColor"/>
-    </svg>
-  </button>
-
-  <div class="wrap">
-    <p class="runhead">
-      <span>Notes de cours</span>
-      <b>№ 01</b>
-      <span>Développement fullstack</span>
-    </p>
-
-    <section class="hero">
-      <svg class="seal" viewBox="0 0 100 100" aria-hidden="true">
-        <defs>
-          <path id="arc" d="M50,50 m-33,0 a33,33 0 1,1 66,0 a33,33 0 1,1 -66,0" fill="none" />
-        </defs>
-        <g class="seal-ring">
-          <circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5" />
-          <circle cx="50" cy="50" r="28" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.3" />
-          <text class="seal-text" font-size="7.3" letter-spacing="1.7">
-            <textPath href="#arc" startOffset="0">· FLASHCARD · NOTES DE COURS DÉVELOPPEMENT FULLSTACK&nbsp;</textPath>
-          </text>
-        </g>
-        <text class="seal-mono" x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="600">F</text>
-      </svg>
-
-      <p class="kicker">flashcard.vlldnt.fr</p>
-      <h1>Le carnet de révision de l'année.</h1>
-      <p class="tagline">Toutes les notions vues en cours, expliquées et reliées entre elles.</p>
-      <p class="lead">
-        Front, back, bases de données, DevOps, conception. Chaque fiche suit la
-        même trame — problème, solution, exemples de code, ressources — et se
-        complète à chaque nouvelle notion abordée.
-      </p>
-
-      <a class="cta" href="https://flashcard.vlldnt.fr">
-        Ouvrir Flashcard
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M5 10h10M11 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </a>
-    </section>
-
-    <nav class="toc" aria-label="Domaines couverts">
-      <h2>Au sommaire</h2>
-      <ul>
-        <li><span class="dot" style="--c: var(--react)"></span><span class="name">Frontend</span><span class="desc">React · Vue · Svelte · Vite</span></li>
-        <li><span class="dot" style="--c: var(--merise)"></span><span class="name">Modélisation</span><span class="desc">Merise · normalisation · SQL</span></li>
-        <li><span class="dot" style="--c: var(--api)"></span><span class="name">API</span><span class="desc">REST · OpenAPI · JSON Schema</span></li>
-        <li><span class="dot" style="--c: var(--docker)"></span><span class="name">Conteneurs</span><span class="desc">Docker · Compose</span></li>
-        <li><span class="dot" style="--c: var(--devops)"></span><span class="name">DevOps &amp; CI/CD</span><span class="desc">GitHub Actions · culture DevOps · Git</span></li>
-        <li><span class="dot" style="--c: var(--uml)"></span><span class="name">Conception</span><span class="desc">UML · patterns · BDD / Gherkin</span></li>
-        <li><span class="dot" style="--c: var(--ai)"></span><span class="name">IA &amp; agents</span><span class="desc">LLM · prompt engineering · RAG</span></li>
-      </ul>
-    </nav>
-
-    <footer>
-      <a href="https://flashcard.vlldnt.fr">flashcard.vlldnt.fr</a>
-      <a href="https://github.com/tomvieilledent/flashcard">Code source</a>
-      <a href="https://vlldnt.fr">© Tom Vieilledent</a>
-    </footer>
-  </div>
+<header class="bar"><div class="wrap"><a class="brand" href="./"><img src="./favicon.svg" alt="" width="26" height="26" />Flashcard</a><nav aria-label="Navigation"><a href="#projet">Le projet</a><a href="#domaines">Domaines</a><a class="back" href="https://vlldnt.fr/">← vlldnt.fr</a></nav></div></header>
+<main>
+<section class="hero"><div class="wrap"><div><p class="eyebrow">Application de révision · Développement fullstack</p><h1>Flashcard</h1><p class="lead">Les notions vues en cours, regroupées par domaine et reliées entre elles, avec exemples de code et recherche plein texte.</p><div class="actions"><a class="btn" href="https://flashcard.vlldnt.fr" rel="noopener">Ouvrir Flashcard</a><a class="link" href="https://github.com/tomvieilledent/flashcard" rel="noopener">Code source</a></div></div>
+<figure class="shot"><img src="./portfolio.png" width="1919" height="933" alt="Une fiche de Flashcard : « Le langage C », avec la navigation par domaine à gauche et un exemple de code." /></figure></div></section>
+<section class="s" id="projet"><div class="wrap cols"><div><h2>Le projet</h2></div><div>
+<p class="prose">Front, back, bases de données, DevOps, conception : chaque fiche suit la même trame — problème, solution, exemples de code, ressources — et se complète à chaque nouvelle notion abordée.</p>
+<dl style="margin-top:26px"><dt>Rôle</dt><dd>Projet personnel — conception, développement, hébergement</dd><dt>Stack</dt><dd>React · Vite</dd><dt>Statut</dt><dd>En production</dd><dt>Accès</dt><dd><a href="https://flashcard.vlldnt.fr">flashcard.vlldnt.fr</a></dd></dl></div></div></section>
+<section class="s" id="domaines"><div class="wrap cols"><div><h2>Domaines couverts</h2><p class="prose" style="margin-top:12px">Sept familles de notions, chacune avec ses fiches.</p></div><div>
+<ul class="items">
+<li><span class="n">01</span><h3>Frontend</h3><p>React · Vue · Svelte · Vite</p></li>
+<li><span class="n">02</span><h3>Modélisation</h3><p>Merise · normalisation · SQL</p></li>
+<li><span class="n">03</span><h3>API</h3><p>REST · OpenAPI · JSON Schema</p></li>
+<li><span class="n">04</span><h3>Conteneurs</h3><p>Docker · Compose</p></li>
+<li><span class="n">05</span><h3>DevOps &amp; CI/CD</h3><p>GitHub Actions · culture DevOps · Git</p></li>
+<li><span class="n">06</span><h3>Conception</h3><p>UML · patterns · BDD / Gherkin</p></li>
+<li><span class="n">07</span><h3>IA &amp; agents</h3><p>LLM · prompt engineering · RAG</p></li>
+</ul>
+</div></div></section>
+</main>
+<footer><div class="wrap"><span>© Tom Vieilledent</span><a href="https://vlldnt.fr/">← Retour au portfolio</a></div></footer>
 </body>
 </html>
