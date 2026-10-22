@@ -41,7 +41,7 @@ export default function ChoosingData() {
           ["Django", "Django ORM", "Inclus, migrations automatiques, le plus simple pour débuter"],
           ["Python (FastAPI, Flask)", "SQLAlchemy (+ Alembic)", "Puissant, plus de configuration"],
           ["Node.js / TypeScript", "Prisma", "Schéma lisible, bon typage, très populaire"],
-          ["Node.js, besoin de proche du SQL", "Drizzle, Knex", "Plus léger, plus proche du SQL"],
+          ["Node.js, au plus près du SQL", "Drizzle, Knex", "Plus léger, plus proche du SQL"],
           ["Node.js, style classes et décorateurs", "TypeORM, Sequelize", "Courants dans les projets existants"],
           ["Laravel (PHP)", "Eloquent", "Inclus, très lisible"],
           ["Spring Boot (Java)", "Hibernate / JPA", "Standard de l'écosystème Java"],

@@ -100,6 +100,15 @@ export const NAV = [
           { id: "base-git-jargon", label: "Git et jargon d'équipe", icon: GitBranch, file: "bases/GitAndTeamJargon.jsx" },
         ],
       },
+      {
+        group: "Bien choisir",
+        accent: REACT_ACCENT,
+        icon: Compass,
+        items: [
+          { id: "base-choose-stack", label: "Quelle techno pour quel projet ?", icon: Compass, file: "bases/ChoosingStack.jsx" },
+          { id: "base-choose-data", label: "Quelle base de données et quel ORM ?", icon: ListChecks, file: "bases/ChoosingData.jsx" },
+        ],
+      },
     ],
   },
   {
