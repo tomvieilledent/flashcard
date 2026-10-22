@@ -30,6 +30,7 @@ user.name = "Léa"
 user.save()   # l'ORM écrit le UPDATE`}</Code>
 
       <TechTable
+        cols={[0]}
         head={["ORM", "Langage / écosystème"]}
         rows={[
           ["Django ORM", "Python (inclus dans Django)"],

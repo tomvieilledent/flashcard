@@ -164,7 +164,14 @@ export function withLogos(text) {
   );
 }
 
-/* Table de contenu dont les cellules affichent les logos des technos citées. */
-export function TechTable({ rows, ...rest }) {
-  return <Table {...rest} rows={rows.map((r) => r.map(withLogos))} />;
+/* Table de contenu dont les colonnes `cols` affichent les logos des technos
+   citées (toutes les colonnes si `cols` est omis). */
+export function TechTable({ rows, cols, ...rest }) {
+  const show = (j) => !cols || cols.includes(j);
+  return (
+    <Table
+      {...rest}
+      rows={rows.map((r) => r.map((c, j) => (show(j) ? withLogos(c) : c)))}
+    />
+  );
 }

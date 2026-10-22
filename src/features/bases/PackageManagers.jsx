@@ -30,6 +30,7 @@ export default function PackageManagers() {
         </li>
       </Ul>
       <TechTable
+        cols={[1]}
         head={["Écosystème", "Outil", "Fichier de dépendances"]}
         rows={[
           ["JavaScript", "npm, yarn, pnpm", "package.json"],

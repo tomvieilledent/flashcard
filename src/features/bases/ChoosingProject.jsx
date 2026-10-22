@@ -45,6 +45,7 @@ export default function ChoosingProject() {
 
       <H3>Exemples de projets, stack et justification</H3>
       <TechTable
+        cols={[1]}
         head={["Projet", "Stack", "Pourquoi"]}
         rows={[
           ["Portfolio, blog, site vitrine", "HTML/CSS ou Astro, hébergement statique", "Pas de serveur ni de base : rapide, gratuit, bon SEO"],
@@ -77,9 +78,9 @@ Hébergement : Docker + VPS     -> simple et peu coûteux`}</Code>
         décisions difficiles à défaire sont le langage et le modèle de données.
       </Note>
       <P>
-        Détails par couche : voir « Quelle techno pour quel projet ? »,
-        « Quel langage de programmation ? », « Quelle base de données et quel
-        ORM ? » et « Quelle API et quelle authentification ? ».
+        Détails par couche : voir « Quel langage de programmation ? »,
+        « Quel frontend ? », « Quel backend ? », « Quelle base de données et
+        quel ORM ? » et « Quelle API et quelle authentification ? ».
       </P>
     </div>
   );
