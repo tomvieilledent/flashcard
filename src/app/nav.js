@@ -106,7 +106,9 @@ export const NAV = [
         icon: Compass,
         items: [
           { id: "base-choose-stack", label: "Quelle techno pour quel projet ?", icon: Compass, file: "bases/ChoosingStack.jsx" },
+          { id: "base-choose-language", label: "Quel langage de programmation ?", icon: FileCode, file: "bases/ChoosingLanguage.jsx" },
           { id: "base-choose-data", label: "Quelle base de données et quel ORM ?", icon: ListChecks, file: "bases/ChoosingData.jsx" },
+          { id: "base-choose-api", label: "Quelle API et quelle authentification ?", icon: KeyRound, file: "bases/ChoosingApi.jsx" },
         ],
       },
     ],
