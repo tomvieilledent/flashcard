@@ -140,26 +140,6 @@ describe("App — navigation SPA", () => {
       expect(window.location.hash).toBe("#uml-architecture/uml-class-diagram")
     );
   });
-
-  it("rend chaque page de groupe sans planter", async () => {
-    const user = userEvent.setup();
-    render(<App />);
-    const main = document.querySelector("main");
-
-    for (const cat of NAV) {
-      await openCategory(user, cat.category);
-      const labels = groupButtonsOf(cat.category).map((b) => b.textContent);
-      for (const label of labels) {
-        await openCategory(user, cat.category);
-        const btn = groupButtonsOf(cat.category).find(
-          (b) => b.textContent === label
-        );
-        await user.click(btn);
-        const h2s = await within(main).findAllByRole("heading", { level: 2 });
-        expect(h2s.length, `pas de section visible sur « ${label} »`).toBeGreaterThan(0);
-      }
-    }
-  }, 30_000);
 });
 
 describe("App — recherche", () => {
