@@ -25,7 +25,7 @@ export default function ChoosingLanguage() {
           ["Go", "Services backend, outils, cloud", "Simple, rapide, concurrence facile", "Moins de bibliothèques que Python ou JS"],
           ["Rust", "Systèmes, performance, sécurité mémoire", "Rapide et sûr", "Courbe d'apprentissage raide"],
           ["C / C++", "Systèmes, embarqué, jeux, performance", "Contrôle total, très rapide", "Gestion de la mémoire à la main, plus risqué"],
-          ["Swift", "Applications iOS natives", "Intégration parfaite à la plateforme", "Limité à leur plateforme"],
+          ["Swift", "Applications iOS natives", "Intégration parfaite à la plateforme", "Limité à la plateforme Apple"],
           ["SQL", "Interroger les bases de données", "Incontournable pour les données", "Ce n'est pas un langage généraliste"],
         ]}
       />

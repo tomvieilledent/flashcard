@@ -105,6 +105,7 @@ export const NAV = [
         accent: REACT_ACCENT,
         icon: Compass,
         items: [
+          { id: "base-choose-project", label: "Démarrer un projet : quelle stack ?", icon: Rocket, file: "bases/ChoosingProject.jsx" },
           { id: "base-choose-stack", label: "Quelle techno pour quel projet ?", icon: Compass, file: "bases/ChoosingStack.jsx" },
           { id: "base-choose-language", label: "Quel langage de programmation ?", icon: FileCode, file: "bases/ChoosingLanguage.jsx" },
           { id: "base-choose-data", label: "Quelle base de données et quel ORM ?", icon: ListChecks, file: "bases/ChoosingData.jsx" },
