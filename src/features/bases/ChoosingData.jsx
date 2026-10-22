@@ -1,4 +1,5 @@
-import { InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { InlineCode, P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { MERISE_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function ChoosingData() {
@@ -15,7 +16,8 @@ export default function ChoosingData() {
       </P>
 
       <H3>1. Quel type de base ?</H3>
-      <Table
+      <TechTable
+        cols={[1]}
         head={["Situation", "Choix", "Pourquoi"]}
         rows={[
           ["Données liées entre elles (utilisateurs, commandes, inscriptions)", "SQL : PostgreSQL", "Relations, contraintes, transactions fiables"],
@@ -35,7 +37,8 @@ export default function ChoosingData() {
 
       <H3>2. Quel ORM ?</H3>
       <P>L'ORM se choisit surtout selon le langage et le framework déjà retenus.</P>
-      <Table
+      <TechTable
+        cols={[1]}
         head={["Stack", "ORM", "À savoir"]}
         rows={[
           ["Django", "Django ORM", "Inclus, migrations automatiques, le plus simple pour débuter"],

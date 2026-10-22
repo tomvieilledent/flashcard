@@ -1,4 +1,5 @@
 import { InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { API_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function ChoosingApi() {
@@ -14,7 +15,8 @@ export default function ChoosingApi() {
       </P>
 
       <H3>1. Quel style d'API ?</H3>
-      <Table
+      <TechTable
+        cols={[0]}
         head={["Style", "Principe", "À choisir quand", "À éviter quand"]}
         rows={[
           ["REST", "Des URL (ressources) + verbes HTTP", "Cas général : appli web, mobile, API publique. Le choix par défaut", "Les clients ont des besoins de données très variés"],

@@ -1,4 +1,4 @@
-import { InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { InlineCode, P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
 import { REACT_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function FrameworkVsLibrary() {
@@ -26,22 +26,22 @@ export default function FrameworkVsLibrary() {
         </li>
       </Ul>
 
-      <H3>Les plus utilisés</H3>
-      <Table
-        head={["Nom", "Côté", "Langage", "Sert à"]}
-        rows={[
-          ["React", "Frontend", "JavaScript", "Construire des interfaces par composants (bibliothèque)"],
-          ["Vue", "Frontend", "JavaScript", "Interfaces, courbe d'apprentissage douce"],
-          ["Svelte", "Frontend", "JavaScript", "Interfaces compilées, peu de code"],
-          ["Next.js / Nuxt", "Fullstack", "JavaScript", "React / Vue + rendu serveur et routage"],
-          ["Express", "Backend", "JavaScript", "Serveur web minimaliste sur Node.js"],
-          ["Django", "Backend", "Python", "Tout inclus : ORM, admin, authentification"],
-          ["Flask / FastAPI", "Backend", "Python", "Serveur léger, API rapides à écrire"],
-          ["Laravel", "Backend", "PHP", "Tout inclus, très répandu"],
-          ["Spring Boot", "Backend", "Java", "Applications d'entreprise"],
-          ["Tailwind", "Frontend", "CSS", "Styliser avec des classes utilitaires"],
-        ]}
-      />
+      <H3>Et dans la pratique ?</H3>
+      <Ul>
+        <li>
+          <strong>React</strong> est une bibliothèque, <strong>Vue</strong>,{" "}
+          <strong>Svelte</strong>, <strong>Django</strong> et{" "}
+          <strong>Laravel</strong> sont des frameworks.
+        </li>
+        <li>
+          Plus un outil impose son cadre, plus on avance vite au début, et
+          moins on a de liberté ensuite.
+        </li>
+      </Ul>
+      <P>
+        Le détail par besoin : voir « Quel frontend ? » et « Quel backend ? ».
+      </P>
+
       <Note accent={REACT_ACCENT}>
         Aucun n'est « le meilleur ». On choisit selon le projet, l'équipe et le
         langage déjà maîtrisé. Apprendre les bases (HTML, CSS, JavaScript ou
