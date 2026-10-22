@@ -1,4 +1,5 @@
-import { Code, InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { Code, InlineCode, P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { REACT_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function ChoosingProject() {
@@ -43,7 +44,7 @@ export default function ChoosingProject() {
       </Ul>
 
       <H3>Exemples de projets, stack et justification</H3>
-      <Table
+      <TechTable
         head={["Projet", "Stack", "Pourquoi"]}
         rows={[
           ["Portfolio, blog, site vitrine", "HTML/CSS ou Astro, hébergement statique", "Pas de serveur ni de base : rapide, gratuit, bon SEO"],

@@ -1,4 +1,5 @@
-import { Code, InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { Code, InlineCode, P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { MERISE_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function WhatIsOrm() {
@@ -28,7 +29,7 @@ user = User.objects.get(email=email)
 user.name = "Léa"
 user.save()   # l'ORM écrit le UPDATE`}</Code>
 
-      <Table
+      <TechTable
         head={["ORM", "Langage / écosystème"]}
         rows={[
           ["Django ORM", "Python (inclus dans Django)"],

@@ -1,4 +1,5 @@
-import { Code, InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { Code, InlineCode, P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { TOOL_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function PackageManagers() {
@@ -28,7 +29,7 @@ export default function PackageManagers() {
           télécharge et les met à jour.
         </li>
       </Ul>
-      <Table
+      <TechTable
         head={["Écosystème", "Outil", "Fichier de dépendances"]}
         rows={[
           ["JavaScript", "npm, yarn, pnpm", "package.json"],

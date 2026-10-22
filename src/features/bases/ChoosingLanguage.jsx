@@ -1,4 +1,5 @@
-import { InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { InlineCode, P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { TOOL_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function ChoosingLanguage() {
@@ -14,7 +15,7 @@ export default function ChoosingLanguage() {
       </P>
 
       <H3>Quel langage pour quel usage ?</H3>
-      <Table
+      <TechTable
         head={["Langage", "Sert surtout à", "Points forts", "Limites"]}
         rows={[
           ["JavaScript / TypeScript", "Web (front, et back avec Node.js)", "Seul langage du navigateur, écosystème immense", "Pièges historiques ; TypeScript ajoute du typage et aide beaucoup"],
@@ -31,7 +32,7 @@ export default function ChoosingLanguage() {
       />
 
       <H3>Selon votre objectif</H3>
-      <Table
+      <TechTable
         head={["Objectif", "Choix conseillé"]}
         rows={[
           ["Premier langage, apprendre à programmer", "Python, ou JavaScript si vous visez le web"],

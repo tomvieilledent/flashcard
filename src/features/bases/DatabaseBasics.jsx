@@ -1,4 +1,5 @@
-import { Code, InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { Code, InlineCode, P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { MERISE_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function DatabaseBasics() {
@@ -18,7 +19,7 @@ export default function DatabaseBasics() {
         Un programme dédié (<strong>SGBD</strong>) qui range les données et
         répond à des questions appelées <strong>requêtes</strong>.
       </P>
-      <Table
+      <TechTable
         head={["", "SQL (relationnelle)", "NoSQL"]}
         rows={[
           ["Structure", "Tables avec lignes et colonnes", "Documents, clé/valeur, graphes…"],

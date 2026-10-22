@@ -1,4 +1,5 @@
-import { InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { InlineCode, P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { REACT_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function ChoosingStack() {
@@ -38,7 +39,7 @@ export default function ChoosingStack() {
       </Ul>
 
       <H3>Frontend : quoi pour quoi</H3>
-      <Table
+      <TechTable
         head={["Besoin", "Choix courant", "Pourquoi"]}
         rows={[
           ["Page statique, vitrine, blog", "HTML/CSS simple, ou Astro", "Pas de JavaScript lourd, rapide, bon SEO"],
@@ -52,7 +53,7 @@ export default function ChoosingStack() {
       />
 
       <H3>Backend : quoi pour quoi</H3>
-      <Table
+      <TechTable
         head={["Besoin", "Choix courant", "Pourquoi"]}
         rows={[
           ["Application complète, vite (admin, comptes, ORM)", "Django (Python) ou Laravel (PHP)", "Tout est inclus, productivité maximale"],
@@ -65,7 +66,7 @@ export default function ChoosingStack() {
       />
 
       <H3>Trois projets types</H3>
-      <Table
+      <TechTable
         head={["Projet", "Stack raisonnable"]}
         rows={[
           ["Blog ou portfolio", "Astro ou HTML/CSS, hébergement statique, pas de base de données"],

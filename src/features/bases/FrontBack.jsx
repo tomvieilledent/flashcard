@@ -1,4 +1,5 @@
-import { P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { API_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function FrontBack() {
@@ -14,7 +15,7 @@ export default function FrontBack() {
       </P>
 
       <H3>La solution : séparer ce qu'on voit de ce qui travaille</H3>
-      <Table
+      <TechTable
         head={["", "Frontend", "Backend"]}
         rows={[
           ["Où ça tourne", "Dans le navigateur de l'utilisateur", "Sur le serveur"],

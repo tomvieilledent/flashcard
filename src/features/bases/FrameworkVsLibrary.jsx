@@ -1,4 +1,5 @@
-import { InlineCode, P, H2, H3, Ul, Note, Table } from "../../shared/ui/primitives.jsx";
+import { InlineCode, P, H2, H3, Ul, Note } from "../../shared/ui/primitives.jsx";
+import { TechTable } from "../../shared/ui/tech.jsx";
 import { REACT_ACCENT } from "../../shared/ui/tokens.js";
 
 export default function FrameworkVsLibrary() {
@@ -27,7 +28,7 @@ export default function FrameworkVsLibrary() {
       </Ul>
 
       <H3>Les plus utilisés</H3>
-      <Table
+      <TechTable
         head={["Nom", "Côté", "Langage", "Sert à"]}
         rows={[
           ["React", "Frontend", "JavaScript", "Construire des interfaces par composants (bibliothèque)"],
