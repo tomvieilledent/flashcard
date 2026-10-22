@@ -64,6 +64,45 @@ const loaders = import.meta.glob("../features/**/*.jsx");
 
 export const NAV = [
   {
+    category: "Notions de base",
+    icon: BookOpen,
+    accent: API_ACCENT,
+    groups: [
+      {
+        group: "Comprendre le web",
+        accent: API_ACCENT,
+        icon: Network,
+        items: [
+          { id: "base-client-server", label: "Client et serveur", icon: Server, file: "bases/ClientServer.jsx" },
+          { id: "base-api", label: "Qu'est-ce qu'une API ?", icon: Network, file: "bases/WhatIsApi.jsx" },
+          { id: "base-http", label: "HTTP en bref", icon: Share2, file: "bases/HttpBasics.jsx" },
+          { id: "base-json", label: "JSON", icon: FileJson, file: "bases/JsonFormat.jsx" },
+          { id: "base-front-back", label: "Frontend, backend, fullstack", icon: LayoutGrid, file: "bases/FrontBack.jsx" },
+        ],
+      },
+      {
+        group: "Données",
+        accent: MERISE_ACCENT,
+        icon: Database,
+        items: [
+          { id: "base-database", label: "SQL et NoSQL", icon: Database, file: "bases/DatabaseBasics.jsx" },
+          { id: "base-orm", label: "Qu'est-ce qu'un ORM ?", icon: Table2, file: "bases/WhatIsOrm.jsx" },
+          { id: "base-migrations", label: "Schéma et migrations", icon: Layers, file: "bases/Migrations.jsx" },
+        ],
+      },
+      {
+        group: "Outils et jargon",
+        accent: TOOL_ACCENT,
+        icon: Wrench,
+        items: [
+          { id: "base-frameworks", label: "Framework ou bibliothèque ?", icon: Component, file: "bases/FrameworkVsLibrary.jsx" },
+          { id: "base-packages", label: "Dépendances et paquets", icon: Boxes, file: "bases/PackageManagers.jsx" },
+          { id: "base-git-jargon", label: "Git et jargon d'équipe", icon: GitBranch, file: "bases/GitAndTeamJargon.jsx" },
+        ],
+      },
+    ],
+  },
+  {
     category: "Shell & éditeurs",
     icon: Terminal,
     accent: TOOL_ACCENT,
