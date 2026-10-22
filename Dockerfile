@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # --- Étape 1 : build du site statique ---------------------------------
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
