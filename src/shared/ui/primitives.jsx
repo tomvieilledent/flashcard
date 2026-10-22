@@ -13,13 +13,13 @@ export function Code({ children }) {
         background: "#0E1015",
         border: `1px solid ${LINE}`,
         borderRadius: 8,
-        padding: "14px 16px",
+        padding: "18px 20px",
         overflowX: "auto",
         fontFamily: FONT_MONO,
         fontSize: 13.5,
-        lineHeight: 1.6,
+        lineHeight: 1.7,
         color: "#D8DEE9",
-        margin: "14px 0",
+        margin: "24px 0",
       }}
     >
       {/* Sûr tant que `children` reste du contenu STATIQUE du dépôt : highlight()
@@ -54,7 +54,7 @@ export function InlineCode({ children }) {
 
 export function P({ children }) {
   return (
-    <p style={{ color: TEXT, lineHeight: 1.7, fontSize: 15.5, margin: "10px 0" }}>
+    <p style={{ color: TEXT, lineHeight: 1.8, fontSize: 15.5, margin: "16px 0" }}>
       {children}
     </p>
   );
@@ -68,9 +68,9 @@ export function H2({ accent, rule = true, children }) {
         fontSize: 28,
         fontWeight: 600,
         color: TEXT,
-        marginTop: 34,
-        marginBottom: 10,
-        paddingBottom: rule ? 10 : 0,
+        marginTop: 56,
+        marginBottom: 20,
+        paddingBottom: rule ? 14 : 0,
         borderBottom: rule ? `1px solid ${LINE}` : "none",
         display: "flex",
         alignItems: "baseline",
@@ -91,8 +91,8 @@ export function H3({ children }) {
         fontSize: 17,
         fontWeight: 700,
         color: TEXT,
-        marginTop: 26,
-        marginBottom: 8,
+        marginTop: 40,
+        marginBottom: 12,
       }}
     >
       {children}
@@ -102,7 +102,7 @@ export function H3({ children }) {
 
 export function Ul({ children }) {
   return (
-    <ul style={{ color: TEXT, lineHeight: 1.7, fontSize: 15.5, paddingLeft: 20, margin: "10px 0" }}>
+    <ul className="prose-list" style={{ color: TEXT, lineHeight: 1.75, fontSize: 15.5, paddingLeft: 22, margin: "16px 0" }}>
       {children}
     </ul>
   );
@@ -114,12 +114,12 @@ export function Note({ accent, children }) {
       style={{
         borderLeft: `3px solid ${accent}`,
         background: "rgba(255,255,255,0.03)",
-        padding: "10px 14px",
+        padding: "16px 20px",
         borderRadius: "0 8px 8px 0",
         color: MUTED,
-        fontSize: 14,
-        margin: "14px 0",
-        lineHeight: 1.6,
+        fontSize: 14.5,
+        margin: "28px 0",
+        lineHeight: 1.75,
       }}
     >
       {children}
@@ -129,7 +129,7 @@ export function Note({ accent, children }) {
 
 export function Table({ head, rows }) {
   return (
-    <div style={{ overflowX: "auto", margin: "14px 0" }}>
+    <div style={{ overflowX: "auto", margin: "28px 0" }}>
       <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 14 }}>
         <thead>
           <tr>
@@ -141,7 +141,7 @@ export function Table({ head, rows }) {
                   color: MUTED,
                   fontWeight: 600,
                   borderBottom: `1px solid ${LINE}`,
-                  padding: "8px 10px",
+                  padding: "10px 16px",
                 }}
               >
                 {h}
@@ -157,7 +157,9 @@ export function Table({ head, rows }) {
                   key={j}
                   style={{
                     borderBottom: `1px solid ${LINE}`,
-                    padding: "8px 10px",
+                    padding: "14px 16px",
+                    lineHeight: 1.6,
+                    verticalAlign: "top",
                     color: TEXT,
                     fontFamily: j === 0 ? FONT_MONO : FONT_BODY,
                   }}

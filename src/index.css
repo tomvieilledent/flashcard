@@ -512,6 +512,18 @@ a:hover {
   max-width: 100%;
 }
 
+/* Respiration du contenu : items de liste espacés, premier titre sans marge
+   superflue, lignes de tableau légèrement alternées. */
+.app__content .prose-list li + li {
+  margin-top: 8px;
+}
+.app__content :where(h2, h3):first-child {
+  margin-top: 0;
+}
+.app__content table tbody tr:nth-child(even) td {
+  background: var(--fill);
+}
+
 /* ---- Recherche ------------------------------------------------- */
 
 .nav__search {
@@ -884,13 +896,13 @@ a:hover {
   scroll-margin-top: calc(var(--topbar-h) + 16px);
 }
 .group-section + .group-section {
-  margin-top: 8px;
-  padding-top: 8px;
+  margin-top: 48px;
+  padding-top: 32px;
   border-top: 1px solid var(--line);
 }
 /* Le premier <h2> d'une section ouvre déjà large : on resserre le liseré. */
 .group-section + .group-section > div > h2:first-child {
-  margin-top: 18px;
+  margin-top: 24px;
 }
 
 /* ---- Desktop --------------------------------------------------- */
